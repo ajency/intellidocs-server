@@ -174,47 +174,56 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                 html : '<p></p>',
                 id : 'dmt-folder-metadata' 
             },
-            {	
-                xtype:'button',
-                text:'Download Files In Folder',
-                cls:'dmt-details-panel-folder-download-button',
-                ui:'confirm round',
-                iconCls:'download',
-                iconMask:true,
-                iconAlign:'right',
-                width:250,
-                height:32,
-                style:'margin-top:20px',
-                action:'dmtDetailsPanelFolderDownloadButton',
-            },
-            {	
-                xtype:'button',
-                text:'Download Files In Sub Folder',
-                cls:'dmt-details-panel-folder-download-button',
-                ui:'confirm round',
-                iconCls:'download',
-                iconMask:true,
-                iconAlign:'right',
-                width:250,
-                height:32,
-                style:'margin-top:20px',
-                action:'dmtDetailsPanelSubFolderDownloadButton',
-            },
-            { 
-                xtype:'button',
-                text:'Delete Files In Folder',
-                cls:'dmt-details-panel-folder-download-button',
-                ui:'round',
-                iconCls:'delete',
-                iconMask:true,
-                iconAlign:'right',
-                width:250,
-                height:32,
-                style:'margin-top:20px',
-                action:'dmtDetailsPanelFolderDeleteFilesButton',
-            }
+            
             ]
            }
+           if(record_data.f_file_count > 0)
+           {
+           panel_content.items.push({ 
+                                    xtype:'button',
+                                    text:'Download all files in folder',
+                                    cls:'dmt-details-panel-folder-download-button',
+                                    ui:'confirm round',
+                                    iconCls:'download',
+                                    iconMask:true,
+                                    iconAlign:'right',
+                                    width:250,
+                                    height:32,
+                                    style:'margin-top:20px',
+                                    action:'dmtDetailsPanelFolderDownloadButton',
+                                    });
+           }
+           
+           panel_content.items.push({	
+                                    xtype:'button',
+                                    text:'Download Files In Sub Folder',
+                                    cls:'dmt-details-panel-folder-download-button',
+                                    ui:'confirm round',
+                                    iconCls:'download',
+                                    iconMask:true,
+                                    iconAlign:'right',
+                                    width:250,
+                                    height:32,
+                                    style:'margin-top:20px',
+                                    action:'dmtDetailsPanelSubFolderDownloadButton',
+                                    });
+           
+           if(record_data.f_file_count > 0)
+           {
+           panel_content.items.push({ 
+                                    xtype:'button',
+                                    text:'Delete Files In Folder',
+                                    cls:'dmt-details-panel-folder-download-button',
+                                    ui:'round',
+                                    iconCls:'delete',
+                                    iconMask:true,
+                                    iconAlign:'right',
+                                    width:250,
+                                    height:32,
+                                    style:'margin-top:20px',
+                                    action:'dmtDetailsPanelFolderDeleteFilesButton',
+                                    });
+           }           
            IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count)
            break;
            default:

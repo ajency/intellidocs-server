@@ -70,9 +70,9 @@
             var global_folder_removed = false;
             
             //http://
-            var global_https = "https://www.intellidocs.net";
+            //var global_https = "https://www.intellidocs.net";
             
-            //var global_https = "https://www.press-port.com";
+            var global_https = "https://www.press-port.com";
             
             
             document.addEventListener('deviceready',function(){
@@ -445,6 +445,7 @@
                 }
                 else{
                     //we are not triggering file download. reset globals
+                    Ext.getCmp('dmt-download-progress-folder').destroy();
                     global_queued_file_urls = [];
                     global_queued_file_download_complete_count = 0;
                     global_current_download_folder_id = 0;
