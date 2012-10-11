@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>IntelliDocs</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name = "format-detection" content = "telephone=no"/>
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width;" />
+        <link rel="stylesheet" type="text/css" href="lib/touch/resources/css/sencha-touch.css" />
+        <script type="text/javascript" src="cordova-2.0.0.js"></script>
+        <script type="text/javascript" src="cordova-download.js"></script>
+        <script type="text/javascript" src="OpenFile.js"></script>
+        <script type="text/javascript" src="lib/touch/sencha-touch-debug.js"></script>
+        <script type="text/javascript" src="app/app.js"></script>
+        <style type="text/css">
+            /**
+             * Example of an initial loading indicator.
+             * It is recommended to keep this as minimal as possible to provide instant feedback
+             * while other resources are still being loaded for the first time
+             */
+            html, body {
+                height: 100%;
+                background-color: #1985D0
+            }
+            
+            #appLoadingIndicator {
+                position: absolute;
+                top: 50%;
+                margin-top: -15px;
+                text-align: center;
+                width: 100%;
+                height: 30px;
+                -webkit-animation-name: appLoadingIndicator;
+                -webkit-animation-duration: 0.5s;
+                -webkit-animation-iteration-count: infinite;
+                -webkit-animation-direction: linear;
+            }
+            
+            #appLoadingIndicator > * {
+                background-color: #FFFFFF;
+                display: inline-block;
+                height: 30px;
+                -webkit-border-radius: 15px;
+                margin: 0 5px;
+                width: 30px;
+                opacity: 0.8;
+            }
+            
+            @-webkit-keyframes appLoadingIndicator{
+                0% {
+                    opacity: 0.8
+                }
+                50% {
+                    opacity: 0
+                }
+                100% {
+                    opacity: 0.8
+                }
+            }
+            </style>
+
+        <script>
+            
+            var fileSystemRoot;
+            var root_file_path;
+            var IntelliDocs = {};
+            
+            //global var for folder removal
+            var global_remove_folders = [];
+            var global_removed_folder_count = 0; 
+            var global_folder_removed = false;
+            
+            //http://
+            //var global_https = "https://www.intellidocs.net";
+            
+            var global_https = "https://www.press-port.com";
+            
+            
+            document.addEventListener('deviceready',function(){
+                //request a file system
+                window.requestFileSystem(LocalFileSystem.PERSISTENT,
+                                         0,
+                                         IntelliDocs.fileSystemSuccessCallbck,
+                                         IntelliDocs.fileSystemFailCallbck);  
+                                      
+                /**
+                 * check deleted folders on resume
+                 */
+                document.addEventListener('resume',function(){
+                                        if(navigator.onLine)
+                                        {
+                                            if(IntelliDocs.dmtGetUsernameFromCache() != '')
+                                            {
+                                                console.log('User exists');
+                                                IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache());
+                                                Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
+                                            }
+                                                                
+                                            console.log('check for deleted folders');  
+                                            //perform polling here
+                                            var request = new XMLHttpRequest();
+                                            request.open("GET", global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_folder_deactivated.php?", true);
+                                            request.onreadystatechange = function()
+                                            {
+                                                if (request.readyState == 4 && request.status == 200) 
+                                                { 
+                                                    var res_data = eval("(" + request.responseText + ")");
+                                                    global_remove_folders = res_data['data'];
+                                                    if(global_remove_folders.length > 0)
+                                                    { 
+                                                        IntelliDocs.remove_directory(global_remove_folders[0].folder); 
+                                                    }
+                                                }
+                                            }
+                                            request.send(); 
+                                        }   
+                                    });
+            },false);
+            
+            IntelliDocs.dmtGetUsernameFromCache = function()
+            {
+                var login_info_store = Ext.getStore('DmtLocalStorageCookie');
+                login_info_store.load();
+                var index = login_info_store.find('key','dmtScLgInfo');
+                if(index == -1)
+                {
+                    console.log('nothing found');
+                    return '';
+                }
+                else
+                {
+                    
+                    var record = login_info_store.getAt(index);
+                    var stored_data = record.getData();
+                    console.log('uname:'+stored_data.user_name);
+                    return stored_data.user_name; 
+                } 
+            }
+            
+
+            IntelliDocs.fileSystemFailCallbck = function(error){
+                console.log("error:" + error);
+            }
+            
+            IntelliDocs.fileSystemSuccessCallbck = function(fileSystem){
+                // get the root file system object
+                fileSystemRoot = fileSystem.root;
+                console.log("Got the file system root object");
+                
+                //get the full path to root directory
+                root_file_path = fileSystem.root.fullPath;
+                console.log("Got the full path to root directory");
+                
+                fileSystemRoot.getDirectory("intellidocs",
+                                            {create: true, exclusive: false}, 
+                                            function(dir){
+                                            
+                                            }, 
+                                            function(err){
+                                            console.log(err.code + 'Folder exists.');
+                                            });
+                
+                root_file_path += "/intellidocs";
+                                
+                console.log("Root Path : "+root_file_path);
+            }
+            
+            /**
+             * Gets the directory structure for the specified user and creates a file dir_list.js
+             * is_not_offline = check to remove masking
+             * user_name      = the username to get directory structure for 
+             */
+            IntelliDocs.write_json = function(is_not_offline,user_name){
+                var ajax = new XMLHttpRequest();
+                ajax.open("GET",global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_request.php?user_name="+user_name,true);
+                ajax.send();
+                
+                ajax.onreadystatechange = function()
+                {
+                    if(ajax.readyState == 4 && ajax.status == 200)
+                    {
+                        var data_to_write = ajax.responseText;
+                        //got the file data. get the dir_list.js file. 
+                        fileSystemRoot.getFile('dir_list.js', 
+                                               {create: true}, 
+                                               function(fileEntry) {
+                                                    // Create a FileWriter object for our FileEntry.
+                                                    fileEntry.createWriter(function(fileWriter) {
+                                                                      fileWriter.onwrite = function(e) {
+                                                                      console.log('JS file Write completed.');
+                                                                      //set global app launch to false
+                                                                      DMTApp.launched = false;
+                                                                      if(is_not_offline)
+                                                                      {
+                                                                        Ext.getStore('DmtFolderStructureStore').load();
+                                                                        Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
+                                                                        Ext.getCmp('dmt-nested-list').unmask(); 
+                                                                      
+                                                                      }               
+                                                                      };
+                                                                      
+                                                                      fileWriter.write(data_to_write);
+                                                                      }, function(e){console.log('Error', e);});
+                                               },function(e){console.log('Error', e);});
+                    }    
+                };              
+            }
+            
+            /**
+              * Remove DIrectory and all of its content
+              * dir_path = path of directory to be removed
+              */            
+            IntelliDocs.remove_directory = function(dir_path)
+            {
+                console.log(dir_path);
+                fileSystemRoot.getDirectory(root_file_path+ " /" + dir_path,
+                                            {},
+                                            function(directory){
+                                                directory.removeRecursively(function(parent){
+                                                                        console.log("Remove Recursively Succeeded");   
+                                                                        //check if was last
+                                                                        global_folder_removed = true;
+                                                                        global_removed_folder_count++;
+                                                                        if(global_removed_folder_count == global_remove_folders.length)
+                                                                        {
+                                                                            //reset globals
+                                                                            global_folder_removed = false;
+                                                                            global_remove_folders = [];
+                                                                            global_removed_folder_count = 0;
+                                                                        }
+                                                                        else if(global_removed_folder_count < global_remove_folders.length)
+                                                                        {
+                                                                            IntelliDocs.remove_directory(global_remove_folders[global_removed_folder_count].folder);
+                                                                        }
+                                                                    },
+                                                                    function(err){
+                                                                        console.log("Failed to remove direcoty and files" + err.code);
+                                                                        global_folder_removed = true;                                                                       
+                                                                        global_removed_folder_count++;
+                                                                        if(global_removed_folder_count == global_remove_folders.length)
+                                                                        {
+                                                                            global_folder_removed = false;
+                                                                            global_remove_folders = [];
+                                                                            global_removed_folder_count = 0;
+                                                                        }
+                                                                        else if(global_removed_folder_count < global_remove_folders.length)
+                                                                        {
+                                                                            IntelliDocs.remove_directory(global_remove_folders[global_removed_folder_count].folder);
+                                                                        }                                                                
+                                                                    }); 
+                                            },
+                                            function(err){
+                                                console.log('Directory doesn\'t exists'+ err.code);
+                                                global_removed_folder_count++;
+                                                if(global_removed_folder_count == global_remove_folders.length)
+                                                {
+                                                    global_folder_removed = false;
+                                                    global_remove_folders = [];
+                                                    global_removed_folder_count = 0;  
+                                                }
+                                                else if(global_removed_folder_count < global_remove_folders.length)                                             
+                                                {
+                                                    IntelliDocs.remove_directory(global_remove_folders[global_removed_folder_count].folder);
+                                                }
+                                            });
+            }
+            
+            /**
+             * trigger the bulk download event
+             * directory_path = path of folder to download 
+             * file_urls = array of file URL's to download
+             * concurrent downloads 
+             */       
+            var global_queued_file_urls = [];
+            var global_queued_file_download_complete_count = 0;
+            var global_current_download_folder_id = 0;
+            
+            IntelliDocs.download_queued_file = function(file)
+            {
+                var structure = file.path;           
+                var file_name = file.url;
+                file_name = file_name.substring(file_name.lastIndexOf('/')+1);              
+                
+                                                  
+                fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
+                                       {},
+                                       function(file_entry){
+                                            console.log("File present. Skip");
+                                            global_queued_file_download_complete_count++;
+                                            if(global_queued_file_download_complete_count == global_queued_file_urls.length)
+                                            {
+                                                //all files downloaded. reset globals here
+                                                console.log('All files downloaded');
+                                                global_queued_file_urls = [];
+                                                global_queued_file_download_complete_count = 0;
+                                                global_current_download_folder_id = 0;
+                                                Ext.getCmp('dmt-download-progress-folder').destroy();
+                                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                                                 Ext.getCmp('dmtFileFolder_count')._value);                                       
+                                            }
+                                            else{             
+                                                IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
+                                            }
+                                       },
+                                       function(err){
+                                            console.log('doesn\'t exists' + err.code);
+                                            Ext.getCmp('dmt-dolder-file-name').setHtml(file_name);                                            //trigger file download
+                                            window.plugins.Download.start(file.url,
+                                                function(){
+                                                    console.log("File Downloaded");
+                                                    global_queued_file_download_complete_count++;
+                                                    if(global_queued_file_download_complete_count == global_queued_file_urls.length)
+                                                    {
+                                                        //all files downloaded. reset globals here
+                                                        console.log('All files downloaded');
+                                                        global_queued_file_urls = [];
+                                                        global_queued_file_download_complete_count = 0;
+                                                        global_current_download_folder_id = 0;
+                                                        Ext.getCmp('dmt-download-progress-folder').destroy(); 
+                                                        IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                                                                  Ext.getCmp('dmtFileFolder_count')._value);
+                                                        
+                                                    }
+                                                    else{             
+                                                        IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
+                                                    }
+                                                },                                           
+                                                function(fail){
+                                                    //something goes wrong. reset globals
+                                                    console.log("Download failed:" + fail.status);
+                                                    global_queued_file_urls = [];
+                                                    global_queued_file_download_complete_count = 0;
+                                                    global_current_download_folder_id = 0; 
+                                                    Ext.getCmp('dmt-download-progress-folder').destroy(); 
+                                                    Ext.Msg.alert('Download Failed!','Please try again!'); 
+                                                    IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                                                            Ext.getCmp('dmtFileFolder_count')._value);                                            
+                                                },
+                                                function(info){
+                                                    console.log(info.progress);
+                                                    var percent = Math.round(info.progress * 100);
+                                                    document.getElementById('dmt-folder-file-percentage').innerHTML = percent + "%";
+                                                },
+                                                root_file_path + '/' + structure);
+                                       });
+                                 
+            }
+            
+            /**
+             * loop through dir_list.js and find all the files to be downloaded
+             * _json_obj = initially dir_list.js
+             * category_id = objec to search for
+             * function
+             */
+            IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
+            {
+                               
+                for(var key in _json_obj)
+                {
+                    if(_json_obj.hasOwnProperty(key))
+                    {                        
+                        if(key == 'items')
+                        {
+                            var obj = _json_obj[key];
+                            if(obj.length > 0)
+                            {
+                                for(var i=0; i < obj.length; i++)
+                                {
+                                    var data = obj[i];
+                                    if(data['f_id'] == category_id   && data['f_type'] == 'folder')
+                                    {
+                                        //match found. now get all leaf nodes from items array
+                                        console.log(data['f_name'] + ' Found the category element');
+                                        
+                                        //set global folder ID
+                                        global_current_download_folder_id = category_id;
+                                        
+                                        //get all file urls
+                                        IntelliDocs.dmtCreateDirectories(data['f_folder']);
+                                        IntelliDocs.get_all_leaf_elements(data['items'],subfolder_check);
+                                        
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        IntelliDocs.loop_json(data,category_id, subfolder_check);
+                                    }
+                                }	
+                            }
+                        }	
+                    }
+                }
+            }	
+            
+            IntelliDocs.recursive_looping = function(obj)
+            {
+                for(var i=0; i < obj.length; i++)
+                {
+                    var data = obj[i];
+                    
+                    if(data['leaf'] && (data['f_type'] == 'file'))
+                    {
+                        global_queued_file_urls.push({
+                                                     url : data['f_attachment'],
+                                                     path: data['f_folder']});
+                    }
+                    else if(data['f_type'] == "folder")
+                    {
+                        IntelliDocs.dmtCreateDirectories(data['f_folder']);
+                        IntelliDocs.recursive_looping(data['items']);
+                    }
+                }
+            }            
+            
+            /**
+             * Loops through the category folder and add file urls to array
+             * obj = category folder items array
+             */
+            IntelliDocs.get_all_leaf_elements = function(obj,subfolder_check)
+            {
+                if(subfolder_check)
+            	{
+            		IntelliDocs.recursive_looping(obj);
+            	}
+            	else
+            	{                
+                    for(var i=0; i < obj.length; i++)
+                    {
+                        var data = obj[i];
+                    
+                        if(data['leaf'] && (data['f_type'] == 'file'))
+                        {
+                            global_queued_file_urls.push({
+                                                            url : data['f_attachment'],
+                                                            path: data['f_folder']
+                                                         });
+                        }
+                    }
+                }
+                              
+                if(global_queued_file_urls.length > 0)
+                {
+                    console.log('Files count: ' + global_queued_file_urls.length);
+                    //trigger the bulk file download 
+                    IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+                }
+                else{
+                    //we are not triggering file download. reset globals
+                    global_queued_file_urls = [];
+                    global_queued_file_download_complete_count = 0;
+                    global_current_download_folder_id = 0;
+                }
+            } 
+            
+            
+            IntelliDocs.getFolderMeta = function(folder_path,total_files)
+            {
+                console.log(folder_path);
+                var meta = '';
+                var files_present = 0;
+                var remaining_files = 0;
+                fileSystemRoot.getDirectory(root_file_path + "/"+ folder_path,
+                                            {},
+                                            function(directory)
+                                            {
+                                                var reader = directory.createReader();
+                                                reader.readEntries(function(entries){
+                                                                    for(var i = 0;i<entries.length; i++)
+                                                                    {
+                                                                        if(entries[i].isFile && entries[i].name != '.DS_Store')
+                                                                        {
+                                                                            files_present++;
+                                                                        }
+                                                                    }
+                                                                   
+                                                                   remaining_files = (total_files == files_present) ? 0 : (total_files - files_present);
+                                                                   meta = "Total Files: " + total_files +"/ Downloaded Files: " + files_present + "/ Remaining Files: " + remaining_files;
+                                                                   Ext.getCmp('dmt-folder-metadata').setHtml(meta);                                                               },
+                                                               function(err){
+                                                                                                                                        
+                                                               });
+                                            },
+                                            function(err)
+                                            {
+                                            //if directory doesn't exists
+                                            console.log('whhat this');
+                                            meta = "Total Files: " + total_files +"/ Downloaded Files: 0 / Remaining Files: " + total_files;
+                                            Ext.getCmp('dmt-folder-metadata').setHtml(meta);  
+                                            });
+                
+                
+            }
+            
+            
+            /**
+             * create directories
+             */
+            IntelliDocs.dmtCreateDirectories = function(structure)
+            {
+            	//create folder if not present
+                var dir_struct = structure.split('/');
+                for(var i=0; i < dir_struct.length; i++)
+                {
+                    var dir_path = '';
+                    for(var j=0; j <= i; j++)   
+                    {
+                        dir_path += dir_struct[j] + '/';
+                    }   
+                    
+                    fileSystemRoot.getDirectory(root_file_path + "/" + dir_path,
+                                                {create: true, exclusive: false}, 
+                                                function(dir){
+                                                console.log('Dir created');
+                                                }, 
+                                                function(err){
+                                                console.log(err.code + 'Folder exists. Lets check next');
+                                                });
+                    
+                }  
+            }
+            
+            </script>
+        
+    </head>
+    <body>
+        <div id="appLoadingIndicator">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </body>
+</html>
