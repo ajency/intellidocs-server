@@ -23,7 +23,14 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 							cls:'dmtNestedListSortButtons'
 				},
 				items:[
-						{
+                       {
+                            iconMask:false,
+                            text:'Item ID',
+                            width:'18%',
+                            id:'dmt-nested-list-sort-by-item-id',
+                            action:'dmtNestedListSortByItemId'
+                       },
+                       {
 							text:'Name',
                             flex:2,
 							id:'dmt-nested-list-sort-by-name',
