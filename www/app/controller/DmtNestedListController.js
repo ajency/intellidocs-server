@@ -247,9 +247,16 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			details_container_titlebar.setTitle('Details Panel');
 		}
 	},
+    longTapEventAction:function()
+    {
+           //var eve_name = eventcontroller.info.eventName;
+           console.log('longpress');
+    },
 	//When the nested list is initialized add sorter panel
 	dmtNestedListInitialize:function(list)
 	{
+        this.addListener('itemdoubletap',this.longTapEventAction);
+           
         var _this = this;
 		console.log('List Initialized')
 		//Add the sorting panel to the nested list
@@ -311,6 +318,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When a  node is tapped on the nested list
 	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
 	{
+           
+           
            console.log('Item Tapped');
            if(!record.isLeaf())
                 current_f_id = record.getData().f_id;
@@ -385,8 +394,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         }
 	},
            /////////////////////////////////////////////START OF NEW CODE DTD 26SEP12//////////////////////////////////
-           dmtNestedListLoad:function(list,store,records,successful,oprtn)
-           {
+    dmtNestedListLoad:function(list,store,records,successful,oprtn)
+    {
            var _this = this;
            console.log('Nested List Load Complete.');
            if(current_f_id)
@@ -440,8 +449,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            return true;
            
            return false;	
-           },
-           dmtGetUsernameFromCache:function()
+    },
+    dmtGetUsernameFromCache:function()
 	{
 		var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 		login_info_store.load();

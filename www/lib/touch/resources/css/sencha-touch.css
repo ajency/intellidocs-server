@@ -132,9 +132,10 @@ div.dmtNestedListSortButtons
 div.dmtNestedListSortButtons span.x-button-icon
 {
     position:absolute;
+    right:25%;
 
 }
 div.dmtNestedListSortButtons span
 {
-
+    text-align:left;
 }
