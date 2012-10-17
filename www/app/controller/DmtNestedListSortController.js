@@ -5,6 +5,7 @@ Ext.define('DMTApp.controller.DmtNestedListSortController', {
         refs: {
             dmtNestedListSortByName:'button[action=dmtNestedListSortByName]',
 			dmtNestedListSortByType:'button[action=dmtNestedListSortByType]',
+            dmtNestedListSortByItemId: 'button[action=dmtNestedListSortByItemId]'
         },
         control: {
 			
@@ -15,9 +16,16 @@ Ext.define('DMTApp.controller.DmtNestedListSortController', {
 			dmtNestedListSortByType :
 			{
 				tap:'dmtNestedListSortByTypeTap'
-			}
-            
+			},
+            dmtNestedListSortByItemId :
+            { 
+                tap: 'dmtNestedListSortByItemIdTap'  
+            }
         }
+    },
+    dmtNestedListSortByItemIdTap:function(button)
+    {
+        this.dmtNestedListSortByType('f_item_id',button);
     },
 	//When the sort by name button is tapped
     dmtNestedListSortByNameTap:function(button)
@@ -32,15 +40,17 @@ Ext.define('DMTApp.controller.DmtNestedListSortController', {
 	//Generic sort operation by sort variable provided
 	dmtNestedListSortByType:function(sort_variable,button)
 	{
+        //var sort_var = sort_variable.split('||');   
+                
 		var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
 		if(button.getIconCls() == 'arrow_up')
 		{
-			nested_list_store.setSorters([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'ASC'}]);
+           nested_list_store.setSorters([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'ASC'},{property : 'fld_item_id',direction:'ASC'}]);
 			button.setIconCls('arrow_down');
 		}
 		else
 		{
-			nested_list_store.setSorters([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'DESC'}]);
+			nested_list_store.setSorters([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
 			button.setIconCls('arrow_up');
 		}
 	},

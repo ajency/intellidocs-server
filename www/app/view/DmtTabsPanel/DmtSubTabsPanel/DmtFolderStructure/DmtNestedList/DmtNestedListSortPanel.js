@@ -5,30 +5,30 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 		id:'dmt-nested-list-sort-panel',
 		height:30,
 		docked:'top',
-		cls:'dmtNestedListSortPanel',
+		cls:'dmtNestedListSortPanel',  
 		layout:
 				{
 					type:'hbox',
 					pack:'middle',
+                    align: 'middle',
 				},
 				defaults:
 				{
 							xtype:'button',
-							
 							iconCls:'arrow_down',
 							iconMask:true,
-							iconAlign:'right',
+                            iconAlign:'right',
 							ui:'plain',
 							height:30,
 							cls:'dmtNestedListSortButtons'
 				},
 				items:[
                        {
-                            iconMask:false,
                             text:'Item ID',
-                            width:'18%',
+                            flex:1,
                             id:'dmt-nested-list-sort-by-item-id',
-                            action:'dmtNestedListSortByItemId'
+                            action:'dmtNestedListSortByItemId',
+                           
                        },
                        {
 							text:'Name',
@@ -39,7 +39,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 						{
 							text:'Type',
                             flex:1,
-							id:'dmt-nested-list-sort-by-type',
+                            id:'dmt-nested-list-sort-by-type',
 							action:'dmtNestedListSortByType'
 						}
 					  ]

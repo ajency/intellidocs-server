@@ -357,6 +357,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
         var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
            nested_list_store.setSorters([
+                                         {property:'fld_item_id',direction:'ASC'},
                                          {property:'f_type',direction:'DESC'},  
                                          {sorterFn:function(record1,record2){
                                          
@@ -369,12 +370,13 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                          return item1 < item2 ? 1 : (item1 == item2 ? 0 : -1);
                                          
                                          },direction:'DESC'},			
-                                         {property:'f_name',direction:'ASC'},
+                                         {property:'f_name',direction:'ASC'}
+                                         
                                         ]);
         Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
-
-		button.removeCls('dmtRefreshToRemoveNotifications');
+        Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
+        button.removeCls('dmtRefreshToRemoveNotifications');
 		this.dmtDetailsPanelChange(null,{f_type:''},null);
         }
         else

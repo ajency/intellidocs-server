@@ -21,7 +21,9 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
 		
 		    
 		var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
-           nested_list_store.setSorters([{property:'f_type',direction:'DESC'},  
+           nested_list_store.setSorters([
+                                         {property:'fld_item_id',direction:'ASC'},
+                                         {property:'f_type',direction:'DESC'},  
                                          {sorterFn:function(record1,record2){
                                          
                                          var  item1 = record1.data.f_item_id,
@@ -35,8 +37,10 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
                                          },direction:'DESC'},			
                                          {property:'f_name',direction:'ASC'},]);
 		Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
-		Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');		
-		IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
+		Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
+        Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
+        
+        IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
         Ext.getCmp('dmt-nested-list-refresh-button').removeCls('dmtRefreshToRemoveNotifications');
            }

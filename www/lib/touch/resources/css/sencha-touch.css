@@ -124,3 +124,17 @@ div.dmtMessagesDetailPanelMsg p {text-align:left;font-size:15px; font-family:"Lu
 
 div.dmt-file-meta-desc{ clear:both; margin-left:65px;padding-right:45px;}
 div.dmt-file-icon-desc{  margin-left:45px; margin-bottom:10px;}
+
+div.dmtNestedListSortButtons
+{
+    
+} 
+div.dmtNestedListSortButtons span.x-button-icon
+{
+    position:absolute;
+
+}
+div.dmtNestedListSortButtons span
+{
+
+}

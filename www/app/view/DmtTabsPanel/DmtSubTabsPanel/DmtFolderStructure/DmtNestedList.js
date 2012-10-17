@@ -36,7 +36,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
         var tplConstructor = '<table class="dmtNestedListItem">' + 
            '<tbody>'+
            '<tr>'+
-           '<td style="width:12%">{[values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
+           '<td style="width:17%" align="center">{[values.fld_item_id != null ? values.fld_item_id : values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
            '<td style="width:70%">'+
            '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
            '<span class="dmt-list-item-fname">{f_name}</span>'+
