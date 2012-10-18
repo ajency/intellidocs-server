@@ -313,9 +313,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When a  node is tapped on the nested list
 	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
 	{
-           
-           
-           console.log('Item Tapped');
+          console.log('Item Tapped');
            if(!record.isLeaf())
                 current_f_id = record.getData().f_id;
            
@@ -333,8 +331,15 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         fileSystemRoot.getFile(root_file_path +"/"+filename,
                                   {},
                                   function(fileEntry){
-                               
-                                        _this.dmtDetailsPanelChange(record,null,true);                                 
+                                        _this.dmtDetailsPanelChange(record,null,true);  
+                                        Ext.Msg.confirm('','Open file ' + record.getData().f_name + "?",
+                                                        function(buttonId){
+                                                            if(buttonId == 'yes')
+                                                            {
+                                                                //open file
+                                                                window.plugins.openfile.viewFile(fileEntry.fullPath);
+                                                            }
+                                                        });
                                   },
                                   function(err){
                                         _this.dmtDetailsPanelChange(record,null,false);                                 
