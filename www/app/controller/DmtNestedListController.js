@@ -247,15 +247,10 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			details_container_titlebar.setTitle('Details Panel');
 		}
 	},
-    longTapEventAction:function()
-    {
-           //var eve_name = eventcontroller.info.eventName;
-           console.log('longpress');
-    },
 	//When the nested list is initialized add sorter panel
 	dmtNestedListInitialize:function(list)
 	{
-        this.addListener('itemdoubletap',this.longTapEventAction);
+        
            
         var _this = this;
 		console.log('List Initialized')

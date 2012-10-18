@@ -30,6 +30,40 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 		},
 		listConfig:
 		{
+           /*
+           listeners : {
+           'itemtaphold' : function(list,index,target,record,e)
+                        {
+           console.log("hell"); 
+           
+                            if(record.getData().f_type == 'file')
+                            {
+                                console.log(record.getData().f_name);
+                                
+                                var file_name_url = record.getData().f_attachment;   
+                                var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                                var structure = record.getData().f_folder;                                
+                                           
+                                fileSystemRoot.getFile(root_file_path +"/"+structure + "/"+filename,
+                                  {},
+                                  function(fileEntry){
+                                        Ext.Msg.confirm('','Open file ' + record.getData().f_name + "?",
+                                                        function(buttonId){
+                                                            if(buttonId == 'yes')
+                                                            {
+                                                                //open file
+                                                                window.plugins.openfile.viewFile(fileEntry.fullPath);
+                                                            }
+                                                        });
+                                                        
+                                                        
+                                  },
+                                  function(err){
+                                        //download files here                                                           
+                                  });             
+                            }
+                        }
+           }*/
 		}
     },
     getItemTextTpl: function(node){
