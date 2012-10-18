@@ -69,9 +69,11 @@
             var global_removed_folder_count = 0; 
             var global_folder_removed = false;
             
+            //longpress event global var
+            var _prev_record = null;
+            
             //http://
             //var global_https = "https://www.intellidocs.net";
-            
             var global_https = "https://www.press-port.com";
             
             
@@ -90,12 +92,9 @@
                                         {
                                             if(IntelliDocs.dmtGetUsernameFromCache() != '')
                                             {
-                                                console.log('User exists');
                                                 IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache());
                                                 Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
                                             }
-                                                                
-                                            console.log('check for deleted folders');  
                                             //perform polling here
                                             var request = new XMLHttpRequest();
                                             request.open("GET", global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_folder_deactivated.php?", true);
@@ -138,30 +137,27 @@
             
 
             IntelliDocs.fileSystemFailCallbck = function(error){
-                console.log("error:" + error);
+                console.log("error: Failed to load the file system");
             }
             
             IntelliDocs.fileSystemSuccessCallbck = function(fileSystem){
                 // get the root file system object
                 fileSystemRoot = fileSystem.root;
-                console.log("Got the file system root object");
-                
+                 
                 //get the full path to root directory
                 root_file_path = fileSystem.root.fullPath;
-                console.log("Got the full path to root directory");
                 
+                //create intellidocs directory
                 fileSystemRoot.getDirectory("intellidocs",
                                             {create: true, exclusive: false}, 
                                             function(dir){
                                             
                                             }, 
                                             function(err){
-                                            console.log(err.code + 'Folder exists.');
+                                                console.log(err.code + 'Folder exists.');
                                             });
-                
+                //set root folder path
                 root_file_path += "/intellidocs";
-                                
-                console.log("Root Path : "+root_file_path);
             }
             
             /**
@@ -200,7 +196,9 @@
                                                                       
                                                                       fileWriter.write(data_to_write);
                                                                       }, function(e){console.log('Error', e);});
-                                               },function(e){console.log('Error', e);});
+                                               },function(e){
+                                                    console.log('Error', e);
+                                               });
                     }    
                 };              
             }
@@ -211,12 +209,11 @@
               */            
             IntelliDocs.remove_directory = function(dir_path)
             {
-                console.log(dir_path);
                 fileSystemRoot.getDirectory(root_file_path+ "/" + dir_path,
                                             {},
                                             function(directory){
                                                 directory.removeRecursively(function(parent){
-                                                                        console.log("Remove Recursively Succeeded");   
+                                                                          
                                                                         //check if was last
                                                                         global_folder_removed = true;
                                                                         global_removed_folder_count++;
@@ -284,7 +281,6 @@
                 fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
                                        {},
                                        function(file_entry){
-                                            console.log("File present. Skip");
                                             global_queued_file_download_complete_count++;
                                             if(global_queued_file_download_complete_count == global_queued_file_urls.length)
                                             {
@@ -316,13 +312,12 @@
                                                         global_queued_file_download_complete_count = 0;
                                                         global_current_download_folder_id = 0;
                                                         Ext.getCmp('dmt-download-progress-folder').destroy(); 
-                                                        IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
-                                                                                  Ext.getCmp('dmtFileFolder_count')._value);
-                                                        
                                                     }
                                                     else{             
                                                         IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
                                                     }
+                                                    IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                                                        Ext.getCmp('dmtFileFolder_count')._value);                                              
                                                 },                                           
                                                 function(fail){
                                                     //something goes wrong. reset globals
@@ -519,6 +514,86 @@
                 }  
             }
             
+            IntelliDocs.downloadFile = function(record)
+            {
+                if(navigator.onLine)
+                {
+
+                    var file_url = record.getData().f_attachment; 
+                    var file_name = record.getData().f_name;
+                                    
+                    var progress_bar_panel_config = 
+                        {
+                                id:'dmt-download-progress',   
+                                minWidth:300,
+                                minHeight:200,
+                                hideOnMaskTap:false,
+                                modal:true,
+                                centered:true,
+                                layout:
+                                {
+                                    type:'vbox',
+                                    pack:'center',
+                                    align:'center',
+                                    },
+                                    items:
+                                    [
+                                     {
+                                     xtype:'titlebar',
+                                     docked:'top',
+                                     title:'Download'
+                                     },
+                                     {
+                                     xtype:'panel',
+                                     html:file_name,
+                                     },
+                                     {
+                                     xtype:'panel',
+                                     html:'<div id="loading-container">'+
+                                     '<div id="loading-box">'+
+                                     '<div id="loading-bar">'+
+                                     '<div id="percentage"></div>'+
+                                     '</div>'+
+                                     '</div>'+
+                                     '</div>',										
+                                     }
+                                    ]
+                        } 
+                                   
+                                    
+                    Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config)).show({type:'pop',duration:250,easing:'ease-out'});	
+                                    
+                                    
+                    var structure = record.getData().f_folder;
+                                    
+                                    
+                    IntelliDocs.dmtCreateDirectories(structure); 
+                                    
+                    //trigger the file download plugin
+                    window.plugins.Download.start(file_url,
+                                                function(){
+                                                    console.log("File Downloaded");
+                                                    Ext.getCmp('dmt-download-progress').destroy();
+                                                    Ext.getCmp('dmt-file-action-button').setText('Open');                                                   
+                                                    window.plugins.openfile.viewFile(root_file_path+"/"+structure+"/"+file_name);
+                                                },                                           
+                                                function(fail){
+                                                    console.log("Download failed:" + fail);
+                                                    Ext.getCmp('dmt-download-progress').destroy(); 
+                                                    Ext.Msg.alert('Download Failed!','Please try again!');                                             
+                                                },
+                                                function(info){
+                                                    var percent = Math.round(info.progress * 100);
+                                                    console.log('File downloaded:' + info.progress);
+                                                    document.getElementById('percentage').innerHTML = percent + '%';
+                                                },
+                                                root_file_path + '/' + structure);
+                }
+                else
+                {
+                    Ext.Msg.alert('Offline','You are currently offline');
+                }
+            }            
             </script>
         
     </head>

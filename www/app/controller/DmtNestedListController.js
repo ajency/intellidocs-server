@@ -18,15 +18,48 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 				leafitemtap	:'dmtNestedListLeafItemTap',
 				back		:'dmtNestedListBackTap',
 				initialize	:'dmtNestedListInitialize',
-				load 		:'dmtNestedListLoad'
-			},
+				load 		:'dmtNestedListLoad',
+                listchange	:'dmtNestedListChange'
+            },
 			dmtNestedListRefreshButton:
 			{
 				tap			:'dmtNestedListRefreshButton',		
 			}
         }
     },
-	dmtDetailsPanelChange:function(record,deafult_panel,file_exists)
+    dmtNestedListChange:function( _this,list,eOpts )
+    {    
+        list.un('itemtaphold',this.dmtListItemTapHold);
+        list.on('itemtaphold',this.dmtListItemTapHold);
+    },
+    dmtListItemTapHold:function(current_list,index,target,record)
+    {
+        if(record.getData().f_type == 'file')
+        {
+           var file_name_url = record.getData().f_attachment;   
+           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+           var structure = record.getData().f_folder;
+           
+           fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
+                                  {},
+                                  function(fileEntry){
+                                        window.plugins.openfile.viewFile(fileEntry.fullPath); 
+                                  },
+                                  function(err){
+                                        console.log(err.code);
+                                        Ext.Msg.confirm('','Download file?',
+                                                function(buttonId){
+                                                if(buttonId == 'yes')
+                                                {
+                                                    IntelliDocs.downloadFile(record);
+                                                }
+                                            });
+                                                    
+                                  }); 
+        }
+
+    },
+    dmtDetailsPanelChange:function(record,deafult_panel,file_exists)
 	{
         var buttonText = (file_exists) ? "Open" : "Download File";
         var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";		
@@ -313,7 +346,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When a  node is tapped on the nested list
 	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
 	{
-          console.log('Item Tapped');
+        if(_prev_record != record)
+        {
+           console.log('Item Tapped');
            if(!record.isLeaf())
                 current_f_id = record.getData().f_id;
            
@@ -322,6 +357,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
            var structure = record.getData().f_folder;
            this.dmtCheckFileExists(structure + "/"+ file_name,record);
+           _prev_record = record;
+        }
     },
     //Checks if file exists or not
     dmtCheckFileExists: function(filename,record){
@@ -332,14 +369,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                   {},
                                   function(fileEntry){
                                         _this.dmtDetailsPanelChange(record,null,true);  
-                                        Ext.Msg.confirm('','Open file ' + record.getData().f_name + "?",
-                                                        function(buttonId){
-                                                            if(buttonId == 'yes')
-                                                            {
-                                                                //open file
-                                                                window.plugins.openfile.viewFile(fileEntry.fullPath);
-                                                            }
-                                                        });
                                   },
                                   function(err){
                                         _this.dmtDetailsPanelChange(record,null,false);                                 
