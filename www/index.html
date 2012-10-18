@@ -212,7 +212,7 @@
             IntelliDocs.remove_directory = function(dir_path)
             {
                 console.log(dir_path);
-                fileSystemRoot.getDirectory(root_file_path+ " /" + dir_path,
+                fileSystemRoot.getDirectory(root_file_path+ "/" + dir_path,
                                             {},
                                             function(directory){
                                                 directory.removeRecursively(function(parent){
