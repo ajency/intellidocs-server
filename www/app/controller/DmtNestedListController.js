@@ -43,7 +43,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
                                   {},
                                   function(fileEntry){
-                                        window.plugins.openfile.viewFile(fileEntry.fullPath); 
+                                        window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name); 
                                   },
                                   function(err){
                                         console.log(err.code);

@@ -75,6 +75,7 @@
             //http://
             //var global_https = "https://www.intellidocs.net";
             var global_https = "https://www.press-port.com";
+            //var global_https = "http://192.168.11.1/Intellidocs_Server";
             
             
             document.addEventListener('deviceready',function(){
@@ -520,7 +521,7 @@
                 {
 
                     var file_url = record.getData().f_attachment; 
-                    var file_name = record.getData().f_name;
+                    var file_name = file_url.substring(file_url.lastIndexOf('/')+1);
                                     
                     var progress_bar_panel_config = 
                         {
@@ -575,7 +576,7 @@
                                                     console.log("File Downloaded");
                                                     Ext.getCmp('dmt-download-progress').destroy();
                                                     Ext.getCmp('dmt-file-action-button').setText('Open');                                                   
-                                                    window.plugins.openfile.viewFile(root_file_path+"/"+structure+"/"+file_name);
+                                                    window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
                                                 },                                           
                                                 function(fail){
                                                     console.log("Download failed:" + fail);

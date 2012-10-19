@@ -28,7 +28,7 @@
 		<string>www.seedeisplatform.com</string>
 		<string>*.google.*</string>
 		<string>www.press-port.com</string>
-		<string>www.stevenfleet.co.uk</string>
+		<string>192.168.11.1</string>
 	</array>
 	<key>Plugins</key>
 	<dict>
