@@ -73,8 +73,8 @@
             var _prev_record = null;
             
             //http://
-            //var global_https = "https://www.intellidocs.net";
-            var global_https = "https://www.press-port.com";
+            var global_https = "https://www.intellidocs.net";
+            //var global_https = "https://www.press-port.com";
             //var global_https = "http://192.168.11.1/Intellidocs_Server";
             
             
@@ -85,10 +85,26 @@
                                          IntelliDocs.fileSystemSuccessCallbck,
                                          IntelliDocs.fileSystemFailCallbck);  
                                       
-                /**
+                                       /**
+                                      document.addEventListener('pause',function(){
+                                                                console.log("App Paused");
+                                                                if(global_queued_file_urls.length > 0)
+                                                                {
+                                                                    console.log("Current Downloading: " +
+                                                                                global_queued_file_urls[global_queued_file_download_complete_count].url);
+                                                                }
+                                                            },false);
+                                          
+               
                  * check deleted folders on resume
                  */
                 document.addEventListener('resume',function(){
+                                        if(global_queued_file_urls.length > 0)
+                                        {
+                                          console.log("Current Downloading resume: " +
+                                                    global_queued_file_urls[global_queued_file_download_complete_count].url);
+                                        }
+                                          
                                         if(navigator.onLine)
                                         {
                                             if(IntelliDocs.dmtGetUsernameFromCache() != '')
@@ -479,7 +495,6 @@
                                             function(err)
                                             {
                                             //if directory doesn't exists
-                                            console.log('whhat this');
                                             meta = "Total Files: " + total_files +"/ Downloaded Files: 0 / Remaining Files: " + total_files;
                                             Ext.getCmp('dmt-folder-metadata').setHtml(meta);  
                                             });
