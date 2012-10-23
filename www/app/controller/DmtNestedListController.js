@@ -212,7 +212,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            }
            if(record_data.f_file_count > 0)
            {
-           panel_content.items.push({ 
+                panel_content.items.push({ 
                                     xtype:'button',
                                     text:'Download all files in folder',
                                     cls:'dmt-details-panel-folder-download-button',
@@ -227,7 +227,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                     });
            }
            
-           panel_content.items.push({	
+           var dir_count = record.f_dir_count ? record.f_dir_count : 2;
+           
+           if(dir_count > 0)
+           {
+            panel_content.items.push({	
                                     xtype:'button',
                                     text:'Download Files In Sub Folder',
                                     cls:'dmt-details-panel-folder-download-button',
@@ -240,10 +244,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                     style:'margin-top:20px',
                                     action:'dmtDetailsPanelSubFolderDownloadButton',
                                     });
+           }
            
            if(record_data.f_file_count > 0)
            {
-           panel_content.items.push({ 
+                panel_content.items.push({ 
                                     xtype:'button',
                                     text:'Delete Files In Folder',
                                     cls:'dmt-details-panel-folder-download-button',

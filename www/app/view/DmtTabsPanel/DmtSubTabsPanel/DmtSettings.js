@@ -92,7 +92,25 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtSettings", {
                         action:"dmtSettingsDeleteAllButton",
                      }
                      ]
-               }
+               },
+               {
+                    xtype:'fieldset',
+                    title:'APP VERSION',
+                    width:'80%',
+                    defaults:
+                    {
+                        xtype:'textfield',
+                        labelWidth: '100%'
+                    },
+                    items:
+                    [
+                        {
+                            style:'margin:10px;',
+                            label: global_app_version,
+                            disabled: true,
+                        }
+                     ]
+               },               
 		
 		],
 		
