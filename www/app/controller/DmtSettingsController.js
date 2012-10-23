@@ -50,7 +50,6 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
                                                 {create: true, exclusive: false}, 
                                                 function(dir){
                                                     console.log("INtellidocs folder created again ");
-                                                    //write json file 
                                                     var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
                                                     sub_tabs_panel.setActiveItem(0);
                                                 }, 

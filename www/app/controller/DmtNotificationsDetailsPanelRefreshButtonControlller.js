@@ -15,13 +15,13 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
     dmtNotificationRefreshButtonTap:function(button)
 	{
         if(navigator.onLine)
-           {
-		var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
-		sub_tabs_panel.setActiveItem(0);
+        {
+            var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
+            sub_tabs_panel.setActiveItem(0);
 		
 		    
-		var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
-           nested_list_store.setSorters([
+            var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
+            nested_list_store.setSorters([
                                          {property:'fld_item_id',direction:'ASC'},
                                          {property:'f_type',direction:'DESC'},  
                                          {sorterFn:function(record1,record2){
@@ -36,18 +36,18 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
                                          
                                          },direction:'DESC'},			
                                          {property:'f_name',direction:'ASC'},]);
-		Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
-		Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
-        Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
+            Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
+            Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
+            Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
         
-        IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
-        Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
-        Ext.getCmp('dmt-nested-list-refresh-button').removeCls('dmtRefreshToRemoveNotifications');
-           }
-           else
-           {
+            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+            Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
+            Ext.getCmp('dmt-nested-list-refresh-button').removeCls('dmtRefreshToRemoveNotifications');
+        }
+        else
+        {
            Ext.Msg.alert('','You are currently offline.');
-           }
+        }
        		
     },
     //Get the user name to be sent to the ajax function 

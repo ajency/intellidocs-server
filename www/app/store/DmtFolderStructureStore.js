@@ -56,7 +56,7 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                     console.log("Online Store");
                                     if(navigator.onLine)
                                     {
-                                        IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache());
+                                        IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache(),false);
                                         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
                                    }
                                    else

@@ -396,9 +396,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	{
         if(navigator.onLine)
         {
-           IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
-        Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
-        var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
+           IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+           Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
+           var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
            nested_list_store.setSorters([
                                          {property:'fld_item_id',direction:'ASC'},
                                          {property:'f_type',direction:'DESC'},  
