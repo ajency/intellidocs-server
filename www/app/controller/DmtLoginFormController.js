@@ -29,14 +29,16 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		
 		if(errors.isValid())
 		{
-			Ext.data.JsonP.request({
-            						url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
-            						
-            						
-									callbackKey: 'get_user_authenticated',
-           						 	params: field_values,
-									success: function(result, request)
-									{
+           Ext.Ajax.request({
+                            url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
+                            callbackKey: 'get_user_authenticated',
+                            params: field_values,
+                            method:'POST',
+                            withCredentials: true,
+                            useDefaultXhrHeader: false,
+                            success: function(result, request)
+                            {
+                                        var result = eval(result.responseText);
 										if(result.response == true)
 										{
 											//Save the logged in information
@@ -90,7 +92,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			
 			if(index == -1)
 			{
-				//setup localstorage with values
+				//setup localstorage with valuesttg
 				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedInSuccessfully',user_name:dmt_username,user_email:result.email});
 				record.save();					
 			}
