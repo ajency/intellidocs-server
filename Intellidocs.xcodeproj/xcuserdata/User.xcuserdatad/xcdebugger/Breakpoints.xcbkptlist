@@ -65,11 +65,22 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "www/app/controller/DmtLoginFormController.js"
-         timestampString = "372705406.909576"
+         timestampString = "372879490.437957"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "43"
-         endingLineNumber = "43">
+         startingLineNumber = "44"
+         endingLineNumber = "44">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "Yes"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "www/app/controller/DmtNestedListController.js"
+         timestampString = "372873914.957621"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "40"
+         endingLineNumber = "40">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

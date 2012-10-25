@@ -38,27 +38,52 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            var file_name_url = record.getData().f_attachment;   
            var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-           var structure = record.getData().f_folder;
+           var folder_path = record.getData().f_folder;
            
-           fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
+           fileSystemRoot.getFile(root_file_path+"/"+folder_path+"/"+file_name,
                                   {},
                                   function(fileEntry){
-                                        window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name); 
+                                  _this.dmtDetailsPanelChange(record,null,true);  
                                   },
                                   function(err){
-                                        console.log(err.code);
-                                        Ext.Msg.confirm('','Download file?',
-                                                function(buttonId){
-                                                if(buttonId == 'yes')
-                                                {
-                                                    IntelliDocs.downloadFile(record);
-                                                }
-                                            });
-                                                    
-                                  }); 
+                                  _this.dmtDetailsPanelChange(record,null,false); 
+                                  });
         }
 
     },
+    /*
+    dmtCheckFileExistsLoopTapaction:function(folder_path,file_name,record)
+    {
+           //get reference to the 'this' object.
+           var _this = this;
+           fileSystemRoot.getFile(root_file_path+"/"+folder_path+"/"+file_name,
+                                  {},
+                                  function(fileEntry){
+                                  //file found. reset global vars 
+                                  global_check_file_in = [];
+                                  global_looped_folder_count = 0;
+                                  global_file_found_in = folder_path;
+                                  
+                                  _this.dmtDetailsPanelChange(record,null,true);  
+                                  },
+                                  function(err){
+                                  global_looped_folder_count++;
+                                  
+                                  if(global_looped_folder_count == global_check_file_in.length)
+                                  {
+                                  //file not present, reset globals
+                                  global_check_file_in = [];
+                                  global_looped_folder_count = 0;
+                                  global_file_found_in = '';
+                                  _this.dmtDetailsPanelChange(record,null,false); 
+                                  }
+                                  else
+                                  {
+                                  _this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);                                    
+                                  }
+                            });
+    },
+    */
     dmtDetailsPanelChange:function(record,deafult_panel,file_exists)
 	{
         var buttonText = (file_exists) ? "Open" : "Download File";
@@ -353,7 +378,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	{
         //reset global file found
         global_file_found_in = '';   
-           
+        var _this = this;
+        
         if(_prev_record != record)
         {
            console.log('Item Tapped');
@@ -362,21 +388,35 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                 //check if file exists
                 var file_name_url = record.getData().f_attachment;   
                 var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                var folder_path = record.getData().f_folder;
+                //get reference to the 'this' object.
                 _prev_record = record;
+                fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                                {},
+                                function(fileEntry){
+                                    window.plugins.openfile.viewFile("file://"+ root_file_path + "/" +  folder_path +"/"+ file_name); 
+                                },
+                                function(err){
+                                    console.log(err.code);
+                                    Ext.Msg.confirm('','Download file?',
+                                                function(buttonId){
+                                                    if(buttonId == 'yes')
+                                                    {
+                                                        IntelliDocs.downloadFile(record);
+                                                    }
+                                                });
            
-                global_check_file_in = record.getData().f_folders;
-           
-                console.log(""+global_check_file_in[0]);
-                this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);    
-           }
-           else
-           {
+                                });
+            }
+            else
+            {
                 current_f_id = record.getData().f_id;
                 this.dmtDetailsPanelChange(record,null,false);
-           }
-           //this.dmtDetailsPanelChange(record,null,true); 
-        }    
+            }
+        }
+        
     },
+    /*
     dmtCheckFileExistsLoop:function(folder_path,file_name,record)
     {
            //get reference to the 'this' object.
@@ -408,6 +448,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                     }
                                 });
     },
+    */
     //When a leaf node is tapped on the nested list
     dmtNestedListLeafItemTap:function(nested_list,current_list,index,target,record)
 	{
@@ -460,36 +501,44 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     dmtNestedListLoad:function(list,store,records,successful,oprtn)
     {
            var _this = this;
-           console.log('Nested List Load Complete.');
-           if(current_f_id)
+           
+           console.log('check session');
+           if(records.length == 0)
            {
-           Ext.Object.each(records,function(index,record) {
-                           var found_node = _this.findInParentNode(record);
-                           if(!found_node)
-                           {
+                IntelliDocs.intellidocs_session_timeout(this);
+           }
+           else
+           {
+           
+                console.log('Nested List Load Complete.');
+                if(current_f_id)
+                {
+                    Ext.Object.each(records,function(index,record) {
+                        var found_node = _this.findInParentNode(record);
+                        if(!found_node)
+                        {
                            found_node 	= record.findChildBy(_this.findInChildNode, this, true );
                            if(found_node)
                            {
-                           var parents = _this.dmtTreverseNodes(found_node,[]).reverse();
-                           parents.push(found_node.id);
-                           for(i=0;i<parents.length;i++)
-                           {
-                           list.goToNode(store.getNodeById(parents[i]));
-                           }
+                                var parents = _this.dmtTreverseNodes(found_node,[]).reverse();
+                                parents.push(found_node.id);
+                                for(i=0;i<parents.length;i++)
+                                {
+                                    list.goToNode(store.getNodeById(parents[i]));
+                                }
+                            }
                         }
-                    }
-                    else
-                    {
+                        else
+                        {
                            list.goToNode(store.getNodeById(found_node.id));
-                    }
-                           
-                });
+                        }
+                    });
+                }
            }
-           //Moved function to intialize due to reload of certain components.
-           },
-           //Added this function to traverse to root node
-           dmtTreverseNodes:function(record,parents)
-           {		
+    },
+    //Added this function to traverse to root node
+    dmtTreverseNodes:function(record,parents)
+    {		
            if(record.parentNode)
            {	
            parents.push(record.parentNode.id);	

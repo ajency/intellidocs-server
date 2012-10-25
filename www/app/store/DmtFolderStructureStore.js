@@ -38,9 +38,25 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
 		{
            beforeload:function(store)
            {
-            var _this = this;
-            /*check if dir_list.js exists. may be false so change to online store and write dir_list.js now */
-            fileSystemRoot.getFile('dir_list.js',
+           
+           if(global_is_user_logged_in)
+           {
+                if(navigator.onLine)
+                {
+                    global_is_user_logged_in = false;
+                    IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+                    Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
+                }
+                else
+                {
+                    Ext.Msg.alert('','You are currently offline.');
+                }  
+           }
+           else
+           {
+                var _this = this;
+                /*check if dir_list.js exists. may be false so change to online store and write dir_list.js now */
+                fileSystemRoot.getFile('dir_list.js',
                                   {},
                                   function(fileEntry){
                                         //if file exists
@@ -48,7 +64,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                         console.log("Offline Store"); 
                                         //Set the local proxy for the store
                                         store.setProxy({url: fileEntry.fullPath }); 
-                                 
                                    },
                                    function(err){
                                     //if file doesn't exists
@@ -63,9 +78,10 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                    {
                                         Ext.Msg.alert('','You are currently offline.');
                                    }
-                                  });           
-				
-			}
+                                  }); 
+           }
+			
+        }
 		}
 	},
 	//Run the ajax request to delete items from the server

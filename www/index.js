@@ -15,10 +15,13 @@ var global_check_file_in = [];
 var global_looped_folder_count = 0;
 var global_file_found_in = '';
 
+
+var global_is_user_logged_in = false;
+
 //global app version
 var global_app_version = 'Version : 1.0.3';
 
-//http://
+//global http vars. switch server with ease
 //var global_https = "https://www.intellidocs.net";
 var global_https = "https://www.press-port.com";
 
@@ -33,7 +36,6 @@ document.addEventListener('deviceready',function(){
                                                    IntelliDocs.fileSystemSuccessCallbck,
                                                    IntelliDocs.fileSystemFailCallbck);  
                           
-                          
                           /*
                            * check deleted folders on resume
                            */
@@ -44,8 +46,7 @@ document.addEventListener('deviceready',function(){
                                                     {
                                                         IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache(),true);
                                                         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
-                                                    }
-                                                    //IntelliDocs.checkFolderDeletion();                                            
+                                                    }                                          
                                                 }   
                                             });
                           },false);
@@ -86,7 +87,25 @@ IntelliDocs.checkFileExistOnDevice = function(folder_paths,file_name)
            };
     
 }*/   
- 
+
+IntelliDocs.intellidocs_session_timeout = function(controller)
+{
+    Ext.Msg.alert('Session Expired','Your session on the server has expired.Please login in again.');
+    controller.getApplication().getController('DmtSettingsController').dmtSecureLoginLogout();
+    var main_container = Ext.getCmp('dmt-main-container');
+    
+    
+    //To create a new instance of the secure login destroy the old one if it exists.
+    if(Ext.getCmp('dmt-secure-login-panel'))
+        Ext.getCmp('dmt-secure-login-panel').destroy();
+    
+    var dmt_secure_login_panel = Ext.create('DMTApp.view.DmtSecureLogin');
+    main_container.setActiveItem(dmt_secure_login_panel);
+    
+    //Disconnect the notification polling and release the resources/
+    var notification_polling = Ext.direct.Manager.getProvider('dmt-notification-polling');
+    notification_polling.disconnect();
+} 
 
 
 
@@ -192,6 +211,7 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                                                               console.log('JS file Write completed.');
                                                               //set global app launch to false
                                                               DMTApp.launched = false;
+                                                              
                                                               if(is_not_offline)
                                                               {
                                                               Ext.getStore('DmtFolderStructureStore').load();

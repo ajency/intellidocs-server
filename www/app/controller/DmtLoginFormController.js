@@ -38,6 +38,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
                             useDefaultXhrHeader: false,
                             success: function(result, request)
                             {
+                                        global_is_user_logged_in = true;
                                         var result = eval(result.responseText);
 										if(result.response == true)
 										{

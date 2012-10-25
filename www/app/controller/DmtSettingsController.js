@@ -112,7 +112,24 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 				var notification_polling = Ext.direct.Manager.getProvider('dmt-notification-polling');
 				notification_polling.disconnect();
                 //Ext.Viewport.unmask();
-			}
+                Ext.Ajax.request({
+                        url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_logout.php',
+                                             callbackKey: 'set_user_logout',
+                                             method:'POST',
+                                             withCredentials: true,
+                                             useDefaultXhrHeader: false,
+                                             
+                                             success: function(result, request)
+                                             {
+                                                console.log(result);
+                                             },
+                                             failure: function(result)
+                                             {
+                                                console.log(result);
+                                             },
+                                             scope :this,
+                                });	
+            }
 			else
 				current.reset();
 			},this);
