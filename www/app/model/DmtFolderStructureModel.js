@@ -16,7 +16,9 @@ Ext.define('DMTApp.model.DmtFolderStructureModel', {
                     {name:'f_solicitor', type:'auto'},
                     {name:'f_item_id', type:'int'},
                     {name:'f_file_count',type :'int'},
-                    {name:'fld_item_id',type: 'auto'}
+                    {name:'fld_item_id',type: 'auto'},
+                    {name:'f_sub_fld_count',type: 'int'},
+                    {name:'f_folders',type:'auto'}
                     ],
            
            }

@@ -129,7 +129,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                    },]
                   },
                   {	
-                  style:'margin-left:65px;margin-top:20px;',
+                    style:'margin-left:65px;margin-top:20px;',
                   xtype:'button',
                   id : 'dmt-file-action-button',
                   text:buttonText,
@@ -227,7 +227,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                     });
            }
            
-           var dir_count = record.f_dir_count ? record.f_dir_count : 2;
+           var dir_count = record_data.f_sub_fld_count;
            
            if(dir_count > 0)
            {
@@ -351,33 +351,62 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When a  node is tapped on the nested list
 	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
 	{
+        //reset global file found
+        global_file_found_in = '';   
+           
         if(_prev_record != record)
         {
            console.log('Item Tapped');
-           if(!record.isLeaf())
+           if(record.isLeaf())
+           {
+                //check if file exists
+                var file_name_url = record.getData().f_attachment;   
+                var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                _prev_record = record;
+           
+                global_check_file_in = record.getData().f_folders;
+           
+                console.log(""+global_check_file_in[0]);
+                this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);    
+           }
+           else
+           {
                 current_f_id = record.getData().f_id;
-           
-           //check if file exists
-           var file_name_url = record.getData().f_attachment;   
-           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-           var structure = record.getData().f_folder;
-           this.dmtCheckFileExists(structure + "/"+ file_name,record);
-           _prev_record = record;
-        }
+                this.dmtDetailsPanelChange(record,null,false);
+           }
+           //this.dmtDetailsPanelChange(record,null,true); 
+        }    
     },
-    //Checks if file exists or not
-    dmtCheckFileExists: function(filename,record){
-        //get reference to the 'this' object.
-        var _this = this;
-           
-        fileSystemRoot.getFile(root_file_path +"/"+filename,
+    dmtCheckFileExistsLoop:function(folder_path,file_name,record)
+    {
+           //get reference to the 'this' object.
+           var _this = this;
+           fileSystemRoot.getFile(root_file_path+"/"+folder_path+"/"+file_name,
                                   {},
                                   function(fileEntry){
-                                        _this.dmtDetailsPanelChange(record,null,true);  
+                                    //file found. reset global vars 
+                                    global_check_file_in = [];
+                                    global_looped_folder_count = 0;
+                                    global_file_found_in = folder_path;
+                                  
+                                    _this.dmtDetailsPanelChange(record,null,true);  
                                   },
                                   function(err){
-                                        _this.dmtDetailsPanelChange(record,null,false);                                 
-                                  });
+                                    global_looped_folder_count++;
+                                  
+                                    if(global_looped_folder_count == global_check_file_in.length)
+                                    {
+                                        //file not present, reset globals
+                                        global_check_file_in = [];
+                                        global_looped_folder_count = 0;
+                                        global_file_found_in = '';
+                                        _this.dmtDetailsPanelChange(record,null,false); 
+                                    }
+                                    else
+                                    {
+                                        _this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);                                    
+                                    }
+                                });
     },
     //When a leaf node is tapped on the nested list
     dmtNestedListLeafItemTap:function(nested_list,current_list,index,target,record)

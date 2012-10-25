@@ -276,8 +276,8 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         //get the file name to be displayed
         var file_name_url = button.getParent().getComponent(0).getComponent(0).getValue();   
         var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);             
-        
         var structure = Ext.getCmp('dmtFileFolder')._value;
+        
         window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
            
     },
@@ -302,7 +302,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                         
 				var progress_bar_panel_config = 
 				{
-                     id:'dmt-download-progress',   
+                    id:'dmt-download-progress',   
 					minWidth:300,
 					minHeight:200,
 					hideOnMaskTap:false,
@@ -342,12 +342,13 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                        
 				Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config)).show({type:'pop',duration:250,easing:'ease-out'});	
                 
-                
                 var structure = Ext.getCmp('dmtFileFolder')._value;
                 
                 
                 IntelliDocs.dmtCreateDirectories(structure); 
                 
+                        
+                console.log('file download:' + root_file_path +"/"+structure); 
                 //trigger the file download plugin
                 window.plugins.Download.start(file_url,
                                             function(){

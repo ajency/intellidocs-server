@@ -10,12 +10,17 @@ var global_folder_removed = false;
 //longpress event global var
 var _prev_record = null;
 
+//global file exists
+var global_check_file_in = [];
+var global_looped_folder_count = 0;
+var global_file_found_in = '';
+
 //global app version
 var global_app_version = 'Version : 1.0.3';
 
 //http://
-var global_https = "https://www.intellidocs.net";
-//var global_https = "https://www.press-port.com";
+//var global_https = "https://www.intellidocs.net";
+var global_https = "https://www.press-port.com";
 
 /**
  * the main device ready event
@@ -33,27 +38,55 @@ document.addEventListener('deviceready',function(){
                            * check deleted folders on resume
                            */
                           document.addEventListener('resume',function(){
-                                                    if(navigator.onLine)
-                                                    {
+                                                if(navigator.onLine)
+                                                {
                                                     if(IntelliDocs.dmtGetUsernameFromCache() != '')
                                                     {
-                                                    IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache(),true);
-                                                    Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
+                                                        IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache(),true);
+                                                        Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
                                                     }
                                                     //IntelliDocs.checkFolderDeletion();                                            
-                                                    }   
-                                                    });
+                                                }   
+                                            });
                           },false);
 
 
 
 /**
   * check if file is downloaded in any other folder 
-  */
-IntelliDocs.checkFileExistOnDevice = function()
+  *
+IntelliDocs.checkFileExistOnDevice = function(folder_paths,file_name)
 {
+    var file_exists_on_device = false;
+    var folder_path = '';
     
-}
+    
+    for(var i = 0; i < folder_paths.length;i++)
+    {
+        
+        fileSystemRoot.getFile(root_file_path+"/"+folder_paths[i]+"/"+file_name,
+                            {},
+                            function(fileEntry){
+                               file_exists_on_device = true; 
+                               folder_path = folder_paths[i];
+                            },
+                            function(err){
+                               //console.log("");                              
+                            });  
+        
+        if(file_exists_on_device)
+            break;
+    }  
+    
+    console.log("checking for file: "+ folder_path + String(file_exists_on_device));
+    
+    return { 
+             'file_exists' : file_exists_on_device,
+             'folder_path' : folder_path
+           };
+    
+}*/   
+ 
 
 
 
