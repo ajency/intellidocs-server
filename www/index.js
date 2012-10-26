@@ -15,8 +15,11 @@ var global_check_file_in = [];
 var global_looped_folder_count = 0;
 var global_file_found_in = '';
 
-
+//global user logged in
 var global_is_user_logged_in = false;
+
+//global longpress
+var global_long_press = false;
 
 //global app version
 var global_app_version = 'Version : 1.0.3';
@@ -53,6 +56,232 @@ document.addEventListener('deviceready',function(){
 
 
 
+IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
+{
+    var buttonText = (file_exists) ? "Open" : "Download File";
+    var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";		
+    var panel_content = {};
+    
+    if(!deafult_panel)
+        var record_data = record.getData();
+    else
+        var record_data = deafult_panel;
+    
+    var f_ext = (record_data.f_ext)?record_data.f_ext.replace('.',''):'';
+    var details_container = Ext.getCmp('dmt-details-container');
+    var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');		
+    
+    
+    //NEW CHANGES 
+    var description = (record_data.f_description == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Description: </span>'+record_data.f_description+'</p>';
+    var solicitor 	= (record_data.f_solicitor == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Solicitor: </span>'+record_data.f_solicitor+'</p>';
+    var item_id 	= (record_data.f_item_id == null)?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Item Id: </span>'+record_data.f_item_id+'</p>';
+    
+    switch (record_data.f_type)
+    {
+        case 'file':
+            console.log(record_data.f_type);
+            panel_content = {
+            id:'dmt-details-view-card',
+            cls:'dmtDetailsViewPanel',
+            scrollable:true,
+            layout:
+                {
+                type:'vbox',
+                pack:'center',
+                align:'left',
+                },
+            items:[
+                   {
+                   styleHtmlContent:true,
+                   html:
+                   [
+                    '<div class="dmt-file-icon-big dmt-file-icon-desc dmt-file-'+ f_ext +'-large"></div>' +
+                    '<div class="dmt-file-meta-desc"><p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>' +
+                    '<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Type:</span>'+record_data.f_ext+'</p>' +
+                    solicitor+ item_id + description +
+                    '</div>'
+                    ],
+                   items:
+                   [	
+                    {
+                    xtype: 'hiddenfield',
+                    name: 'document_url',
+                    id:'dmtFileUrl',
+                    value: record_data.f_attachment
+                    
+                    },
+                    {
+                    xtype: 'hiddenfield',
+                    name: 'document_folder',
+                    id:'dmtFileFolder',
+                    value: record_data.f_folder
+                    
+                    },{
+                    xtype: 'hiddenfield',
+                    name: 'document_folder_id',
+                    id:'dmtFileFolder_id',
+                    value: record_data.f_id
+                    
+                    },]
+                   },
+                   {	
+                   style:'margin-left:65px;margin-top:20px;',
+                   xtype:'button',
+                   id : 'dmt-file-action-button',
+                   text:buttonText,
+                   cls:'dmt-details-panel-download-button',
+                   ui:'confirm round',
+                   iconCls:'download',
+                   iconMask:true,
+                   iconAlign:'right',
+                   width:150,
+                   height:32,
+                   action:buttonAction,
+                   }	
+                   ]
+            }  
+            
+            if(file_exists)
+            {
+                panel_content.items.push({style:'margin-left:65px;margin-top:20px;',
+                                         xtype:'button',
+                                         text:"Delete File",
+                                         cls:'dmt-details-panel-download-button',
+                                         ui:'round',
+                                         iconCls:'delete',
+                                         iconMask:true,
+                                         iconAlign:'right',
+                                         width:150,
+                                         height:32,
+                                         action:"dmtDetailsPanelDeleteButton",});
+            }
+            
+            break
+            //END NEW CHANGES	
+        case 'folder':
+            
+            
+            panel_content = {
+            layout:
+                {
+                type:'vbox',
+                pack:'center',
+                align:'center',
+                },
+            id:'dmt-details-view-card',
+            cls:'dmtDetailsViewPanel',
+            scrollable:true,
+            styleHtmlContent:true,
+            items:
+                [
+                 {   html:'<div class="dmt-file-icon-big dmt-file-'+ f_ext +'-large"></div>'},
+                 
+                 {   html:'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>'},
+                 
+                 {
+                 xtype: 'hiddenfield',
+                 name: 'document_folder_id',
+                 id:'dmtFileFolderId',
+                 value: record_data.f_id,
+                 
+                 },
+                 {
+                 xtype: 'hiddenfield',
+                 name: 'document_folder_path',
+                 id:'dmtFileFolderPath',
+                 value: record_data.f_folder,
+                 
+                 },
+                 {
+                 xtype: 'hiddenfield',
+                 name: 'document_folder_count',
+                 id:'dmtFileFolder_count',
+                 value: record_data.f_file_count,
+                 
+                 },
+                 {
+                 html : '<p></p>',
+                 id : 'dmt-folder-metadata' 
+                 },
+                 
+                 ]
+            }
+            if(record_data.f_file_count > 0)
+            {
+                panel_content.items.push({ 
+                                         xtype:'button',
+                                         text:'Download all files in folder',
+                                         cls:'dmt-details-panel-folder-download-button',
+                                         ui:'confirm round',
+                                         iconCls:'download',
+                                         iconMask:true,
+                                         iconAlign:'right',
+                                         width:250,
+                                         height:32,
+                                         style:'margin-top:20px',
+                                         action:'dmtDetailsPanelFolderDownloadButton',
+                                         });
+            }
+            
+            var dir_count = record_data.f_sub_fld_count;
+            
+            if(dir_count > 0)
+            {
+                panel_content.items.push({	
+                                         xtype:'button',
+                                         text:'Download Files In Sub Folder',
+                                         cls:'dmt-details-panel-folder-download-button',
+                                         ui:'confirm round',
+                                         iconCls:'download',
+                                         iconMask:true,
+                                         iconAlign:'right',
+                                         width:250,
+                                         height:32,
+                                         style:'margin-top:20px',
+                                         action:'dmtDetailsPanelSubFolderDownloadButton',
+                                         });
+            }
+            
+            if(record_data.f_file_count > 0)
+            {
+                panel_content.items.push({ 
+                                         xtype:'button',
+                                         text:'Delete Files In Folder',
+                                         cls:'dmt-details-panel-folder-download-button',
+                                         ui:'round',
+                                         iconCls:'delete',
+                                         iconMask:true,
+                                         iconAlign:'right',
+                                         width:250,
+                                         height:32,
+                                         style:'margin-top:20px',
+                                         action:'dmtDetailsPanelFolderDeleteFilesButton',
+                                         });
+            }           
+            IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count)
+            break;
+        default:
+            panel_content = null;		
+    }
+	
+    
+    if(Ext.getCmp('dmt-details-view-card'))
+        Ext.getCmp('dmt-details-view-card').destroy();
+    
+    if(panel_content)
+    {		
+        var new_details_panel = Ext.create('Ext.Panel',panel_content);
+        var details_container_title = (record_data.f_name)?record_data.f_name+' details':'Details Panel';
+        
+        details_container_titlebar.setTitle(details_container_title);
+        details_container.add([new_details_panel]).show({type:'pop',duration:500,easing:'ease-out'});
+    }
+    else
+    {
+        details_container_titlebar.setTitle('Details Panel');
+    }
+}
 /**
   * check if file is downloaded in any other folder 
   *
@@ -91,7 +320,7 @@ IntelliDocs.checkFileExistOnDevice = function(folder_paths,file_name)
 IntelliDocs.intellidocs_session_timeout = function(controller)
 {
     Ext.Msg.alert('Session Expired','Your session on the server has expired.Please login in again.');
-    controller.getApplication().getController('DmtSettingsController').dmtSecureLoginLogout();
+    IntelliDocs.dmtSecureLoginLogout();
     var main_container = Ext.getCmp('dmt-main-container');
     
     
@@ -107,6 +336,29 @@ IntelliDocs.intellidocs_session_timeout = function(controller)
     notification_polling.disconnect();
 } 
 
+IntelliDocs.dmtSecureLoginLogout = function()
+{
+    var login_info_store = Ext.getStore('DmtLocalStorageCookie');
+    login_info_store.load();
+    
+    var index = login_info_store.find('key','dmtScLgInfo');
+    
+    if(index == -1)
+    {
+        //setup localstorage with values
+        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully',user_name:''});
+        record.save();					
+    }
+    else
+    {
+        //Get the old value and set new value
+        var record = login_info_store.getAt(index);
+        record.set('value','loggedOutSuccessfully');
+        record.set('user_name','');
+        record.save();
+    }
+	
+}
 
 
 /**
@@ -201,26 +453,33 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
             if(ajax.status == 200)
             {
                 var data_to_write = ajax.responseText;
-                //got the file data. get the dir_list.js file. 
-                fileSystemRoot.getFile('dir_list.js', 
+                var session_data = eval(data_to_write);
+                //check for session here. If vaLID WRITE. else redirect to login
+                if(!session_data.session)
+                {
+                    IntelliDocs.intellidocs_session_timeout();
+                }
+                else
+                {
+                    //got the file data. get the dir_list.js file. 
+                    fileSystemRoot.getFile('dir_list.js', 
                                        {create: true}, 
                                        function(fileEntry) {
                                        // Create a FileWriter object for our FileEntry.
                                        fileEntry.createWriter(function(fileWriter) {
-                                                              fileWriter.onwrite = function(e) {
-                                                              console.log('JS file Write completed.');
-                                                              //set global app launch to false
-                                                              DMTApp.launched = false;
-                                                              
-                                                              if(is_not_offline)
-                                                              {
-                                                              Ext.getStore('DmtFolderStructureStore').load();
-                                                              Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
+                                                            fileWriter.onwrite = function(e) {
+                                                            console.log('JS file Write completed.');
+                                                            //set global app launch to false
+                                                            DMTApp.launched = false;
+                                                            if(is_not_offline)
+                                                            {
+                                                                Ext.getStore('DmtFolderStructureStore').load();
+                                                                Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
                                                               Ext.getCmp('dmt-nested-list').unmask(); 
                                                               }
                                                               if(is_on_resume)
                                                               {
-                                                              IntelliDocs.checkFolderDeletion();
+                                                                IntelliDocs.checkFolderDeletion();
                                                               }
                                                               
                                                               };
@@ -232,6 +491,7 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                                        },function(e){
                                        console.log('Error', e);
                                        });
+                }
             }
             else
             {
