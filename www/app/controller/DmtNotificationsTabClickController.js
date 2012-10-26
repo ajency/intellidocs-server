@@ -15,9 +15,7 @@ Ext.define('DMTApp.controller.DmtNotificationsTabClickController', {
     },
     dmtNotificationTabClicked:function(container,new_panel,old_panel)
     {
-           console.log('Tab Item Changed')
-           
-           var details_container = Ext.getCmp('dmt-details-container');
+          var details_container = Ext.getCmp('dmt-details-container');
            var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');
            
            if( Ext.getCmp('dmt-change-password-panel'))
@@ -45,7 +43,7 @@ Ext.define('DMTApp.controller.DmtNotificationsTabClickController', {
            
            if(new_panel.getId() == 'dmt-notifications-list')
            {
-           console.log('Notification Tab');
+
            
            var notifications_detail_panel = Ext.create('DMTApp.view.DmtTabsPanel.DmtDetailsPanel.DmtNotificationsDetailPanel');
            details_container.add([notifications_detail_panel]).show({type:'pop',duration:500,easing:'ease-out'});
@@ -66,7 +64,6 @@ Ext.define('DMTApp.controller.DmtNotificationsTabClickController', {
                                    });
            
            messages_store.load();
-           console.log('Messages Tab');
         }
     },
     dmtGetUsernameFromCache:function()

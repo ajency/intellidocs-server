@@ -32,7 +32,6 @@ Ext.define('DMTApp.controller.DmtMainViewPortController', {
 		var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 		login_info_store.load();
 		var index = login_info_store.find('key','dmtScLgInfo');
-		console.log(index);
 		if(index == -1)
 			return false;
 		else

@@ -69,12 +69,10 @@ Ext.define('DMTApp.controller.DmtForgotPasswordController', {
 						Ext.Msg.alert('Password Reset','Your password has been reset, The new password has been sent to your registered email account');
 						forgot_password_form.destroy();
 					}
-					console.log(response);
 				},
 			failure: function(response, opts) {
 					Ext.Viewport.unmask();
 					Ext.Msg.alert('Oops...','Someting seems to have gone wrong. Try  again later');
-					console.log(response);
 				}
 			});
 		}

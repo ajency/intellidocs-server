@@ -43,7 +43,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 										if(result.response == true)
 										{
 											//Save the logged in information
-											console.log(result);
 											this.dmtSecureLoginCookie(request,result);
 											
 											main_container.unmask();
@@ -72,7 +71,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		}
 		else
 		{
-			console.log(errors);
 			main_container.unmask();
 			Ext.Msg.alert('Oops..','Please provide a user name and password', Ext.emptyFn);
 			secure_login_form.reset();
@@ -81,15 +79,12 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 	//Function to Save the logged in information
 	dmtSecureLoginCookie:function(request,result)
 	{
-		console.log(request,result);
 			//Get the user name from the request
 			var dmt_username = request.params.dmt_username;
 			var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 			login_info_store.load();
 			
 			var index = login_info_store.find('key','dmtScLgInfo');
-		
-		console.log(index);
 			
 			if(index == -1)
 			{

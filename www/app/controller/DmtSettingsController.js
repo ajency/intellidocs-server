@@ -43,26 +43,24 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
                     {},
                     function(directory){
                         directory.removeRecursively(function(parent){
-                        console.log("Application root folder deleted");
                                                     
                         //create intellidocs directory again for next actions
                         fileSystemRoot.getDirectory(root_file_path,
                                                 {create: true, exclusive: false}, 
                                                 function(dir){
-                                                    console.log("INtellidocs folder created again ");
                                                     var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
                                                     sub_tabs_panel.setActiveItem(0);
                                                 }, 
                                                 function(err){
-                                                    console.log(err.code + 'Folder exists.');
+                                                    
                                                 });
                                             },
                                             function(err){
-                                                console.log("Application failed to delete root folder");
+                                                
                                             });
                                         },
                                         function(err){
-                                            console.log("Error reading intellidocs folder");
+                                          
                                         });
             }
         });	
@@ -70,7 +68,6 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
     dmtSettingsPanelLoad:function()
 	{
 		var user_details = this.dmtGetUsernameEmailFromCache();
-		console.log(user_details);
 		Ext.getCmp('dmt-settings-panel-user-name').setValue(user_details[0]);
 		Ext.getCmp('dmt-settings-panel-user-email').setValue(user_details[1]);
 	},
@@ -121,11 +118,9 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
                                              
                                              success: function(result, request)
                                              {
-                                                console.log(result);
                                              },
                                              failure: function(result)
                                              {
-                                                console.log(result);
                                              },
                                              scope :this,
                                 });	
@@ -187,12 +182,10 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 							};	
 							change_password_form.reset();
 						}
-						console.log(response);
 					},
 				failure: function(response, opts) {
 						Ext.Viewport.unmask();
 						Ext.Msg.alert('Oops...','Someting seems to have gone wrong. Try  again later');
-						console.log(response);
 					}
 				});
 			}
@@ -215,8 +208,6 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 			login_info_store.load();
 			
 			var index = login_info_store.find('key','dmtScLgInfo');
-		
-		console.log(index);
 			
 			if(index == -1)
 			{

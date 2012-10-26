@@ -143,7 +143,6 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                                                           }
                                                                           
                                                                           //deleted all files
-                                                                          console.log("all files deleted")
                                                                           button.destroy();
                                                                           IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value);
                                                                           },
@@ -154,7 +153,6 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                                        function(err)
                                                        {
                                                        //if directory doesn't exists
-                                                       console.log('Failed to read files');
                                                        });	
                            }
                            });
@@ -172,13 +170,13 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                            fileSystemRoot.getFile(root_file_path +"/"+ structure + "/" + file_name,
 	                                              {},
 	                                              function(fileEntry){
-                                                    console.log("file deleted");	
+                                                   	
                                                     fileEntry.remove();
                                                     button.destroy();
                                                     Ext.getCmp('dmt-file-action-button').setText('Download File?');
 	                                              },
 	                                              function(err){
-                                                    console.log("Unable to delete file. " + err.code);
+                                                    
 	                                              });
                         }
                     });
@@ -337,7 +335,6 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
 						}
 					]
 				} 
-				console.log(button.getParent().getComponent(0).getComponent(0).getValue());
 				
                        
 				Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config)).show({type:'pop',duration:250,easing:'ease-out'});	
@@ -348,35 +345,26 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                 IntelliDocs.dmtCreateDirectories(structure); 
                 
                         
-                console.log('file download:' + root_file_path +"/"+structure); 
-                //trigger the file download plugin
+                 //trigger the file download plugin
                 window.plugins.Download.start(file_url,
                                             function(){
-                                                console.log("File Downloaded");
                                                 Ext.getCmp('dmt-download-progress').destroy(); 
                                                 button.setText('Open');
                                                 button.setAction('dmtDetailsPanelOpenButton');
                                     
                                             },                                           
                                             function(fail){
-                                                console.log("Download failed:" + fail);
-                                                
                                                 Ext.getCmp('dmt-download-progress').destroy(); 
                                                 Ext.Msg.alert('Download Failed!','Please try again!');                                             
                                             },
                                             function(info){
                                                 var percent = Math.round(info.progress * 100);
-                                                console.log('File downloaded:' + info.progress);
                                                 document.getElementById('percentage').innerHTML = percent + '%';
                                             },
                                             root_file_path + '/' + structure);
                        
                                  
             }
-			else
-			{
-				console.log('Clicked No');
-			}
     });
     }
 	else

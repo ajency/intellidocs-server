@@ -56,7 +56,6 @@ Ext.application({
                 
         if(!device || !this.launched)
         {
-            console.log("Returnning here");
             return;
         }
         // Destroy the #appLoadingIndicator element

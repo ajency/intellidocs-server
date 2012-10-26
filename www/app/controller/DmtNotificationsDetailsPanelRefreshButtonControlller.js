@@ -58,7 +58,6 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
            var index = login_info_store.find('key','dmtScLgInfo');
            if(index == -1)
            {
-           console.log('nothing found');
            return '';
            }
            else
@@ -66,7 +65,6 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
            
            var record = login_info_store.getAt(index);
            var stored_data = record.getData();
-           console.log('uname:'+stored_data.user_name);
            return stored_data.user_name; 
            }
     },

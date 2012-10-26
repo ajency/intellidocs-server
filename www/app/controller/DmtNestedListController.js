@@ -74,7 +74,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            switch (record_data.f_type)
            {
            case 'file':
-           console.log(record_data.f_type);
            panel_content = {
            id:'dmt-details-view-card',
            cls:'dmtDetailsViewPanel',
@@ -280,7 +279,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	dmtNestedListInitialize:function(list)
 	{
         var _this = this;
-		console.log('List Initialized')
 		//Add the sorting panel to the nested list
 		list.insert(0,{xtype: 'dmtnestedlistsortpanel'});	
 		
@@ -288,8 +286,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		Ext.getStore('DmtFolderStructureStore').load();
 		list.setStore('DmtFolderStructureStore');	
 		
-		
-		console.log('List Store loaded');
 		//Add the user_name param to the polling function
 		var base_params ={
 							user_name: this.dmtGetUsernameFromCache(),
@@ -321,7 +317,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 						notifications_tab.getStore().load();
 						
 						notifications_tab.tab.setBadgeText(notification_count);
-						console.log(notification_count);
 					}
 					break
 
@@ -330,7 +325,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 				exception:function(e)
 				{
 					//Handle the exception here 
-					console.log(e);
 				}
 			}
    		 };
@@ -351,7 +345,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         
         if(_prev_record != record)
         {
-           console.log('Item Tapped');
            if(record.isLeaf())
            {
                 //check if file exists
@@ -388,12 +381,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     //When a leaf node is tapped on the nested list
     dmtNestedListLeafItemTap:function(nested_list,current_list,index,target,record)
 	{
-		console.log('Leaf Item Tapped');
+
 	},
 	//When a back button is tapped on the nested list
 	dmtNestedListBackTap:function(current,last_node,last_active_list)
 	{
-		console.log('Back Button Tapped');
         current_f_id = last_node.parentNode.getData().f_id;
         this.dmtDetailsPanelChange(last_node.parentNode,null,false);
 	},
@@ -438,7 +430,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     {
            var _this = this;
            
-            console.log('Nested List Load Complete.');
             if(current_f_id)
             {
                     Ext.Object.each(records,function(index,record) {

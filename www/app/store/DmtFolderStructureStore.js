@@ -60,15 +60,11 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                   {},
                                   function(fileEntry){
                                         //if file exists
-                                        console.log("File exists");
-                                        console.log("Offline Store"); 
                                         //Set the local proxy for the store
                                         store.setProxy({url: fileEntry.fullPath }); 
                                    },
                                    function(err){
                                     //if file doesn't exists
-                                    console.log("File not present");
-                                    console.log("Online Store");
                                     if(navigator.onLine)
                                     {
                                         IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache(),false);
@@ -87,7 +83,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
 	//Run the ajax request to delete items from the server
 	dmtRemoveNotificationsFromServer:function()
 	{
-           console.log('username:' + this.dmtGetUsernameFromCache());
            Ext.data.JsonP.request({
             url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_notification_uodate.php',
             
@@ -100,19 +95,15 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                 Ext.Viewport.unmask();
 				if(result.response == true)
 				{
-					console.log('Removed Notifications');
 					var notifications_tab = Ext.getCmp('dmt-notifications-list');
 					notifications_tab.tab.setBadgeText('');
 					notifications_tab.getStore().setData([]).load();
 				}
-				else
-					console.log('Failed To Remove Notifications');
             },
             failure:function(e)
 			{
 				// Unmask the viewport
                 Ext.Viewport.unmask();
-				console.log(e);
 			}
         });
 	},
@@ -124,7 +115,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
 		var index = login_info_store.find('key','dmtScLgInfo');
 		if(index == -1)
         {
-           console.log('nothing found');
            return '';
         }
         else
@@ -132,7 +122,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
         
            var record = login_info_store.getAt(index);
 			var stored_data = record.getData();
-           console.log('uname:'+stored_data.user_name);
            return stored_data.user_name; 
 		}
 	}
