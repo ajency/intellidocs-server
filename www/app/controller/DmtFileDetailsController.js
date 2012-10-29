@@ -324,14 +324,14 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
 							html:file_name,
 						},
 						{
-							xtype:'panel',
-							html:'<div id="loading-container">'+
+							xtype:  'panel',
+							html:   '<div id="loading-container">'+
 										'<div id="loading-box">'+
 											'<div id="loading-bar">'+
 												'<div id="percentage"></div>'+
 											'</div>'+
 										'</div>'+
-									'</div>',										
+                                    '</div>',										
 						}
 					]
 				} 
@@ -354,8 +354,25 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                     
                                             },                                           
                                             function(fail){
-                                                Ext.getCmp('dmt-download-progress').destroy(); 
-                                                Ext.Msg.alert('Download Failed!','Please try again!');                                             
+                                                if(fail.progress == 404)
+                                                {
+                                                    //delete the downloaded file from deveice (376 bytes) 404 page
+                                                    fileSystemRoot.getFile(root_file_path +"/"+ structure + "/" + file_name,
+                                                                     {},
+                                                                     function(fileEntry){
+                                                                           fileEntry.remove();
+                                                                     },
+                                                                     function(err){
+                                                                     
+                                                                     });                                            
+                                                    Ext.getCmp('dmt-download-progress').destroy(); 
+                                                    IntelliDocs.intellidocs_session_timeout();
+                                                }
+                                                else
+                                                {
+                                                    Ext.getCmp('dmt-download-progress').destroy(); 
+                                                    Ext.Msg.alert('Download Failed!','Please try again!'); 
+                                                }                                             
                                             },
                                             function(info){
                                                 var percent = Math.round(info.progress * 100);

@@ -540,94 +540,114 @@ IntelliDocs.download_queued_file = function(file)
     
     
     fileSystemRoot.getFile(root_file_path + "/" + structure + "/" + file_name,
-                           {},
-                           function(file_entry){
-                           global_queued_file_download_complete_count++;
+                        {},
+                        function(file_entry){
+                            global_queued_file_download_complete_count++;
                            
-                           if(global_queued_file_download_complete_count == global_queued_file_urls.length)
-                           {
-                           //all files downloaded. reset globals here
-                        
-                           if(global_download_file_count == 0)
-                           {
-                           Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);   
-                           }
-                           else
-                           {   
-                           var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
-                           Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
-                           }                                                 global_queued_file_urls = [];
-                           global_queued_file_download_complete_count = 0;
-                           global_current_download_folder_id = 0;
-                           global_download_file_count = 0;
-                           Ext.getCmp('dmt-download-progress-folder').destroy();
-                           IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                            if(global_queued_file_download_complete_count == global_queued_file_urls.length)
+                            {    
+                            //all files downloaded. reset globals here
+                                if(global_download_file_count == 0)
+                                {
+                                    Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);   
+                                }
+                                else
+                                {   
+                                    var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
+                                    Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
+                                }                                                
+                                global_queued_file_urls = [];
+                                global_queued_file_download_complete_count = 0;
+                                global_current_download_folder_id = 0;
+                                global_download_file_count = 0;
+                                Ext.getCmp('dmt-download-progress-folder').destroy();
+                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
                                                      Ext.getCmp('dmtFileFolder_count')._value);                                       
                            }
                            else{             
-                           IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
+                                IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
                            }
-                           },
-                           function(err){
-                          
-                           Ext.getCmp('dmt-dolder-file-name').setHtml(file_name);                                            //trigger file download
+                        },
+                        function(err){
+                           Ext.getCmp('dmt-dolder-file-name').setHtml(file_name);                                            
+                           //trigger file download
                            window.plugins.Download.start(file.url,
-                                                         function(){
-                                                        
-                                                         global_queued_file_download_complete_count++;
-                                                         global_download_file_count++;
-                                                         if(global_queued_file_download_complete_count == global_queued_file_urls.length)
-                                                         {
-                                                         //all files downloaded. reset globals here
-                                                      
-                                                         if(global_download_file_count == 0)
-                                                         {
-                                                         Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);   
-                                                         }
-                                                         else
-                                                         {   
-                                                         var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
-                                                         Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
-                                                         }                   
-                                                         global_queued_file_urls = [];
-                                                         global_queued_file_download_complete_count = 0;
-                                                         global_current_download_folder_id = 0;
-                                                         global_download_file_count = 0;
-                                                         Ext.getCmp('dmt-download-progress-folder').destroy(); 
-                                                         }
-                                                         else{             
-                                                         IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
-                                                         }
-                                                         IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
-                                                                                   Ext.getCmp('dmtFileFolder_count')._value);                                              
-                                                         },                                           
-                                                         function(fail){
-                                                         //something goes wrong. reset globals
-                                                       
-                                                         if(global_download_file_count > 0)
-                                                         {
-                                                         var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
-                                                         Ext.Msg.alert('Download Failed', files + ' successfully downloaded. Please try again to download remaining files.', Ext.emptyFn);
-                                                         }
-                                                         else
-                                                         {
-                                                         Ext.Msg.alert('Download Failed!','Please try again!');                                                 
-                                                         }
-                                                         global_queued_file_urls = [];
-                                                         global_queued_file_download_complete_count = 0;
-                                                         global_current_download_folder_id = 0; 
-                                                         global_download_file_count=0;
-                                                         Ext.getCmp('dmt-download-progress-folder').destroy(); 
-                                                         
-                                                         IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                function(){
+                                    global_queued_file_download_complete_count++;
+                                    global_download_file_count++;
+                                    if(global_queued_file_download_complete_count == global_queued_file_urls.length)
+                                    {
+                                        //all files downloaded. reset globals here
+                                        if(global_download_file_count == 0)
+                                        {
+                                            Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);   
+                                        }
+                                        else
+                                        {   
+                                            var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
+                                            Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
+                                        }                   
+                                        global_queued_file_urls = [];
+                                        global_queued_file_download_complete_count = 0;
+                                        global_current_download_folder_id = 0;
+                                        global_download_file_count = 0;
+                                        Ext.getCmp('dmt-download-progress-folder').destroy(); 
+                                    }
+                                    else{             
+                                        IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
+                                    }
+                                    IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
+                                    Ext.getCmp('dmtFileFolder_count')._value);                                              
+                                },                                           
+                                function(fail){
+                                    //something goes wrong. reset globals
+                                    if(fail.progress == 404)
+                                    {
+                                        
+                                        var filename = global_queued_file_urls[global_queued_file_download_complete_count].url;                                                            filename = filename.substring(filename.lastIndexOf('/')+1); 
+                                        
+                                        var folder_path = global_queued_file_urls[global_queued_file_download_complete_count].path;
+                                        //delete the downloaded file from deveice (376 bytes) 404 page
+                                        fileSystemRoot.getFile(root_file_path +"/"+ folder_path + "/" + filename,
+                                                               {},
+                                                               function(fileEntry){
+                                                                    fileEntry.remove();
+                                                               },
+                                                               function(err){
+                                                                                
+                                                               });    
+                                        global_queued_file_urls = [];
+                                        global_queued_file_download_complete_count = 0;
+                                        global_current_download_folder_id = 0; 
+                                        global_download_file_count=0;    
+                                        Ext.getCmp('dmt-download-progress-folder').destroy(); 
+                                        IntelliDocs.intellidocs_session_timeout();
+                                    }
+                                    else
+                                    {
+                                        if(global_download_file_count > 0)
+                                        {
+                                            var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
+                                            Ext.Msg.alert('Download Failed', files + ' successfully downloaded. Please try again to download remaining files.', Ext.emptyFn);
+                                        }
+                                        else
+                                        {
+                                            Ext.Msg.alert('Download Failed!','Please try again!');                                                 
+                                        }
+                                        global_queued_file_urls = [];
+                                        global_queued_file_download_complete_count = 0;
+                                        global_current_download_folder_id = 0; 
+                                        global_download_file_count=0;
+                                        Ext.getCmp('dmt-download-progress-folder').destroy(); 
+                                        IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
                                                                                    Ext.getCmp('dmtFileFolder_count')._value);                                            
-                                                         },
-                                                         function(info){
-                                                     
-                                                         var percent = Math.round(info.progress * 100);
-                                                         document.getElementById('dmt-folder-file-percentage').innerHTML = percent + "%";
-                                                         },
-                                                         root_file_path + '/' + structure);
+                                    }
+                                },
+                                function(info){
+                                    var percent = Math.round(info.progress * 100);
+                                    document.getElementById('dmt-folder-file-percentage').innerHTML = percent + "%";
+                                },
+                                root_file_path + '/' + structure);
                            });
     
 }
@@ -655,8 +675,6 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
                         var data = obj[i];
                         if(data['f_id'] == category_id   && data['f_type'] == 'folder')
                         {
-                            //match found. now get all leaf nodes from items array
-                             
                             //set global folder ID
                             global_current_download_folder_id = category_id;
                             
@@ -858,17 +876,35 @@ IntelliDocs.downloadFile = function(record)
         //trigger the file download plugin
         window.plugins.Download.start(file_url,
                                       function(){
-                                      Ext.getCmp('dmt-download-progress').destroy();
-                                      Ext.getCmp('dmt-file-action-button').setText('Open');                                                   
-                                      window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
+                                        Ext.getCmp('dmt-download-progress').destroy();
+                                        Ext.getCmp('dmt-file-action-button').setText('Open');                                                   
+                                        window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
                                       },                                           
                                       function(fail){
-                                      Ext.getCmp('dmt-download-progress').destroy(); 
-                                      Ext.Msg.alert('Download Failed!','Please try again!');                                             
+                                        if(fail.progress == 404)
+                                        {
+                                            //delete the downloaded file from deveice (376 bytes) 404 page
+                                            fileSystemRoot.getFile(root_file_path +"/"+ structure + "/" + file_name,
+                                                             {},
+                                                             function(fileEntry){
+                                                                fileEntry.remove();
+                                                                
+                                                             },
+                                                             function(err){
+                                                             
+                                                             });                                            
+                                            Ext.getCmp('dmt-download-progress').destroy(); 
+                                            IntelliDocs.intellidocs_session_timeout();
+                                        }
+                                        else
+                                        {
+                                            Ext.getCmp('dmt-download-progress').destroy(); 
+                                            Ext.Msg.alert('Download Failed!','Please try again!'); 
+                                        }
                                       },
                                       function(info){
-                                      var percent = Math.round(info.progress * 100);
-                                      document.getElementById('percentage').innerHTML = percent + '%';
+                                        var percent = Math.round(info.progress * 100);
+                                        document.getElementById('percentage').innerHTML = percent + '%';
                                       },
                                       root_file_path + '/' + structure);
     }
