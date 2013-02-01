@@ -1,0 +1,1 @@
+/*fea778cff92d2ad48a92519d0d9fb279374f2e2d*/function FileOpenPlugin(){}FileOpenPlugin.prototype.openFile=function(a){cordova.exec(null,function(){alert("Appropriate app not found")},"FileOpenPlugin","openFile",[a])};cordova.addConstructor(function(){cordova.addPlugin("FileOpenPlugin",new FileOpenPlugin())});

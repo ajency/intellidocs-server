@@ -1,0 +1,1 @@
+/*611325ee679efbee89c9a87d7c1c72220a406a91*/function Downloader(){}Downloader.prototype.downloadFile=function(b,d,c,a){if(!a){c=d}cordova.exec(c,a,"Downloader","downloadFile",[b,d])};cordova.addConstructor(function(){cordova.addPlugin("downloader",new Downloader())});

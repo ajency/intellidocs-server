@@ -1,0 +1,1 @@
+/*35b06419b309cba933b800468de26afe31a2fad4*/window.downloadFile=function(b,d,c,a){if(!a){c=d}cordova.exec(c,a,"Downloader","downloadFile",[b,d])};

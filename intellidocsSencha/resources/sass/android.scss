@@ -1,0 +1,183 @@
+$base-gradient:'null';
+$include-border-radius:false;
+$include-highlights:false;
+$list-active-gradient: 'recessed';
+
+@import 'sencha-touch/default/all';
+
+// You may remove any of the following modules that you
+// do not use in order to create a smaller css file.
+@include sencha-panel;
+@include sencha-buttons;
+@include sencha-sheet;
+@include sencha-picker;
+@include sencha-tabs;
+@include sencha-toolbar;
+@include sencha-toolbar-forms;
+@include sencha-carousel;
+@include sencha-indexbar;
+@include sencha-list;
+@include sencha-list-paging;
+@include sencha-list-pullrefresh;
+@include sencha-layout;
+@include sencha-form;
+@include sencha-msgbox;
+@include sencha-loading-spinner;
+@include sencha-draw;
+
+.x-indexbar-item {
+    color: #FFF;
+}
+
+.x-scrollbar-dark {
+  background-color: rgba(255, 255, 255, .6);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+//fixing back/forward buttons in BB.
+$shadow-width: .065em; // Space between tip and its shadow
+$overlap-width: .2em; // how far the mask is clipped
+
+$mask-height: $button-height;
+$mask-width: $mask-height/2.5;
+$mask-offset: $button-radius - $overlap-width - $button-stroke-weight + $shadow-width - .22em;
+
+.x-button-forward, .x-button-back {
+    &:before, &:after {
+        @include insertion($mask-width, $mask-height, -$button-stroke-weight, auto);
+        z-index: 2;
+        -webkit-mask: $mask-offset 0 theme_image($theme-name, "tip_left.png") no-repeat;
+        -webkit-mask-size: $mask-width $mask-height;
+        overflow: hidden;
+    }
+}
+
+.x-button-forward, .x-toolbar .x-button-forward {
+    &:before, &:after {
+        -webkit-mask: -$mask-offset 0 theme_image($theme-name, "tip_right.png") no-repeat;
+    }
+  }
+
+
+/*Login box css*/
+div.dmt-secure-login-panel-logo {background:url('../images/company_logo/new_logo_3.png') no-repeat top left; margin-bottom:20px;}
+
+/*Nested list item css*/
+.x-list .x-list-item .x-list-item-label{ min-height: 1em;}
+
+table.dmtNestedListItem{ width:100%; font-size:14px !important;}
+table.dmtNestedListItem tr td { width: 50%; overflow:hidden;}
+table.dmtNestedListItem tr td.dmtNestedListItemType { text-align:center; color: #999;}
+span.dmt-list-item-fname{ display:inline-block;}
+
+.x-innerhtml {padding:0em !important}
+
+
+/*List Item file types small icon css*/
+div.dmt-file-icon-small{ width:24px;height:24px; display:inline-block; vertical-align:middle; margin-right:4px; background-size:24px 24px;}
+div.dmt-file-folder {background:url('../images/folder_icons/folder.png') transparent no-repeat right top }
+div.dmt-file-ppt 	{background:url('../images/folder_icons/ppt.png')}
+div.dmt-file-pptx 	{background:url('../images/folder_icons/pptx.png')}
+div.dmt-file-xls 	{background:url('../images/folder_icons/xls.png')}
+div.dmt-file-xlsx 	{background:url('../images/folder_icons/xlsx.png')}
+div.dmt-file-pdf 	{background:url('../images/folder_icons/pdf.png')}
+div.dmt-file-doc 	{background:url('../images/folder_icons/doc.png')}
+div.dmt-file-docx 	{background:url('../images/folder_icons/docx.png')}
+div.dmt-file-jpg 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-jpeg 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-JPG 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-JPEG 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-gif 	{background:url('../images/folder_icons/gif.png')}
+div.dmt-file-GIF 	{background:url('../images/folder_icons/gif.png')}
+div.dmt-file-png 	{background:url('../images/folder_icons/png.png')}
+div.dmt-file-PNG 	{background:url('../images/folder_icons/png.png')}
+div.dmt-file-txt 	{background:url('../images/folder_icons/txt.png')}
+div.dmt-file-TXT 	{background:url('../images/folder_icons/txt.png')}
+div.dmt-file-no-file{background:url('../images/folder_icons/no-file.png')}
+
+/*List Item file types large icon css*/
+div.dmt-file-icon-big{width:96px; height:96px; background-position: center center; background-repeat:no-repeat;}
+
+div.dmt-file-folder-large {background:url('../images/folder_icons/folder.png')}
+div.dmt-file-ppt-large 	{background:url('../images/folder_icons/ppt.png')}
+div.dmt-file-pptx-large {background:url('../images/folder_icons/pptx.png')}
+div.dmt-file-xls-large 	{background:url('../images/folder_icons/xls.png')}
+div.dmt-file-xlsx-large {background:url('../images/folder_icons/xlsx.png')}
+div.dmt-file-pdf-large 	{background:url('../images/folder_icons/pdf.png')}
+div.dmt-file-doc-large 	{background:url('../images/folder_icons/doc.png')}
+div.dmt-file-docx-large {background:url('../images/folder_icons/docx.png')}
+div.dmt-file-jpg-large 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-jpeg-large {background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-JPG-large 	{background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-JPEG-large {background:url('../images/folder_icons/jpg.png')}
+div.dmt-file-gif-large 	{background:url('../images/folder_icons/gif.png')}
+div.dmt-file-GIF-large 	{background:url('../images/folder_icons/gif.png')}
+div.dmt-file-png-large 	{background:url('../images/folder_icons/png.png')}
+div.dmt-file-PNG-large 	{background:url('../images/folder_icons/png.png')}
+div.dmt-file-txt-large 	{background:url('../images/folder_icons/txt.png')}
+div.dmt-file-TXT-large 	{background:url('../images/folder_icons/txt.png')}
+div.dmt-file-no-file-large{background:url('../images/folder_icons/no-file.png')}
+
+/* Details panel background css*/
+p.dmt-file-meta-data				{ font-size:18px; font-family:"Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+span.dmt-file-meta-data-field-label { font-weight:bold;}
+div.dmtDetailsViewPanel				{background:url('../images/company_logo/new_logo_1.png') no-repeat center bottom; background-color:#EEEEEE}
+div.dmtDetailsViewPanelMain			{background:url('../images/company_logo/new_logo_2.png') no-repeat center center}
+div.dmt-details-panel-download-button{ margin-top:20px;}
+
+/*Notification list css*/
+div.dmtNotificationsList div.x-list-header{ height:2em; padding-left:0.5em !important;}
+div.dmtNotificationsList div.x-list-item-label{ padding:0.3em !important; padding-left:0.5em !important;}
+
+span.dmtGrouperTitle {}
+span.dmtGrouperTitleImage {display:inline-block;height:24px; width:24px;background:url('../images/folder_icons/folder.png') transparent no-repeat right top; background-size:24px 24px;}
+span.dmtGrouperTitleText{display:inline-block; position:absolute;margin-top:3px;margin-left:5px;}
+
+span.dmtNotificationMessage{ font-size:16px; font-weight:normal; font-family:"Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif}
+div.dmtNotificationMessageMeta{color:#9B9B9B; font-size:12px; font-family:"Helvetica Neue", HelveticaNeue, "Helvetica-Neue", Helvetica, "BBAlpha Sans", sans-serif}
+
+/*Notifications details page*/
+div.dmtNotificationsDetailsPanelRefreshButton{ margin-top:20px;}
+
+
+/*Progress Bar*/
+div#loading-container {float:left;width:20%;height:20%;min-width:117px;min-height:117px;padding:1em;position:relative;background:url('../images/loading/loading-animation.gif') no-repeat center center #fff;text-align:center;}
+div#loading-box {font-family:inherit;text-aign:center;margin-top:41px;}
+
+div.dmtNestedListSortButtons span.x-button-icon
+{
+    position:absolute;
+    right:25%;
+}
+div.dmtNestedListSortButtons span
+{
+    text-align:left;
+}
+
+/**No Items found images**/
+
+div.dmtNotificationsEmptyText{
+	width:256px;
+	height:256px;
+	background:url('../images/no_images/no_notifications.png') transparent no-repeat top left;
+	margin:50px auto;
+}
+
+div.dmtMessagesEmptyText{
+	width:256px;
+	height:256px;
+	background:url('../images/no_images/no_messages.png') transparent no-repeat top left;
+	margin:50px auto;
+}
+
+.dmt-folder-metadata-cls{
+	text-align:center;
+}
+
+/** Splash Screen **/
+ body{
+        background: url('../images/splash/intellidocs-bg-logo-s.png') no-repeat center center, -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(31%,#0080c1), color-stop(100%,#003164)); /* Chrome,Safari4+ */
+		background: url('../images/splash/intellidocs-bg-logo-s.png') no-repeat center center, -webkit-radial-gradient(center, ellipse cover, #0080c1 31%,#003164 100%); /* Chrome10+,Safari5.1+ */
+		background: url('../images/splash/intellidocs-bg-logo-s.png') no-repeat center center, radial-gradient(ellipse at center, #0080c1 31%,#003164 100%); /* W3C */
+
+    }
