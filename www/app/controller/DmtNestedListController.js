@@ -74,6 +74,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            switch (record_data.f_type)
            {
            case 'file':
+           
+           var date = (record_data.f_modified && record_data.f_modified != '') ? record_data.f_modified : '';
+           
+           var date_html = (date == '') ? '' : '<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Publish Date: </span>'+date+'</p>';
+           
            panel_content = {
            id:'dmt-details-view-card',
            cls:'dmtDetailsViewPanel',
@@ -90,7 +95,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                   html:
                   [
                    '<div class="dmt-file-icon-big dmt-file-icon-desc dmt-file-'+ f_ext +'-large"></div>' +
-                   '<div class="dmt-file-meta-desc"><p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>' +
+                   '<div class="dmt-file-meta-desc"><p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>' + date_html +
                    '<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Type:</span>'+record_data.f_ext+'</p>' +
                    solicitor+ item_id + description +
                    '</div>'

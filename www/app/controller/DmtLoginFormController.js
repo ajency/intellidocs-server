@@ -33,7 +33,8 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
                             url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
                             callbackKey: 'get_user_authenticated',
                             params: field_values,
-                            method:'POST',
+                            disableCaching : true,
+                            method:'GET',
                             withCredentials: true,
                             useDefaultXhrHeader: false,
                             success: function(result, request)

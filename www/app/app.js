@@ -8,7 +8,7 @@ Ext.application({
     name: 'DMTApp',
 
     requires: [
-        'Ext.MessageBox','Ext.direct.PollingProvider','Ext.direct.*','Ext.field.Hidden','Ext.data.JsonP','Ext.field.Toggle'
+        'Ext.MessageBox','Ext.direct.PollingProvider','Ext.direct.*','Ext.field.Hidden','Ext.data.JsonP','Ext.field.Toggle','Ext.DateExtras'
     ],
 
     views: [

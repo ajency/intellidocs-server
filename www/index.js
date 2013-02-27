@@ -22,11 +22,11 @@ var global_is_user_logged_in = false;
 var global_long_press = false;
 
 //global app version
-var global_app_version = 'Version : 1.0.3';
+var global_app_version = 'Version : 1.0.4';
 
 //global http vars. switch server with ease
-//var global_https = "https://www.intellidocs.net";
-var global_https = "https://www.press-port.com";
+var global_https = "https://www.intellidocs.net";
+//var global_https = "https://www.press-port.com";
 
 /**
  * the main device ready event
@@ -41,7 +41,7 @@ document.addEventListener('deviceready',function(){
                           
                           /*
                            * check deleted folders on resume
-                           */
+                           *
                           document.addEventListener('resume',function(){
                                                 if(navigator.onLine)
                                                 {
@@ -52,6 +52,7 @@ document.addEventListener('deviceready',function(){
                                                     }                                          
                                                 }   
                                             });
+                          */
                           },false);
 
 
@@ -397,6 +398,27 @@ IntelliDocs.fileSystemSuccessCallbck = function(fileSystem){
                                 });
     //set root folder path
     root_file_path += "/intellidocs";
+    
+    //set the metadata to do not backup
+    fileSystemRoot.getDirectory(fileSystemRoot.fullPath,
+                                {},
+                                function(directory)
+                                {
+                                    var reader = directory.createReader();
+                                    reader.readEntries(function(entries){
+                                        for(var i = 0;i<entries.length; i++)
+                                        {
+                                            entries[i].setMetadata(function(){
+                                                                   
+                                                                            },function(err){
+                                                                            
+                                                                            },{"com.apple.MobileBackup":1});
+                                        }
+                                    });
+                                },
+                                function(err){
+                                    console.log("Do not backup Error");
+                                });
 }
 
 /**
@@ -405,6 +427,7 @@ IntelliDocs.fileSystemSuccessCallbck = function(fileSystem){
  * user_name      = the username to get directory structure for 
  */
 IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
+    
     var ajax = new XMLHttpRequest();
     ajax.open("GET",global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_request.php?user_name="+user_name,true);
     ajax.send();
@@ -413,10 +436,13 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
     {
         if(ajax.readyState == 4)
         {    
+            
             if(ajax.status == 200)
             {
                 var data_to_write = ajax.responseText;
                 var session_data = eval(data_to_write);
+                
+                
                 //check for session here. If vaLID WRITE. else redirect to login
                 if(!session_data.session)
                 {
@@ -428,8 +454,13 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                     fileSystemRoot.getFile('dir_list.js', 
                                        {create: true}, 
                                        function(fileEntry) {
-                                       // Create a FileWriter object for our FileEntry.
-                                       fileEntry.createWriter(function(fileWriter) {
+                                           
+                                           fileEntry.setMetadata(function(){
+                                                                },function(err){
+                                                                },{"com.apple.MobileBackup":1});
+                                           
+                                           // Create a FileWriter object for our FileEntry.
+                                           fileEntry.createWriter(function(fileWriter) {
                                                             fileWriter.onwrite = function(e) {
                                                             //set global app launch to false
                                                             DMTApp.launched = false;

@@ -635,10 +635,11 @@
 				GCC_PREFIX_HEADER = "Intellidocs/Intellidocs-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Intellidocs/Intellidocs-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = Intellidocs;
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
 				TARGETED_DEVICE_FAMILY = 2;
+				VALID_ARCHS = armv7;
 			};
 			name = Debug;
 		};
@@ -653,10 +654,11 @@
 				GCC_PREFIX_HEADER = "Intellidocs/Intellidocs-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Intellidocs/Intellidocs-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = Intellidocs;
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
 				TARGETED_DEVICE_FAMILY = 2;
+				VALID_ARCHS = armv7;
 			};
 			name = Release;
 		};
@@ -666,7 +668,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Donal Moran";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -676,7 +678,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(BUILT_PRODUCTS_DIR)\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					CoreFoundation,
@@ -690,9 +692,9 @@
 					"-all_load",
 					"-Obj-C",
 				);
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C50CFDE2-9530-4758-A413-55618847C940";
-				SDKROOT = iphoneos;
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos6.1;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -704,8 +706,8 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Donal Moran";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -715,7 +717,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(BUILT_PRODUCTS_DIR)\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					CoreFoundation,
@@ -729,10 +731,10 @@
 					"-all_load",
 					"-Obj-C",
 				);
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=*]" = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C50CFDE2-9530-4758-A413-55618847C940";
-				SDKROOT = iphoneos;
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
+				"PROVISIONING_PROFILE[sdk=*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos6.1;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -746,8 +748,8 @@
 				CODE_SIGN_ENTITLEMENTS = Intellidocs.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = "";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Donal Moran";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -757,7 +759,7 @@
 					"\"$(OBJROOT)/UninstalledProducts/include\"",
 					"\"$(BUILT_PRODUCTS_DIR)\"",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_LDFLAGS = (
 					"-weak_framework",
 					CoreFoundation,
@@ -771,10 +773,10 @@
 					"-all_load",
 					"-Obj-C",
 				);
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=*]" = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "C50CFDE2-9530-4758-A413-55618847C940";
-				SDKROOT = iphoneos;
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
+				"PROVISIONING_PROFILE[sdk=*]" = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos6.1;
 				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -786,17 +788,18 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_ENTITLEMENTS = Intellidocs/Intellidocs.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Donal Moran";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: Donal Moran";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Intellidocs/Intellidocs-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "Intellidocs/Intellidocs-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = Intellidocs;
-				PROVISIONING_PROFILE = "C50CFDE2-9530-4758-A413-55618847C940";
-				"PROVISIONING_PROFILE[sdk=*]" = "C50CFDE2-9530-4758-A413-55618847C940";
+				PROVISIONING_PROFILE = "68611ECA-324F-4294-9267-E8BBDEBB3A07";
+				"PROVISIONING_PROFILE[sdk=*]" = "";
 				TARGETED_DEVICE_FAMILY = 2;
+				VALID_ARCHS = armv7;
 			};
 			name = "Ad Hoc Distribution";
 		};
