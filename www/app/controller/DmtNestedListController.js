@@ -297,7 +297,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 						 };
 		//Build the config for the notification polling				 
 		var dmt_polling = { 
-           interval:6000,
+           interval: 15 * 60 * 1000,
            type:'polling',
            url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_polling.php?',
            baseParams:base_params,

@@ -22,7 +22,7 @@ var global_is_user_logged_in = false;
 var global_long_press = false;
 
 //global app version
-var global_app_version = 'Version : 1.1';
+var global_app_version = 'Version : 1.2';
 
 //global http vars. switch server with ease
 var global_https = "https://www.intellidocs.net";
