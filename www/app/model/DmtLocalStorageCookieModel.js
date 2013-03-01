@@ -8,7 +8,8 @@ Ext.define('DMTApp.model.DmtLocalStorageCookieModel', {
             {name: 'key', type: 'auto'},
             {name: 'value', type: 'auto'},
             {name: 'user_name', type: 'auto'},
-			{name: 'user_email', type: 'auto'}
+			{name: 'user_email', type: 'auto'},
+            {name: 'user_pass',type :'auto'}
         ],
 		proxy: {
             type: 'localstorage',

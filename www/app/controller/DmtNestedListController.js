@@ -283,6 +283,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When the nested list is initialized add sorter panel
 	dmtNestedListInitialize:function(list)
 	{
+           
+           
         var _this = this;
 		//Add the sorting panel to the nested list
 		list.insert(0,{xtype: 'dmtnestedlistsortpanel'});	
@@ -333,7 +335,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 				}
 			}
    		 };
-           //Add the polling config to the Ext.direct Manager thus registering it and connecting it. 
+        Ext.Viewport.unmask();	//ADD THIS.   
+        //Add the polling config to the Ext.direct Manager thus registering it and connecting it.
         Ext.direct.Manager.addProvider(dmt_polling);        
     },
 	//When a  node is tapped on the nested list

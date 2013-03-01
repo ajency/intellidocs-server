@@ -65,11 +65,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "www/app/controller/DmtLoginFormController.js"
-         timestampString = "381345738.29073"
+         timestampString = "383850086.659789"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "45"
-         endingLineNumber = "45">
+         startingLineNumber = "103"
+         endingLineNumber = "103">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -98,7 +98,20 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "www/index.js"
-         timestampString = "383653528.430062"
+         timestampString = "383847428.136341"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "370"
+         endingLineNumber = "370"
+         landmarkName = "IntelliDocs.dmtGetUsernameFromCache"
+         landmarkType = "7">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "www/index.js"
+         timestampString = "383847428.136341"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "371"
@@ -110,25 +123,12 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "www/index.js"
-         timestampString = "383653528.430062"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "372"
-         endingLineNumber = "372"
-         landmarkName = "IntelliDocs.dmtGetUsernameFromCache"
-         landmarkType = "7">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "www/app/controller/DmtLoginFormController.js"
-         timestampString = "383656302.553378"
+         timestampString = "383850086.659789"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "35"
-         endingLineNumber = "35">
+         startingLineNumber = "93"
+         endingLineNumber = "93">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

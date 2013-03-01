@@ -212,7 +212,7 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 			if(index == -1)
 			{
 				//setup localstorage with values
-				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully',user_name:''});
+				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'});
 				record.save();					
 			}
 			else
@@ -220,7 +220,6 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 				//Get the old value and set new value
 				var record = login_info_store.getAt(index);
 				record.set('value','loggedOutSuccessfully');
-				record.set('user_name','');
 				record.save();
 			}
 	
