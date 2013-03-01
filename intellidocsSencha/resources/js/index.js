@@ -24,7 +24,7 @@ var global_root_view = true;
 var global_goto_node = 0;
 
 var global_init_launch = true;
-var global_app_version = 'Version: 1.2.AndroidRc';
+var global_app_version = 'Version: 1.2.4';
    
 //global https
 var global_https = "https://www.intellidocs.net";
