@@ -361,7 +361,7 @@ IntelliDocs.dmtSecureLoginLogout = function()
     if(index == -1)
     {
         //setup localstorage with values
-        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully});
+        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'});
         record.save();	
     }
     else

@@ -24,6 +24,7 @@ var global_root_view = true;
 var global_goto_node = 0;
 
 var global_init_launch = true;
+
 var global_app_version = 'Version: 1.2.4';
    
 //global https
@@ -360,7 +361,7 @@ IntelliDocs.dmtSecureLoginLogout = function()
     if(index == -1)
     {
         //setup localstorage with values
-        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully});
+        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'});
         record.save();	
     }
     else
