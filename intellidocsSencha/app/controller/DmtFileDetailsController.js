@@ -40,7 +40,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelSubFolderDownloadButtonTap:function(button)
     {
-    	if(navigator.onLine)
+    	if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
@@ -154,7 +154,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     //The folder download function.
     dmtDetailsPanelFolderDownloadButtonTap:function(button)
     {
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
@@ -223,7 +223,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelDownloadButtonTap:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
     
         if(button.getText() == 'Open')

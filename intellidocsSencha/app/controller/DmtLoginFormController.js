@@ -25,9 +25,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		var field_values = secure_login_form.getValues();
 		var main_container = Ext.getCmp('dmt-main-container');
 		var loginFormModelInstance = Ext.create('DMTApp.model.DmtLoginFormModel',{user_name:field_values.dmt_username,password:field_values.dmt_password});
-		 
-		main_container.setMasked({xtype: 'loadmask',message: 'Logging In..'});	
-	
 		var errors = loginFormModelInstance.validate();
 		
 		if(errors.isValid())
@@ -40,54 +37,108 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			main_container.unmask();
 		    END TESTING **/
 			
-			
-			Ext.Ajax.request({
-                url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
-                callbackKey: 'get_user_authenticated',
-                params: field_values,
-                method:'POST',
-                withCredentials: true,
-                useDefaultXhrHeader: false,
-                success: function(result, request)
-                {
-                	global_is_user_logged_in = true;
-                	var result = eval(result.responseText);
-					if(result.response == true)
+			if(!Ext.device.Connection.isOnline())
+			{
+				//offline login.
+				Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
+				
+				var login_info_store = Ext.getStore('DmtLocalStorageCookie');
+				login_info_store.load();
+				var index = login_info_store.find('key','dmtScLgInfo');
+				
+				if(index != -1)
+				{
+					//some record exists.
+					var record = login_info_store.getAt(index);
+					var stored_data = record.getData();
+					var stored_uname = stored_data.user_name;
+					var stored_pass  = stored_data.user_pass;
+					var input_uname	 = field_values.dmt_username;
+					var input_pass	 = MD5(field_values.dmt_password);
+					var _currentScope = this;
+					
+					if((stored_uname == input_uname) && (stored_pass == input_pass))
 					{
-						//Save the logged in information
-						this.dmtSecureLoginCookie(request,result);
+						console.log('username and password checked.!!!!');	
 						
-						main_container.unmask();
+						var createDelay = Ext.create('Ext.util.DelayedTask', function() {
+							
+							console.log('Delayed task execution.!!!');	
+							
+							if(Ext.getCmp('dmt-tabs-panel'))
+								Ext.getCmp('dmt-tabs-panel').destroy();
+							
+							_currentScope.getDmtSecureLoginPanel().destroy();
+							
+							var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
+							main_container.add(tabs_panel).show();
 						
-						if(Ext.getCmp('dmt-tabs-panel'))
-							Ext.getCmp('dmt-tabs-panel').destroy();
-						
-						this.getDmtSecureLoginPanel().destroy();
-						
-						var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
-						main_container.add(tabs_panel).show();
-						
-						
+						});
+						createDelay.delay(1000);
 					}
 					else
 					{
-						main_container.unmask();
+						Ext.Viewport.unmask();
 						Ext.Msg.alert('Oops..','The user name and/or password provided is incorrect', Ext.emptyFn);
 						secure_login_form.reset();
 					}
-				},
-				failure: function()
+				}
+				else
 				{
-					main_container.unmask();
-					Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
-				},
-				scope :this,
-			});
+					Ext.Viewport.unmask();
+					Ext.Msg.alert('Oops..','Unable to provide offline login', Ext.emptyFn);
+				}
+			}
+			else
+			{
+				Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
+				
+				Ext.Ajax.request({
+	                url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
+	                callbackKey: 'get_user_authenticated',
+	                params: field_values,
+	                method:'POST',
+	                withCredentials: true,
+	                useDefaultXhrHeader: false,
+	                success: function(result, request)
+	                {
+	                	global_is_user_logged_in = true;
+	                	var result = eval(result.responseText);
+						if(result.response == true)
+						{
+							//Save the logged in information
+							this.dmtSecureLoginCookie(request,result);
+							
+							if(Ext.getCmp('dmt-tabs-panel'))
+								Ext.getCmp('dmt-tabs-panel').destroy();
+							
+							this.getDmtSecureLoginPanel().destroy();
+							
+							var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
+							main_container.add(tabs_panel).show();
+							
+						}
+						else
+						{
+								Ext.Viewport.unmask();
+								Ext.Msg.alert('Oops..','The user name and/or password provided is incorrect', Ext.emptyFn);
+								secure_login_form.reset();
+						}
+					},
+					failure: function(response,request)
+					{
+	
+						Ext.Viewport.unmask();
+						Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
+					},
+					scope :this,
+				});
+			}
 		}
 		else
 		{
 			console.log(errors);
-			main_container.unmask();
+			Ext.Viewport.unmask();
 			Ext.Msg.alert('Oops..','Please provide a user name and password', Ext.emptyFn);
 			secure_login_form.reset();
 		}
@@ -95,7 +146,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 	//Function to Save the logged in information
 	dmtSecureLoginCookie:function(request,result)
 	{
-		console.log(request,result);
 			//Get the user name from the request
 			var dmt_username = request.params.dmt_username;
 			var login_info_store = Ext.getStore('DmtLocalStorageCookie');
@@ -105,7 +155,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			if(index == -1)
 			{
 				//setup localstorage with values
-				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedInSuccessfully',user_name:dmt_username,user_email:result.email});
+				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedInSuccessfully',user_name:dmt_username,user_email:result.email,user_pass:result.key});
 				record.save();					
 			}
 			else
@@ -115,6 +165,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 				record.set('value','loggedInSuccessfully');
 				record.set('user_name',dmt_username);
 				record.set('user_email',result.email);
+				record.set('user_pass',result.key);
 				record.save();
 			}
 	}

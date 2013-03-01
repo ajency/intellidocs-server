@@ -55,7 +55,7 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 					                                                 function(dir){
 					                                                	 console.log("INtellidocs folder created again ");
 					                                                	 //write json file 
-					                                                	 if(navigator.onLine)
+					                                                	 if(Ext.device.Connection.isOnline())
 					                                                     {
 					                                                		var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
 					                                                		sub_tabs_panel.setActiveItem(0);
@@ -119,28 +119,30 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 				if(Ext.getCmp('dmt-secure-login-panel'))
 					Ext.getCmp('dmt-secure-login-panel').destroy();				
 					
+				//Destroy the tabs panel
+				this.getDmtTabsPanel().destroy();
 				
 				var dmt_secure_login_panel = Ext.create('DMTApp.view.DmtSecureLogin');
 					main_container.add(dmt_secure_login_panel).show();
-				
-				//Destroy the tabs panel
-				main_container.remove(this.getDmtTabsPanel());
-					
-					
+														
 				//Disconnect the notification polling and release the resources/		
 				var notification_polling = Ext.direct.Manager.getProvider('dmt-notification-polling');
 				notification_polling.disconnect();
                 //Ext.Viewport.unmask();
-				Ext.Ajax.request({
-                    url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_logout.php',
-                                         callbackKey: 'set_user_logout',
-                                         method:'POST',
-                                         withCredentials: true,
-                                         useDefaultXhrHeader: false,
-                                         success: function(result, request){},
-                                         failure: function(result){},
-                                         scope :this,
-                            });	
+				
+				if(Ext.device.Connection.isOnline())
+				{
+					Ext.Ajax.request({
+	                    url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_logout.php',
+	                                         callbackKey: 'set_user_logout',
+	                                         method:'POST',
+	                                         withCredentials: true,
+	                                         useDefaultXhrHeader: false,
+	                                         success: function(result, request){},
+	                                         failure: function(result){},
+	                                         scope :this,
+	                            });	
+				}
 			}
 			else
 				current.reset();
@@ -225,7 +227,24 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 	{
 			var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 			login_info_store.load();
-			login_info_store.getProxy().clear();
+			
+		    var index = login_info_store.find('key','dmtScLgInfo');
+		    
+		    if(index == -1)
+		    {
+		        //setup localstorage with values
+		        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'});
+		        record.save();	
+		    }
+		    else
+		    {
+		        //Get the old value and set new value
+		        var record = login_info_store.getAt(index);
+		        record.set('value','loggedOutSuccessfully');
+		        record.save();
+		    }
+		    
+			//login_info_store.getProxy().clear();
 	
 	},
 	dmtGetUsernameEmailFromCache:function()

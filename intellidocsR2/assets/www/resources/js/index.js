@@ -24,7 +24,7 @@ var global_root_view = true;
 var global_goto_node = 0;
 
 var global_init_launch = true;
-var global_app_version = 'Version: 1.2.2';
+var global_app_version = 'Version: 1.2.AndroidRc';
    
 //global https
 var global_https = "https://www.intellidocs.net";
@@ -360,7 +360,7 @@ IntelliDocs.dmtSecureLoginLogout = function()
     if(index == -1)
     {
         //setup localstorage with values
-        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully',user_name:''});
+        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'/*,user_name:''*/});
         record.save();	
     }
     else
@@ -368,7 +368,7 @@ IntelliDocs.dmtSecureLoginLogout = function()
         //Get the old value and set new value
         var record = login_info_store.getAt(index);
         record.set('value','loggedOutSuccessfully');
-        record.set('user_name','');
+        //record.set('user_name','');
         record.save();
     }
 
@@ -860,7 +860,7 @@ IntelliDocs.dmtCreateDirectories = function(structure)
 
 IntelliDocs.downloadFile = function(record)
 {
-    if(navigator.onLine)
+    if(Ext.device.Connection.isOnline())
     {
         var file_url = record.getData().f_attachment;
         var file_name = file_url.substring(file_url.lastIndexOf('/')+1);

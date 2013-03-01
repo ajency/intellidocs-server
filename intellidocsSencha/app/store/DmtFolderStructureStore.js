@@ -66,7 +66,7 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                     //if file doesn't exists
                                     console.log("File not present");
                                     console.log("Online Store");
-                                    if(navigator.onLine)
+                                    if(Ext.device.Connection.isOnline())
                                     {
                                         IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache());
                                         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});

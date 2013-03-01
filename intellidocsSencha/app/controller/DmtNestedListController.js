@@ -437,13 +437,14 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		
 		
 		console.log('List Store loaded');
+		Ext.Viewport.unmask();
 		//Add the user_name param to the polling function
 		var base_params ={
 							user_name: this.dmtGetUsernameFromCache(),
 						 };
 		//Build the config for the notification polling				 
 		var dmt_polling = { 
-           interval:6000,
+           interval:(15*60*1000),
            type:'polling',
            url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_polling.php?',
            baseParams:base_params,
@@ -581,7 +582,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When the user clicks on the refresh button on the nested list
 	dmtNestedListRefreshButton:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
            Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});

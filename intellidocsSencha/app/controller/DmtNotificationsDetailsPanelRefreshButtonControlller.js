@@ -14,7 +14,7 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
     },
     dmtNotificationRefreshButtonTap:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
 			var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
 			sub_tabs_panel.setActiveItem(0);
