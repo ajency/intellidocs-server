@@ -1,0 +1,42 @@
+/****Login Page?****/
+body.login {font-family:sans-serif;}
+body.login div#login {
+	margin: auto;
+    padding: 100px 0 0;
+    width: 320px;
+}
+body.login div#login h1 {}
+body.login div#login h1 a {height:70px;background-size: 192px 70px;}
+body.login div#login form#loginform {
+	background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0 4px 10px -1px rgba(200, 200, 200, 0.7);
+    font-weight: normal;
+    margin-left: 8px;
+    padding: 26px 24px 46px;
+}
+body.login div#login form#loginform p {}
+body.login div#login form#loginform p label {}
+body.login div#login form#loginform input {}
+body.login div#login form#loginform input#user_login {}
+body.login div#login form#loginform input#user_pass {}
+body.login div#login form#loginform p.forgetmenot {}
+body.login div#login form#loginform p.forgetmenot input#rememberme {}
+body.login div#login form#loginform p.submit {}
+body.login div#login form#loginform p.submit input#wp-submit {
+   color:#fff;
+   border-radius:6px;
+   background-color: #1a82f7; 
+   /*background-image: url(images/fallback-gradient.png); */
+   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#2F2727), to(#1a82f7));
+   background-image: -webkit-linear-gradient(top, #2F2727, #1a82f7); 
+   background-image:    -moz-linear-gradient(top, #2F2727, #1a82f7);
+   background-image:     -ms-linear-gradient(top, #2F2727, #1a82f7);
+   background-image:      -o-linear-gradient(top, #2F2727, #1a82f7);
+}
+body.login div#login p#nav {}
+body.login div#login p#nav a {}
+body.login div#login p#backtoblog {}
+body.login div#login p#backtoblog a {display:none;}
+body.login div#login p.message {display:none;}
+

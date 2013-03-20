@@ -1,0 +1,135 @@
+@CHARSET "ISO-8859-1";
+div.dmtDisplayNone{
+	display:none !important;
+	visibility:hidden;
+}
+
+span.dmtFolderMeta a{
+	text-decoration:none;
+	color:#21759B;
+}
+
+span.dmtFolderMeta a.delete{
+	color:#D54E21;
+}
+
+span.dmtFolderMeta a.delete:hover{
+	color:red;
+}
+
+span.dmtFolderMeta a:hover{
+	text-decoration:none;
+	color:#D54E21;
+}
+
+div.dmtFolderActions span.dmtFolderFilesCount a{
+	text-decoration:underline;
+	color:#21759B;
+}
+div.dmtFolderActions span.dmtFolderFilesCount a:hover{
+	text-decoration:underline;
+	color:#D54E21;
+}
+
+ul#navigation li a{
+	text-decoration:none;
+	font-size:15px;
+	margin-left:2px;
+	background-color:#ffffff;
+}
+
+div.dmtFolderToolTip {
+border: 2px solid #D5D5D5;
+background: white;
+color: #000000;
+margin: 0;
+padding: 6px 12px;
+}
+div.dmtFolderActions{
+	text-align:center;
+	border-top: 1px dashed #CCC;
+	padding-top: 5px;
+	margin-bottom: -12px;
+}
+
+div.dmtFolderToolTip h3{
+	font-weight: normal;
+	font-size: 12px;
+	text-align: center;
+}
+
+div.dmtFolderToolTip h3 a{
+	text-decoration:none;
+	color:#21759B;
+}
+div.dmtFolderToolTip h3 a:hover{
+	color:#D54E21;
+}
+div.dmtFolderToolTip p.dmtFolderDescription{
+	width:300px;
+}
+
+
+div.dmtFolderToolTip #aToolTipCloseBtn {
+		display:block;
+		height:15px;
+		width:15px;
+		background:url(images/close.png) no-repeat;
+		text-indent:-9999px;
+		outline:none;
+		position:absolute;
+		top:-18px;
+		right:-31px;
+		margin:2px;
+		padding:4px;
+	}
+div.dmtFolderToolTip span.dmtToolTipPointer
+{
+	background:url(images/toolTipPointer.png) no-repeat;
+	display:block;
+	outline:none;
+	width:20px;
+	height:20px;
+	position: absolute;
+	bottom: -19px;
+	left: 10px;
+}
+
+div#col-right div#dmtFolderStructreWrapper{
+	margin-top:50px;
+}
+span.dmtFolderStatusInfo{
+	color:#999999;
+	font-size:11px;
+}
+
+span.dmtFolderStatusInfo span.dmtFolderRed{
+	color:#D54E21;	
+}
+span.dmtFolderStatusInfo span.dmtFolderGreen{
+	color:#90B632;	
+}
+
+div.dmtFolderSort{
+	display:inline-block;
+	margin-left:10px;
+}
+div.dmtFolderSortNav
+{
+	height:40px;
+}
+div.dmtFolderSorter
+{
+	float: right;
+	padding-right: 25%;
+}
+div.dmtFolderSorter .dmtFolderSort a{
+	margin-right:0px;
+}
+
+form.search-form{
+display:none;
+}
+div#col-right .col-wrap{
+	display:none;
+}

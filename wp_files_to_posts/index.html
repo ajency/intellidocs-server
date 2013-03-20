@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<style type="text/css">
+	body {
+		font-family:Verdana, Geneva, sans-serif;
+		font-size:13px;
+		color:#333;
+		background:url(../bg.jpg);
+	}
+</style>
+<link rel="stylesheet" href="css/jquery.plupload.queue.css" type="text/css" media="screen" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="js/plupload.js"></script>
+<script type="text/javascript" src="js/plupload.html5.js"></script>
+<script type="text/javascript" src="js/jquery.plupload.queue.js"></script>
+</head>
+
+<body>
+<form method="post" action="">
+	<h1>Queue widget example</h1>
+
+	<p>Shows the jQuery Plupload Queue widget and under different runtimes.</p>
+
+	<div style="float: left; margin-right: 20px">
+
+		<h3>HTML 5 runtime</h3>
+		<div id="html5_uploader" style="width: 450px; height: 330px;">You browser doesn't support native upload. Try Firefox 3 or Safari 4.</div>
+	</div>
+
+	<br style="clear: both" />
+</form>
+<script type="text/javascript">
+$(function() {
+	
+	$("#html5_uploader").pluploadQueue({
+		// General settings
+		runtimes : 'html5',
+		url : 'upload.php',
+		max_file_size : '10mb',
+		chunk_size : '1mb',
+		unique_names : false,
+		filters : [
+			{title : "Image files", extensions : "jpg,gif,png"},
+			{title : "Zip files", extensions : "zip"}
+		],
+		resize : false
+	});
+	
+	});
+</script>
+
+</body>
+</html>

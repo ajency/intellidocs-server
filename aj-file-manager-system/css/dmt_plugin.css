@@ -1,0 +1,107 @@
+@CHARSET "ISO-8859-1";
+
+.dmtFileRow td
+{
+	vertical-align:middle;
+}
+
+ul.dmtDocumentFolderStructure
+{
+	padding-left:10px;
+}
+
+ul.dmtDocumentFolderStructure ul.children
+{
+	padding-left:20px;
+}
+div.dmtDocumentFolderStructureWrapper
+{
+
+	width:295px;
+	min-height:40px;
+	border:1px solid #cccccc;
+	border-radius:3px;
+	padding:5px;
+}
+div.dmtDocumentStructureWrapper
+{
+
+	width:595px;
+	min-height:40px;
+	border:1px solid #cccccc;
+	border-radius:3px;
+	padding:5px;
+}
+div.dmtDeletingFile{
+	margin-top: 5px;
+	width:100%;
+	line-height:35px;
+	border-color: #DFDFDF;
+	background-color: #F9F9F9;
+	border-collapse: separate;
+	border-top-color: white;
+	border-bottom-color: #DFDFDF;
+	border-width: 1px 0;
+	border-style: solid;
+	font-size: 17PX;
+	text-align: center;
+	background-color: white;
+	height: 40px;
+	padding-top: 10px;
+	}
+span.dmtDeletingFileGif{ background:url(../img/loading29.gif) no-repeat; display:inline-block; width:35px;}
+
+div.custom-radio-container {
+float: left;
+border-radius: 5px;
+overflow: hidden;
+}
+
+div.custom-radio-container div {
+background-color: rgb(241, 238, 238);
+color: #707070;
+float: left;
+padding: 4px 8px;
+cursor: pointer;
+}
+
+div.custom-radio-container div.selected {
+background-color: #1EB0FF;
+color: white;
+cursor: default;
+}
+
+span.dmtdesc{margin-top:10px; display:inline-block;}
+
+div.dmtAjaxSpinner{width: 30px;
+height: 16px;
+display: inline-block;
+background: url("../img/ajax-loader.gif") no-repeat top center;
+vertical-align: middle;}
+
+div.clearfix{clear:both;}
+
+div.dmtFolderList{ width:80%; padding:10px; border:1px solid #ccc; margin-top:10px; border-radius:10px;}
+div.dmtFolderList input {width:20px;}
+div.dmtFolderList ul.children{ margin-left:20px; margin-top:5px;}
+
+div.dmtFolderCopyButton{
+height: 15px;
+background-color: #007FC4;
+color: white;
+cursor: pointer;
+padding: 4px 8px;
+display: inline-block;
+margin-top: 10px;
+line-height: 15px;
+}
+table.dmtFileMetaTable  { margin-top:15px;}
+table.dmtFileMetaTable th{ text-align:center;}
+table.dmtFileMetaTable td{ text-align:center;}
+table.dmtFileMetaTable input { margin-bottom:10px; margin-top:10px;}
+table.dmtFileMetaTable textarea#excerpt{ height:7em;}
+
+img.dmt-ajax-loading-file{display: inline-block;display: none;position: absolute;margin-left: 5px;}
+div.dmt_file_upload_done{ display:inline-block;margin-left: 5px; width:16px;height:16px; position:absolute; background:url('../img/done.gif') no-repeat;}
+
+textarea.dmt_meta_excerpt{resize:vertical;}

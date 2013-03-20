@@ -1,0 +1,93 @@
+!SESSION 2012-07-20 14:33:44.290 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_33
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -showlocation -showlocation -showlocation
+Command-line arguments:  -os win32 -ws win32 -arch x86 -showlocation -showlocation -data C:\wamp\www\wordpress\wp-content\plugins\aj-file-manager-system -showlocation
+
+!ENTRY org.eclipse.ui 4 4 2012-07-20 14:33:47.982
+!MESSAGE Unable to find Action Set: org.eclipse.wst.server.ui.internal.webbrowser.actionSet
+
+!ENTRY org.eclipse.ui.workbench 2 0 2012-07-20 14:33:49.808
+!MESSAGE A handler conflict occurred.  This may disable some commands.
+!SUBENTRY 1 org.eclipse.ui.workbench 2 0 2012-07-20 14:33:49.808
+!MESSAGE Conflict for 'org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu':
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@1829c6b,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@2870b7),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@429c19)),sourcePriority=1064960)
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@1eb62b6,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@2870b7),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@429c19)),sourcePriority=1064960)
+
+!ENTRY org.eclipse.ui 4 4 2012-07-20 14:33:50.449
+!MESSAGE Bad extension specification
+
+!ENTRY org.zend.php.zendserver.deployment.ui 4 0 2012-07-20 14:33:50.450
+!MESSAGE startup class must implement org.eclipse.ui.IStartup
+
+!ENTRY org.eclipse.ui 4 4 2012-07-20 14:34:14.586
+!MESSAGE Invalid preference page path: HTML Syntax
+
+!ENTRY org.eclipse.ui 4 4 2012-07-20 14:34:14.587
+!MESSAGE Invalid preference page path: XML Syntax
+!SESSION 2012-07-23 11:31:32.495 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_33
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -showlocation
+Command-line arguments:  -os win32 -ws win32 -arch x86 -showlocation
+
+!ENTRY org.eclipse.ui.workbench 2 0 2012-07-23 11:31:47.204
+!MESSAGE A handler conflict occurred.  This may disable some commands.
+!SUBENTRY 1 org.eclipse.ui.workbench 2 0 2012-07-23 11:31:47.204
+!MESSAGE Conflict for 'org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu':
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@c78e02,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@14c8822),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@140fee)),sourcePriority=1064960)
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@13c6654,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@14c8822),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@140fee)),sourcePriority=1064960)
+
+!ENTRY org.eclipse.ui 4 4 2012-07-23 11:31:49.168
+!MESSAGE Bad extension specification
+
+!ENTRY org.zend.php.zendserver.deployment.ui 4 0 2012-07-23 11:31:49.173
+!MESSAGE startup class must implement org.eclipse.ui.IStartup
+
+!ENTRY org.eclipse.ui 4 4 2012-07-23 11:32:01.318
+!MESSAGE Invalid preference page path: HTML Syntax
+
+!ENTRY org.eclipse.ui 4 4 2012-07-23 11:32:01.318
+!MESSAGE Invalid preference page path: XML Syntax
+!SESSION 2012-08-04 17:21:45.761 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.6.0_33
+java.vendor=Sun Microsystems Inc.
+BootLoader constants: OS=win32, ARCH=x86, WS=win32, NL=en_US
+Framework arguments:  -showlocation -showlocation -showlocation -showlocation
+Command-line arguments:  -os win32 -ws win32 -arch x86 -showlocation -showlocation -showlocation -data C:\wamp\www\wordpress\wp-content\plugins\aj-file-manager-system -showlocation
+
+!ENTRY org.eclipse.ui.workbench 2 0 2012-08-04 17:21:52.046
+!MESSAGE A handler conflict occurred.  This may disable some commands.
+!SUBENTRY 1 org.eclipse.ui.workbench 2 0 2012-08-04 17:21:52.046
+!MESSAGE Conflict for 'org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu':
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@a40f0e,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@fe53cf),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@1015a9e)),sourcePriority=1064960)
+HandlerActivation(commandId=org.eclipse.dltk.ui.edit.text.script.refactor.quickMenu,
+	handler=org.eclipse.dltk.internal.ui.actions.refactoring.RefactorActionGroup$3@d89e02,
+	expression=AndExpression(ActivePartExpression(org.eclipse.php.internal.ui.explorer.PHPExplorerPart@fe53cf),WorkbenchWindowExpression(org.eclipse.ui.internal.WorkbenchWindow@1015a9e)),sourcePriority=1064960)
+
+!ENTRY org.eclipse.ui 4 4 2012-08-04 17:21:53.136
+!MESSAGE Bad extension specification
+
+!ENTRY org.zend.php.zendserver.deployment.ui 4 0 2012-08-04 17:21:53.142
+!MESSAGE startup class must implement org.eclipse.ui.IStartup
+
+!ENTRY org.eclipse.ui 4 4 2012-08-04 17:22:26.536
+!MESSAGE Invalid preference page path: HTML Syntax
+
+!ENTRY org.eclipse.ui 4 4 2012-08-04 17:22:26.537
+!MESSAGE Invalid preference page path: XML Syntax

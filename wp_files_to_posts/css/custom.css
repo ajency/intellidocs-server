@@ -1,0 +1,51 @@
+@charset "utf-8";
+/* CSS Document */
+
+h3.ppFolderTitle{display:inline-block;}
+div.ppFolderStructure{ float:left; margin-right:20px; }
+div.ppFolderStructureUl{width:370px; height:310px; border:1px solid #ccc; margin-top:10px}
+div.ppFolderStructureUlwrapper{width:368px; height:215px;margin-top: 0px; overflow:auto;}
+div.ppFolderStructureUl ul { padding-left:10px; padding-top:5px;}
+div.clearfix{clear:both}
+div.ppResetSettings{
+	display: inline-block;
+	margin-left: 25%;
+	cursor: pointer;
+	width: 200px;
+	text-align: center;
+	margin-top: 10px;
+	height: 38px;
+	background-color: #DFDFDF;
+	line-height: 36px;
+	color: #42454A;
+	font-size: 16px;
+	border-radius: 10px;
+	}
+div.ppResetQueue{
+	display: inline-block;
+	margin-left: 10px;
+	cursor: pointer;
+	width: 200px;
+	text-align: center;
+	margin-top: 10px;
+	height: 38px;
+	background-color: #DFDFDF;
+	line-height: 36px;
+	color: #42454A;
+	font-size: 16px;
+	border-radius: 10px;
+}	
+div.ppResetHide{ display:none;}
+span.ppIconReset{ display:inline-block; background:url(../img/icon.reset.png) no-repeat center center; width:30px;}	
+span.ppIconQueueReset{ display:inline-block; background:url(../img/icon.reset.png) no-repeat center center; width:30px;}	
+
+span.ppIconResetWhite{background:url(../img/icon.reset_white.png) no-repeat center center;}
+		
+div.ppResetSettingsHover{
+	background-color: #C4C0C0;
+	box-shadow: 0px 0px 12px inset;
+	}
+div.ppResetSettingsHover span.ppResetSettingsText{color:#FFFFFF;} 
+div.ppResetSettingsHover span.ppResetQueueText{color:#FFFFFF;} 	
+a.pp_add_folder_2{background: #F3F3F3 url('../img/buttons_2.png') no-repeat 0 center;}
+#adminmenu .wp-menu-image img { opacity:1;}
