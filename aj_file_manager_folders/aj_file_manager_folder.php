@@ -451,7 +451,7 @@ function intellidocs_folder_html($cat)
 {
 		$html ='';
 		
-		$folder_edit_html 	   	= (current_user_can('manage_options'))? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>':'';
+		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>':'';
 
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
 		
@@ -469,7 +469,7 @@ function intellidocs_folder_html($cat)
 						'.$folder_item_id.$sub_folder_count_html.$file_count_html.$folder_publish_html.$folder_active_html.$folder_edit_html.'
 					</span>
 				 </li>';
-		return	$html;	  
+		return	 	$html;	  
 }
 
 function intellidocs_file_html($catid)
