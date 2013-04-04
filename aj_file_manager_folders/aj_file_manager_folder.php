@@ -62,7 +62,7 @@ jQuery(document).ready(function(){
 </div>
 <?php 
 }
-//add_action('document_folders_add_form', 'aj_get_document_folder_structure');
+//add_action('document_folders_add_form', 'aj_get_document_folder_structure'); //comment this to disable old tree view
 
 /**
  * Function to recurssively generate a li ul structure for terms
@@ -451,13 +451,13 @@ function intellidocs_folder_html($cat)
 {
 		$html ='';
 		
-		$folder_edit_html 	   	= (current_user_can('manage_options'))? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>':'';
+		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>&nbsp;&nbsp;<span class="edit-folder" title="Delete folder" rel="'.admin_url().wp_nonce_url( "edit-tags.php?action=delete&amp;taxonomy=document_folders&tag_ID=".$cat->term_id, 'delete-tag_' . $cat->term_id ).'"><i class="icon-trash"></i>Delete</span>':'';
 
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
 		
 		$sub_folder_count_html 	= '&nbsp;<span class="sub-folder-count" title="Sub folder count"><i class="icon-folder-close-alt"></i>'.intellidocs_get_subfolder_count($cat->term_id).'</span>';
-			
-		$file_count_html		= '&nbsp;<span class="file-count" title="File count"><i class="icon-file-alt"></i>'.intellidocs_get_folder_file_count($cat->term_id).'</span>';
+		  $args = array('post_type'=> 'document_files','dmtNoTaxChild' => true,'dmtTax' => 'document_folders','dmtTaxSlug' => $cat->slug); 
+		$file_count_html		= '&nbsp;<span class="file-count" title="File count"><i class="icon-file-alt"></i>'.intellidocs_get_folder_file_count($cat->term_id).'</span><span class="edit-folder" title="Edit folder" rel="'.admin_url().esc_url ( add_query_arg( $args, 'edit.php' ) ).'">(view files)</span>';
 		
 		$folder_publish_html	= intellidocs_folder_published($cat->term_id);
 		
@@ -469,7 +469,7 @@ function intellidocs_folder_html($cat)
 						'.$folder_item_id.$sub_folder_count_html.$file_count_html.$folder_publish_html.$folder_active_html.$folder_edit_html.'
 					</span>
 				 </li>';
-		return	$html;	  
+		return	 	$html;	  
 }
 
 function intellidocs_file_html($catid)
