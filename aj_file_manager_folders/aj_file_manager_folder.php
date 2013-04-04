@@ -451,7 +451,11 @@ function intellidocs_folder_html($cat)
 {
 		$html ='';
 		
+<<<<<<< HEAD
 		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>&nbsp;&nbsp;<span class="edit-folder" title="Delete folder" rel="'.admin_url().wp_nonce_url( "edit-tags.php?action=delete&amp;taxonomy=document_folders&tag_ID=".$cat->term_id, 'delete-tag_' . $cat->term_id ).'"><i class="icon-trash"></i>Delete</span>':'';
+=======
+		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>':'';
+>>>>>>> d61b8fcff869ec2bd73849a4be7ebacbfb093349
 
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
 		
