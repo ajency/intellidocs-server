@@ -428,7 +428,7 @@ License: GPL3
 		}
 		
 		//Function called to recurrsively update
-		//commented to stop action on subfolders dmt_wp_update_sub_folders('document_folders',$folder_id,0,$status);
+		 dmt_wp_update_sub_folders('document_folders',$folder_id,0,$status);
 		
 		$success = ($rows_affected)?true:false;
 		$response = json_encode( array( 'success' => $success,'folder_id' => $folder_id,'status' => $status,'message' => $message) );
