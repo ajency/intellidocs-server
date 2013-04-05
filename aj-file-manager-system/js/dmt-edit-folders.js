@@ -28,11 +28,19 @@ jQuery(document).ready(function(){
 			jQuery('#dmt_folder_publish_spinner').show();
 			
 			jQuery('#dmt_folder_status').val('unpublished');	
-
+			if (jQuery('#apply_recursively:checked').length)
+			{
+				apply_recursively = jQuery('#apply_recursively:checked').val()
+			}
+			else
+			{
+				apply_recursively = "no"
+			}
 			var data = 
 			{
 					action 		: 'dmt_ajax_folder_status_update',
 					folder_id 	: jQuery('#dmt_folder_term_id').val(),
+					apply_recursively:apply_recursively,
 					status 	  	: jQuery('#dmt_folder_status').val(),
 			};
 
@@ -40,6 +48,7 @@ jQuery(document).ready(function(){
 
 				if(response.success == true)
 				{
+					 
 					jQuery('#dmt_folder_publish_spinner').hide();
 					if(response.status == 'published')
 						jQuery('#dmtFolderDeactivateButton').html('Deactivate Folder');
@@ -69,12 +78,20 @@ jQuery(document).ready(function(){
 		jQuery('#dmt_folder_publish_spinner').show();
 		
 		var send_mail = (jQuery("#dmtSendEmailsYes").is(':checked'))?'yes':'no';
-		
+		if (jQuery('#apply_recursively:checked').length)
+		{
+			apply_recursively = jQuery('#apply_recursively:checked').val()
+		}
+		else
+		{
+			apply_recursively = "no"
+		}
 		var data = 
 		{
 				action 		: 'dmt_ajax_folder_status_update',
 				folder_id 	: jQuery('#dmt_folder_term_id').val(),
 				status 	  	: jQuery('#dmt_folder_status').val(),
+				apply_recursively:apply_recursively,
 				'send_mail'	: send_mail,
 		};
 
@@ -83,7 +100,7 @@ jQuery(document).ready(function(){
 
 			if(response.success == true)
 			{
-				//console.log(response);
+				 
 				jQuery('#dmt_folder_publish_spinner').hide();
 				if(response.status == 'published')
 					jQuery('#dmtFolderDeactivateButton').html('Deactivate Folder');

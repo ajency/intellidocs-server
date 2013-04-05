@@ -148,7 +148,7 @@ License: GPL3
                 <div class="dmtOptionSelect <?php echo $pub ?>">Publish</div>
                 <div class="dmtOptionSelect <?php echo $unpub ?>">Unpublish</div>
          	</div>
-            
+           <span style="line-height:31px;" > <input type="checkbox" id="apply_recursively" value="yes" style="width:5%; margin-right:-10px" >Apply Recursively</span>
             <!-- Publish Email Settings -->
          	<a href="#TB_inline?height=500&width=600&inlineId=hiddenEmailContent" class="thickbox" id="dmtPublishSendEmail" style="display:none;">Send Email</a>
             
@@ -374,6 +374,7 @@ License: GPL3
 		global $wpdb;
 		$folder_id 	= $_POST['folder_id'];
 		$status		= $_POST['status'];	
+		$apply_recursively = isset($_POST['apply_recursively'])?$_POST['apply_recursively']:'no';
 		//Check if send mail is checked.
 		$send_mail	= (isset($_POST['send_mail']))?$_POST['send_mail']:false; 
 		
@@ -428,7 +429,10 @@ License: GPL3
 		}
 		
 		//Function called to recurrsively update
-		 dmt_wp_update_sub_folders('document_folders',$folder_id,0,$status);
+		if($apply_recursively=="yes")
+		{
+		  dmt_wp_update_sub_folders('document_folders',$folder_id,0,$status);
+		}
 		
 		$success = ($rows_affected)?true:false;
 		$response = json_encode( array( 'success' => $success,'folder_id' => $folder_id,'status' => $status,'message' => $message) );
