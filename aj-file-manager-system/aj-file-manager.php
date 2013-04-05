@@ -214,10 +214,20 @@ License: GPL3
 		
 		$item_number = $_POST['document_folders_item_id'];
 		
-		$record_exists = $wpdb->get_var($wpdb->prepare("SELECT `meta_value` FROM $folder_meta_table WHERE `folder_id` = %d AND `meta_key` = %s ",$folder_id,'document_folders_item_id'));
+		$record_exists = $wpdb->get_var($wpdb->prepare("SELECT count(meta_value) FROM $folder_meta_table WHERE `folder_id` = %d AND `meta_key` = %s ",$folder_id,'document_folders_item_id'));
 		
-		if(!$record_exists)
+		if(intval($record_exists) >1)
 		{
+			$wpdb->delete(
+					$folder_meta_table, 
+					array( 'folder_id'  => $folder_id,'meta_key' => 'document_folders_item_id' )
+			);
+			$record_exists = 0;
+		}
+		 
+		if(!intval($record_exists))
+		{
+			 
 			$rows_affected = $wpdb->insert(
 					$folder_meta_table,
 					array(
@@ -228,6 +238,7 @@ License: GPL3
 		}
 		else
 		{
+			 
 			$rows_affected = $wpdb->update(
 					$folder_meta_table,
 					array( 'meta_value' => $item_number),
