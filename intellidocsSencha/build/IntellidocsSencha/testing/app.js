@@ -61172,6 +61172,424 @@ Ext.define('Ext.dataview.NestedList', {
 
 
 /**
+ * @private
+ *
+ * This object handles communication between the WebView and Sencha's native shell.
+ * Currently it has two primary responsibilities:
+ *
+ * 1. Maintaining unique string ids for callback functions, together with their scope objects
+ * 2. Serializing given object data into HTTP GET request parameters
+ *
+ * As an example, to capture a photo from the device's camera, we use `Ext.device.Camera.capture()` like:
+ *
+ *     Ext.device.Camera.capture(
+ *         function(dataUri){
+ *             // Do something with the base64-encoded `dataUri` string
+ *         },
+ *         function(errorMessage) {
+ *
+ *         },
+ *         callbackScope,
+ *         {
+ *             quality: 75,
+ *             width: 500,
+ *             height: 500
+ *         }
+ *     );
+ *
+ * Internally, `Ext.device.Communicator.send()` will then be invoked with the following argument:
+ *
+ *     Ext.device.Communicator.send({
+ *         command: 'Camera#capture',
+ *         callbacks: {
+ *             onSuccess: function() {
+ *                 // ...
+ *             },
+ *             onError: function() {
+ *                 // ...
+ *             }
+ *         },
+ *         scope: callbackScope,
+ *         quality: 75,
+ *         width: 500,
+ *         height: 500
+ *     });
+ *
+ * Which will then be transformed into a HTTP GET request, sent to native shell's local
+ * HTTP server with the following parameters:
+ *
+ *     ?quality=75&width=500&height=500&command=Camera%23capture&onSuccess=3&onError=5
+ *
+ * Notice that `onSuccess` and `onError` have been converted into string ids (`3` and `5`
+ * respectively) and maintained by `Ext.device.Communicator`.
+ *
+ * Whenever the requested operation finishes, `Ext.device.Communicator.invoke()` simply needs
+ * to be executed from the native shell with the corresponding ids given before. For example:
+ *
+ *     Ext.device.Communicator.invoke('3', ['DATA_URI_OF_THE_CAPTURED_IMAGE_HERE']);
+ *
+ * will invoke the original `onSuccess` callback under the given scope. (`callbackScope`), with
+ * the first argument of 'DATA_URI_OF_THE_CAPTURED_IMAGE_HERE'
+ *
+ * Note that `Ext.device.Communicator` maintains the uniqueness of each function callback and
+ * its scope object. If subsequent calls to `Ext.device.Communicator.send()` have the same
+ * callback references, the same old ids will simply be reused, which guarantee the best possible
+ * performance for a large amount of repetitive calls.
+ */
+Ext.define('Ext.device.communicator.Default', {
+
+    SERVER_URL: 'http://localhost:3000', // Change this to the correct server URL
+
+    callbackDataMap: {},
+
+    callbackIdMap: {},
+
+    idSeed: 0,
+
+    globalScopeId: '0',
+
+    generateId: function() {
+        return String(++this.idSeed);
+    },
+
+    getId: function(object) {
+        var id = object.$callbackId;
+
+        if (!id) {
+            object.$callbackId = id = this.generateId();
+        }
+
+        return id;
+    },
+
+    getCallbackId: function(callback, scope) {
+        var idMap = this.callbackIdMap,
+            dataMap = this.callbackDataMap,
+            id, scopeId, callbackId, data;
+
+        if (!scope) {
+            scopeId = this.globalScopeId;
+        }
+        else if (scope.isIdentifiable) {
+            scopeId = scope.getId();
+        }
+        else {
+            scopeId = this.getId(scope);
+        }
+
+        callbackId = this.getId(callback);
+
+        if (!idMap[scopeId]) {
+            idMap[scopeId] = {};
+        }
+
+        if (!idMap[scopeId][callbackId]) {
+            id = this.generateId();
+            data = {
+                callback: callback,
+                scope: scope
+            };
+
+            idMap[scopeId][callbackId] = id;
+            dataMap[id] = data;
+        }
+
+        return idMap[scopeId][callbackId];
+    },
+
+    getCallbackData: function(id) {
+        return this.callbackDataMap[id];
+    },
+
+    invoke: function(id, args) {
+        var data = this.getCallbackData(id);
+
+        data.callback.apply(data.scope, args);
+    },
+
+    send: function(args) {
+        var callbacks, scope, name, callback;
+
+        if (!args) {
+            args = {};
+        }
+        else if (args.callbacks) {
+            callbacks = args.callbacks;
+            scope = args.scope;
+
+            delete args.callbacks;
+            delete args.scope;
+
+            for (name in callbacks) {
+                if (callbacks.hasOwnProperty(name)) {
+                    callback = callbacks[name];
+
+                    if (typeof callback == 'function') {
+                        args[name] = this.getCallbackId(callback, scope);
+                    }
+                }
+            }
+        }
+
+        this.doSend(args);
+    },
+
+    doSend: function(args) {
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('GET', this.SERVER_URL + '?' + Ext.Object.toQueryString(args) + '&_dc=' + new Date().getTime(), false);
+
+        // wrap the request in a try/catch block so we can check if any errors are thrown and attempt to call any
+        // failure/callback functions if defined
+        try {
+            xhr.send(null);
+        } catch(e) {
+            if (args.failure) {
+                this.invoke(args.failure);
+            } else if (args.callback) {
+                this.invoke(args.callback);
+            }
+        }
+    }
+});
+
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.communicator.Android', {
+    extend: 'Ext.device.communicator.Default',
+
+    doSend: function(args) {
+        window.Sencha.action(JSON.stringify(args));
+    }
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.Communicator', {
+    requires: [
+        'Ext.device.communicator.Default',
+        'Ext.device.communicator.Android'
+    ],
+
+    singleton: true,
+
+    constructor: function() {
+        if (Ext.os.is.Android) {
+            return new Ext.device.communicator.Android();
+        }
+
+        return new Ext.device.communicator.Default();
+    }
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.connection.Abstract', {
+    extend: 'Ext.Evented',
+
+    config: {
+        online: false,
+        type: null
+    },
+
+    /**
+     * @property {String} UNKNOWN
+     * Text label for a connection type.
+     */
+    UNKNOWN: 'Unknown connection',
+
+    /**
+     * @property {String} ETHERNET
+     * Text label for a connection type.
+     */
+    ETHERNET: 'Ethernet connection',
+
+    /**
+     * @property {String} WIFI
+     * Text label for a connection type.
+     */
+    WIFI: 'WiFi connection',
+
+    /**
+     * @property {String} CELL_2G
+     * Text label for a connection type.
+     */
+    CELL_2G: 'Cell 2G connection',
+
+    /**
+     * @property {String} CELL_3G
+     * Text label for a connection type.
+     */
+    CELL_3G: 'Cell 3G connection',
+
+    /**
+     * @property {String} CELL_4G
+     * Text label for a connection type.
+     */
+    CELL_4G: 'Cell 4G connection',
+
+    /**
+     * @property {String} NONE
+     * Text label for a connection type.
+     */
+    NONE: 'No network connection',
+
+    /**
+     * True if the device is currently online
+     * @return {Boolean} online
+     */
+    isOnline: function() {
+        return this.getOnline();
+    }
+
+    /**
+     * @method getType
+     * Returns the current connection type.
+     * @return {String} type
+     */
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.connection.Sencha', {
+    extend: 'Ext.device.connection.Abstract',
+
+    /**
+     * @event onlinechange
+     * Fires when the connection status changes.
+     * @param {Boolean} online True if you are {@link Ext.device.Connection#isOnline online}
+     * @param {String} type The new online {@link Ext.device.Connection#getType type}
+     */
+
+    initialize: function() {
+        Ext.device.Communicator.send({
+            command: 'Connection#watch',
+            callbacks: {
+                callback: this.onConnectionChange
+            },
+            scope: this
+        });
+    },
+
+    onConnectionChange: function(e) {
+        this.setOnline(Boolean(e.online));
+        this.setType(this[e.type]);
+
+        this.fireEvent('onlinechange', this.getOnline(), this.getType());
+    }
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.connection.PhoneGap', {
+    extend: 'Ext.device.connection.Abstract',
+
+    syncOnline: function() {
+        var type = navigator.network.connection.type;
+        this._type = type;
+        this._online = type != Connection.NONE;
+    },
+
+    getOnline: function() {
+        this.syncOnline();
+        return this._online;
+    },
+
+    getType: function() {
+        this.syncOnline();
+        return this._type;
+    }
+});
+
+/**
+ * @private
+ */
+Ext.define('Ext.device.connection.Simulator', {
+    extend: 'Ext.device.connection.Abstract',
+
+    getOnline: function() {
+        this._online = navigator.onLine;
+        this._type = Ext.device.Connection.UNKNOWN;
+        return this._online;
+    }
+});
+
+/**
+ * This class is used to check if the current device is currently online or not. It has three different implementations:
+ *
+ * - Sencha Packager
+ * - PhoneGap
+ * - Simulator
+ *
+ * Both the Sencha Packager and PhoneGap implementations will use the native functionality to determine if the current
+ * device is online. The Simulator version will simply use `navigator.onLine`.
+ *
+ * When this singleton ({@link Ext.device.Connection}) is instantiated, it will automatically decide which version to
+ * use based on the current platform.
+ *
+ * ## Examples
+ *
+ * Determining if the current device is online:
+ *
+ *     alert(Ext.device.Connection.isOnline());
+ *
+ * Checking the type of connection the device has:
+ *
+ *     alert('Your connection type is: ' + Ext.device.Connection.getType());
+ *
+ * The available connection types are:
+ *
+ * - {@link Ext.device.Connection#UNKNOWN UNKNOWN} - Unknown connection
+ * - {@link Ext.device.Connection#ETHERNET ETHERNET} - Ethernet connection
+ * - {@link Ext.device.Connection#WIFI WIFI} - WiFi connection
+ * - {@link Ext.device.Connection#CELL_2G CELL_2G} - Cell 2G connection
+ * - {@link Ext.device.Connection#CELL_3G CELL_3G} - Cell 3G connection
+ * - {@link Ext.device.Connection#CELL_4G CELL_4G} - Cell 4G connection
+ * - {@link Ext.device.Connection#NONE NONE} - No network connection
+ * 
+ * @mixins Ext.device.connection.Abstract
+ *
+ * @aside guide native_apis
+ */
+Ext.define('Ext.device.Connection', {
+    singleton: true,
+
+    requires: [
+        'Ext.device.Communicator',
+        'Ext.device.connection.Sencha',
+        'Ext.device.connection.PhoneGap',
+        'Ext.device.connection.Simulator'
+    ],
+    
+    /**
+     * @event onlinechange
+     * @inheritdoc Ext.device.connection.Sencha#onlinechange
+     */
+
+    constructor: function() {
+        var browserEnv = Ext.browser.is;
+
+        if (browserEnv.WebView) {
+            if (browserEnv.PhoneGap) {
+                return Ext.create('Ext.device.connection.PhoneGap');
+            }
+            else {
+                return Ext.create('Ext.device.connection.Sencha');
+            }
+        }
+        else {
+            return Ext.create('Ext.device.connection.Simulator');
+        }
+    }
+});
+
+/**
  * @class Ext.direct.Event
  * A base class for all Ext.direct events. An event is
  * created after some kind of interaction with the server.
@@ -70256,7 +70674,7 @@ Ext.define('DMTApp.controller.DmtNotificationsDetailsPanelRefreshButtonControlll
     },
     dmtNotificationRefreshButtonTap:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
 			var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
 			sub_tabs_panel.setActiveItem(0);
@@ -70584,7 +71002,7 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 					                                                 function(dir){
 					                                                	 console.log("INtellidocs folder created again ");
 					                                                	 //write json file 
-					                                                	 if(navigator.onLine)
+					                                                	 if(Ext.device.Connection.isOnline())
 					                                                     {
 					                                                		var sub_tabs_panel = Ext.getCmp('dmt-sub-tabs-panel');
 					                                                		sub_tabs_panel.setActiveItem(0);
@@ -70648,28 +71066,30 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 				if(Ext.getCmp('dmt-secure-login-panel'))
 					Ext.getCmp('dmt-secure-login-panel').destroy();				
 					
+				//Destroy the tabs panel
+				this.getDmtTabsPanel().destroy();
 				
 				var dmt_secure_login_panel = Ext.create('DMTApp.view.DmtSecureLogin');
 					main_container.add(dmt_secure_login_panel).show();
-				
-				//Destroy the tabs panel
-				main_container.remove(this.getDmtTabsPanel());
-					
-					
+														
 				//Disconnect the notification polling and release the resources/		
 				var notification_polling = Ext.direct.Manager.getProvider('dmt-notification-polling');
 				notification_polling.disconnect();
                 //Ext.Viewport.unmask();
-				Ext.Ajax.request({
-                    url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_logout.php',
-                                         callbackKey: 'set_user_logout',
-                                         method:'POST',
-                                         withCredentials: true,
-                                         useDefaultXhrHeader: false,
-                                         success: function(result, request){},
-                                         failure: function(result){},
-                                         scope :this,
-                            });	
+				
+				if(Ext.device.Connection.isOnline())
+				{
+					Ext.Ajax.request({
+	                    url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_user_logout.php',
+	                                         callbackKey: 'set_user_logout',
+	                                         method:'POST',
+	                                         withCredentials: true,
+	                                         useDefaultXhrHeader: false,
+	                                         success: function(result, request){},
+	                                         failure: function(result){},
+	                                         scope :this,
+	                            });	
+				}
 			}
 			else
 				current.reset();
@@ -70754,7 +71174,24 @@ Ext.define('DMTApp.controller.DmtSettingsController', {
 	{
 			var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 			login_info_store.load();
-			login_info_store.getProxy().clear();
+			
+		    var index = login_info_store.find('key','dmtScLgInfo');
+		    
+		    if(index == -1)
+		    {
+		        //setup localstorage with values
+		        var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedOutSuccessfully'});
+		        record.save();	
+		    }
+		    else
+		    {
+		        //Get the old value and set new value
+		        var record = login_info_store.getAt(index);
+		        record.set('value','loggedOutSuccessfully');
+		        record.save();
+		    }
+		    
+			//login_info_store.getProxy().clear();
 	
 	},
 	dmtGetUsernameEmailFromCache:function()
@@ -70856,9 +71293,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		var field_values = secure_login_form.getValues();
 		var main_container = Ext.getCmp('dmt-main-container');
 		var loginFormModelInstance = Ext.create('DMTApp.model.DmtLoginFormModel',{user_name:field_values.dmt_username,password:field_values.dmt_password});
-		 
-		main_container.setMasked({xtype: 'loadmask',message: 'Logging In..'});	
-	
 		var errors = loginFormModelInstance.validate();
 		
 		if(errors.isValid())
@@ -70871,54 +71305,108 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			main_container.unmask();
 		    END TESTING **/
 			
-			
-			Ext.Ajax.request({
-                url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
-                callbackKey: 'get_user_authenticated',
-                params: field_values,
-                method:'POST',
-                withCredentials: true,
-                useDefaultXhrHeader: false,
-                success: function(result, request)
-                {
-                	global_is_user_logged_in = true;
-                	var result = eval(result.responseText);
-					if(result.response == true)
+			if(!Ext.device.Connection.isOnline())
+			{
+				//offline login.
+				Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
+				
+				var login_info_store = Ext.getStore('DmtLocalStorageCookie');
+				login_info_store.load();
+				var index = login_info_store.find('key','dmtScLgInfo');
+				
+				if(index != -1)
+				{
+					//some record exists.
+					var record = login_info_store.getAt(index);
+					var stored_data = record.getData();
+					var stored_uname = stored_data.user_name;
+					var stored_pass  = stored_data.user_pass;
+					var input_uname	 = field_values.dmt_username;
+					var input_pass	 = MD5(field_values.dmt_password);
+					var _currentScope = this;
+					
+					if((stored_uname == input_uname) && (stored_pass == input_pass))
 					{
-						//Save the logged in information
-						this.dmtSecureLoginCookie(request,result);
+						console.log('username and password checked.!!!!');	
 						
-						main_container.unmask();
+						var createDelay = Ext.create('Ext.util.DelayedTask', function() {
+							
+							console.log('Delayed task execution.!!!');	
+							
+							if(Ext.getCmp('dmt-tabs-panel'))
+								Ext.getCmp('dmt-tabs-panel').destroy();
+							
+							_currentScope.getDmtSecureLoginPanel().destroy();
+							
+							var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
+							main_container.add(tabs_panel).show();
 						
-						if(Ext.getCmp('dmt-tabs-panel'))
-							Ext.getCmp('dmt-tabs-panel').destroy();
-						
-						this.getDmtSecureLoginPanel().destroy();
-						
-						var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
-						main_container.add(tabs_panel).show();
-						
-						
+						});
+						createDelay.delay(1000);
 					}
 					else
 					{
-						main_container.unmask();
+						Ext.Viewport.unmask();
 						Ext.Msg.alert('Oops..','The user name and/or password provided is incorrect', Ext.emptyFn);
 						secure_login_form.reset();
 					}
-				},
-				failure: function()
+				}
+				else
 				{
-					main_container.unmask();
-					Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
-				},
-				scope :this,
-			});
+					Ext.Viewport.unmask();
+					Ext.Msg.alert('Oops..','Unable to provide offline login', Ext.emptyFn);
+				}
+			}
+			else
+			{
+				Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
+				
+				Ext.Ajax.request({
+	                url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',
+	                callbackKey: 'get_user_authenticated',
+	                params: field_values,
+	                method:'POST',
+	                withCredentials: true,
+	                useDefaultXhrHeader: false,
+	                success: function(result, request)
+	                {
+	                	global_is_user_logged_in = true;
+	                	var result = eval(result.responseText);
+						if(result.response == true)
+						{
+							//Save the logged in information
+							this.dmtSecureLoginCookie(request,result);
+							
+							if(Ext.getCmp('dmt-tabs-panel'))
+								Ext.getCmp('dmt-tabs-panel').destroy();
+							
+							this.getDmtSecureLoginPanel().destroy();
+							
+							var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
+							main_container.add(tabs_panel).show();
+							
+						}
+						else
+						{
+								Ext.Viewport.unmask();
+								Ext.Msg.alert('Oops..','The user name and/or password provided is incorrect', Ext.emptyFn);
+								secure_login_form.reset();
+						}
+					},
+					failure: function(response,request)
+					{
+	
+						Ext.Viewport.unmask();
+						Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
+					},
+					scope :this,
+				});
+			}
 		}
 		else
 		{
 			console.log(errors);
-			main_container.unmask();
+			Ext.Viewport.unmask();
 			Ext.Msg.alert('Oops..','Please provide a user name and password', Ext.emptyFn);
 			secure_login_form.reset();
 		}
@@ -70926,7 +71414,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 	//Function to Save the logged in information
 	dmtSecureLoginCookie:function(request,result)
 	{
-		console.log(request,result);
 			//Get the user name from the request
 			var dmt_username = request.params.dmt_username;
 			var login_info_store = Ext.getStore('DmtLocalStorageCookie');
@@ -70936,7 +71423,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			if(index == -1)
 			{
 				//setup localstorage with values
-				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedInSuccessfully',user_name:dmt_username,user_email:result.email});
+				var record = Ext.create('DMTApp.model.DmtLocalStorageCookieModel', {key: 'dmtScLgInfo',value: 'loggedInSuccessfully',user_name:dmt_username,user_email:result.email,user_pass:result.key});
 				record.save();					
 			}
 			else
@@ -70946,6 +71433,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 				record.set('value','loggedInSuccessfully');
 				record.set('user_name',dmt_username);
 				record.set('user_email',result.email);
+				record.set('user_pass',result.key);
 				record.save();
 			}
 	}
@@ -71302,7 +71790,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			{
 				panel_content.items[2].items.push({ 
 					xtype:'button',
-					text:'Download all files in folder',
+					text:'Update Folder',
 					cls:'dmt-details-panel-folder-download-button',
 					margin:'20 0 0 0',
 					ui:'confirm round',
@@ -71314,7 +71802,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 					action:'dmtDetailsPanelFolderDownloadButton',
 				});
 			}
-
+			
+			/**
 			if(dir_count > 0)
 			{
 				panel_content.items[2].items.push({	
@@ -71330,7 +71819,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 					height:32,
 					action:'dmtDetailsPanelSubFolderDownloadButton',
 				});
-			}
+			}*/
 
 			if(record_data.f_file_count > 0)
 			{
@@ -71391,13 +71880,14 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		
 		
 		console.log('List Store loaded');
+		Ext.Viewport.unmask();
 		//Add the user_name param to the polling function
 		var base_params ={
 							user_name: this.dmtGetUsernameFromCache(),
 						 };
 		//Build the config for the notification polling				 
 		var dmt_polling = { 
-           interval:6000,
+           interval:(15*60*1000),
            type:'polling',
            url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_polling.php?',
            baseParams:base_params,
@@ -71535,7 +72025,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When the user clicks on the refresh button on the nested list
 	dmtNestedListRefreshButton:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
            Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
@@ -71684,7 +72174,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelSubFolderDownloadButtonTap:function(button)
     {
-    	if(navigator.onLine)
+    	if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
@@ -71773,7 +72263,9 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
 	            	if(buttonId == 'yes')
 	            	{
 
-	                    var file_name_url = button.getParent().getComponent(0).getComponent(0).getValue();   
+	                   // var file_name_url = button.getParent().getComponent(0).getComponent(0).getValue();
+	                	var fileUrlField  = Ext.ComponentQuery.query('hiddenfield[name="document_url"]');
+	            		var file_name_url = fileUrlField.pop().getValue(); 
 	                    var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
 	                    var structure = Ext.getCmp('dmtFileFolder')._value;
 	                    
@@ -71796,14 +72288,14 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     //The folder download function.
     dmtDetailsPanelFolderDownloadButtonTap:function(button)
     {
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
            if(global_current_download_folder_id == 0)
            {
                
-                Ext.Msg.confirm('','Download all files in current folder?',
+                Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
@@ -71828,7 +72320,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
            }
            else if(global_current_download_folder_id = folder_id)
            {
-               Ext.Msg.alert('Please Wait','Currently downloading files from this directory');
+               Ext.Msg.alert('Please Wait','Currently downloading files from this folder');
            }
            else{
                Ext.Msg.alert('Please Wait','Until current download ends');
@@ -71848,9 +72340,10 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
             return;
         }
     	
-		var fileUrlField  = Ext.ComponentQuery.query('hiddenfield[name="document_url"]');
+		
         //get the file name to be displayed
-        //var file_name_url = button.getParent().getComponent(0).getComponent(0).getValue();   
+        //var file_name_url = button.getParent().getComponent(0).getComponent(0).getValue(); 
+    	var fileUrlField  = Ext.ComponentQuery.query('hiddenfield[name="document_url"]');
 		var file_name_url = fileUrlField.pop().getValue(); 
         var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);             
         
@@ -71864,7 +72357,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelDownloadButtonTap:function(button)
 	{
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
     
         if(button.getText() == 'Open')
@@ -71987,13 +72480,17 @@ Ext.define('DMTApp.controller.DmtTabsPanelController', {
     
     config: {
         refs: {
-            
+        	dmtTabsPanel: '[id=dmt-tabs-panel]', 
         },
         control: {
-            
+        	dmtTabsPanel:{
+        		painted:'dmtTabsPanelViewportUnmask'
+        	}
         }
     },
+    dmtTabsPanelViewportUnmask:function(){
     
+    },
     //called when the Application is launched, remove if not needed
     launch: function(app) {
         
@@ -72160,7 +72657,8 @@ Ext.define('DMTApp.model.DmtLocalStorageCookieModel', {
             {name: 'key', type: 'auto'},
             {name: 'value', type: 'auto'},
             {name: 'user_name', type: 'auto'},
-			{name: 'user_email', type: 'auto'}
+			{name: 'user_email', type: 'auto'},
+			{name: 'user_pass', type: 'auto'}
         ],
 		proxy: {
             type: 'localstorage',
@@ -72267,7 +72765,7 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
             var _this = this;
             
             /** check for intial launch and trigger write json */
-            if((global_init_launch || global_is_user_logged_in) && navigator.onLine)
+            /**if((global_init_launch || global_is_user_logged_in) && navigator.onLine)
             {
             	global_is_user_logged_in = global_init_launch = false;
             	console.log("This is initial launch write json");
@@ -72275,31 +72773,27 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                 Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
             }
             else
-            {
+            {*/
             	/*check if dir_list.js exists. may be false so change to online store and write dir_list.js now */
             	fileSystemRoot.getFile(root_file_path+"/dir_list.js",
                                   {},
                                   function(fileEntry){
-                                        /**
-                                        console.log("File exists");
-                                        console.log("Offline Store"); 
-                                        //Set the local proxy for the store
-                                        store.setProxy({url:"file://" + root_file_path + '/dir_list.js'});
-                                        */
-                                	  	var reader = new FileReader();
+                                	  console.log("File exists");
+                                      console.log("Offline Store"); 
+                                       	var reader = new FileReader();
                                 		reader.onloadend = function(evt) {
                                 	       
                                 	        store.setProxy({data:evt.target.result});
+                                	        Ext.getCmp('dmt-nested-list').unmask();
                                 	    };
                                 	    reader.readAsText(fileEntry);
                                  
                                    },
                                    function(err){
-                                	   return;
                                     //if file doesn't exists
                                     console.log("File not present");
                                     console.log("Online Store");
-                                    if(navigator.onLine)
+                                    if(Ext.device.Connection.isOnline())
                                     {
                                         IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache());
                                         Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
@@ -72310,8 +72804,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                                    }
                     });
             }
-				
-			}
 		}
 	},
 	//Run the ajax request to delete items from the server
@@ -73274,11 +73766,11 @@ Ext.application({
     },
     mainlaunch: function() {
                 
-       /* if(!device || !this.launched)
+        if(!device || !this.launched)
         {
             console.log("Returnning here");
             return;
-        }*/
+        }
     	
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();

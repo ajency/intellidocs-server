@@ -10,7 +10,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
             dmtNestedList			  :'.dmtnestedfolderlist',
 			 //Used the button action to prevent conflict on reinitialization.
 			dmtNestedListRefreshButton:'button[action=dmtNestedListRefreshButton]',
-			dmtDetailsPanel:'[id=dmt-details-container]',
+			dmtDetailsPanel:'[id=dmt-details-container]'
         },
         control: {
             dmtNestedList:
@@ -24,7 +24,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			},
 			dmtNestedListRefreshButton:
 			{
-				tap			:'dmtNestedListRefreshButton',		
+				tap			:'dmtNestedListRefreshButton'		
 			}
         }
     },
@@ -85,7 +85,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 
 			console.log(file_ext.toLowerCase());
 
-			var panel_content = {
+			panel_content = {
 					xtype: 'formpanel',
 					id: 'dmt-details-view-card',
 					layout: {
@@ -247,7 +247,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			//END NEW CHANGES	
 		case 'folder':
 
-			var panel_content = {
+			panel_content = {
 				xtype: 'formpanel',
 				id: 'dmt-details-view-card',
 				layout: {
@@ -348,7 +348,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			{
 				panel_content.items[2].items.push({ 
 					xtype:'button',
-					text:'Download all files in folder',
+					text:'Update Folder',
 					cls:'dmt-details-panel-folder-download-button',
 					margin:'20 0 0 0',
 					ui:'confirm round',
@@ -360,7 +360,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 					action:'dmtDetailsPanelFolderDownloadButton',
 				});
 			}
-
+			
+			/**
 			if(dir_count > 0)
 			{
 				panel_content.items[2].items.push({	
@@ -376,7 +377,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 					height:32,
 					action:'dmtDetailsPanelSubFolderDownloadButton',
 				});
-			}
+			}*/
 
 			if(record_data.f_file_count > 0)
 			{
@@ -397,7 +398,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 
 			break;
 		default:
-			panel_content = null;		
+			panel_content = null;
+			break;
 		}
 	
 		
@@ -609,11 +611,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
 		button.removeCls('dmtRefreshToRemoveNotifications');
 		this.dmtDetailsPanelChange(null,{f_type:''},null);
-           }
-           else
-           {
-           Ext.Msg.alert('','You are currently offline');
-           }
+       }
+       else
+       {
+       Ext.Msg.alert('','You are currently offline');
+       }
 	},
 	dmtNestedListLoad:function(list,store,records,successful,oprtn)
 	{

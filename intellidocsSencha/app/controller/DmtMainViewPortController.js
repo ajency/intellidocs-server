@@ -4,7 +4,7 @@ Ext.define('DMTApp.controller.DmtMainViewPortController', {
     config: {
         refs: 
 		{
-			dmtMainContainer:'#dmt-main-container',
+			dmtMainContainer:'#dmt-main-container'
         },
         control: 
 		{

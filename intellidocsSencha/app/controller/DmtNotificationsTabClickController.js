@@ -58,7 +58,7 @@ Ext.define('DMTApp.controller.DmtNotificationsTabClickController', {
            //fix the removal of the details panel and change the title bar.
             
            var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');	
-           details_container_titlebar.setTitle('Details Panel');
+           details_container_titlebar.setTitle('Details Panel333');
            //End fix
            
            

@@ -4,16 +4,16 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
     config: {
         refs: {
             dmtMessagesList			  			:'.dmtmessageslist',
-			dmtMessageDetailsPanelCloseButton	:'button[action=dmtMessagesDetailPanelClose]',
+			dmtMessageDetailsPanelCloseButton	:'button[action=dmtMessagesDetailPanelClose]'
         },
         control: {
             dmtMessagesList:
 			{
-				itemtap		:'dmtMessagesListItemTap',
+				itemtap		:'dmtMessagesListItemTap'
 			},
 			dmtMessageDetailsPanelCloseButton:
 			{
-				tap			:'dmtMessageDetailsPanelClose',
+				tap			:'dmtMessageDetailsPanelClose'
 			}
         }
     },
@@ -47,8 +47,7 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
                 },
                 bounce: {
                     acceleration: 0.0001,
-                    springTension: 0.9999,
-                    
+                    springTension: 0.9999                    
                 },
                 minVelocity: 5
             },
@@ -56,7 +55,7 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
         },
 		layout:
 		{
-			type:'vbox',
+			type:'vbox'
 		},
         items: [
 			
@@ -78,10 +77,10 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
 										iconCls:'delete',
 										iconMask:true,
 										ui:'plain',
-										align:'right',
+										align:'right'
 									}
 								]
-			},
+			}
 			]
 		};
 		

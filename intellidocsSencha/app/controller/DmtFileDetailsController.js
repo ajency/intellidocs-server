@@ -42,12 +42,12 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     {
     	if(Ext.device.Connection.isOnline())
         {
-           var folder_id = Ext.getCmp('dmtFileFolderId')._value;
+           var folder_id = 0;
            
           /* if(global_current_download_folder_id == 0)
            {*/
                
-                Ext.Msg.confirm('','Download all files in sub folder also? This action might take long time.',
+                Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
@@ -56,7 +56,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 request.onreadystatechange = function(){
                                     if (request.readyState == 4) {
                                         if (request.status == 200 || request.status == 0) {
-                                            IntelliDocs.loop_json( eval(request.responseText) , folder_id , true);
+                                            IntelliDocs.loop_root_json( eval(request.responseText));
                                         }
                                     }
                                 }
@@ -158,10 +158,10 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
-           if(global_current_download_folder_id == 0)
-           {
+          // if(global_current_download_folder_id == 0)
+          // {
                
-                Ext.Msg.confirm('','Download all files in current folder?',
+                Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
@@ -180,17 +180,18 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 }
                                 request.send();            
                            }
+                           
                            else
                            {}
                            });
-           }
+          /* }
            else if(global_current_download_folder_id = folder_id)
            {
-               Ext.Msg.alert('Please Wait','Currently downloading files from this directory');
+               Ext.Msg.alert('Please Wait','Currently downloading files from this folder');
            }
            else{
                Ext.Msg.alert('Please Wait','Until current download ends');
-           }
+           }*/
            
         }
         else
@@ -247,7 +248,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
             		id:'file-download-mask',
             		indicator: true,
             		html: '<p>'+ file_name +'</p><p>Downloading...</p><p id="dmt-file-percent"></p>',
-            		message:'',
+            		message:''
                 });
                 Ext.Viewport.add(fileProgressPanel);
                 

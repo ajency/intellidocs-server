@@ -133,12 +133,11 @@ IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
             id:'dmt-details-view-card',
             cls:'dmtDetailsViewPanel',
             scrollable:true,
-            layout:
-                {
+            layout: {
                 type:'vbox',
                 pack:'center',
                 align:'left',
-                },
+            },
             items:[
                    {
                    styleHtmlContent:true,
@@ -174,18 +173,18 @@ IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
                     },]
                    },
                    {	
-                   style:'margin-left:65px;margin-top:20px;',
-                   xtype:'button',
-                   id : 'dmt-file-action-button',
-                   text:buttonText,
-                   cls:'dmt-details-panel-download-button',
-                   ui:'confirm round',
-                   iconCls:'download',
-                   iconMask:true,
-                   iconAlign:'right',
-                   width:150,
-                   height:32,
-                   action:buttonAction,
+	                   style:'margin-left:65px;margin-top:20px;',
+	                   xtype:'button',
+	                   id : 'dmt-file-action-button',
+	                   text:buttonText,
+	                   cls:'dmt-details-panel-download-button',
+	                   ui:'confirm round',
+	                   iconCls:'download',
+	                   iconMask:true,
+	                   iconAlign:'right',
+	                   width:150,
+	                   height:32,
+	                   action:buttonAction
                    }	
                    ]
             }
@@ -274,23 +273,7 @@ IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
             
             var dir_count = record_data.f_sub_fld_count;
             
-            if(dir_count > 0)
-            {
-                panel_content.items.push({	
-                                         xtype:'button',
-                                         text:'Download Files In Sub Folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'confirm round',
-                                         iconCls:'download',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelSubFolderDownloadButton',
-                                         });
-            }
-            
+           
             if(record_data.f_file_count > 0)
             {
                 panel_content.items.push({
@@ -571,7 +554,9 @@ IntelliDocs.download_queued_file = function(file)
                                     //all files downloaded. reset globals here
                                     console.log('All files downloaded');
                                     //Ext.getCmp('dmt-download-progress-folder').destroy();
-                                    Ext.getCmp('file-download-mask').destroy();
+                                    if(Ext.getCmp('file-download-mask'))
+                                    	Ext.getCmp('file-download-mask').destroy();
+                                    
                                     if(global_download_file_count == 0)
                                     {
                                     	Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);	
@@ -585,7 +570,9 @@ IntelliDocs.download_queued_file = function(file)
                                     global_queued_file_download_complete_count = 0;
                                     global_current_download_folder_id = 0;
                                     global_download_file_count = 0;
-                                    IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value, Ext.getCmp('dmtFileFolder_count')._value);                                            
+                                    
+                                    if(Ext.getCmp('dmtFileFolderPath'))
+                                    	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value, Ext.getCmp('dmtFileFolder_count')._value);                                            
                                  }
                                 else{             
                                     IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
@@ -616,8 +603,10 @@ IntelliDocs.download_queued_file = function(file)
 												
 												if(res.status == 1)
 												{
-													Ext.getCmp('file-download-mask').destroy();
-													 console.log("File Downloaded");
+													if(Ext.getCmp('file-download-mask'))
+				                                    	Ext.getCmp('file-download-mask').destroy();
+				                                    
+													console.log("File Downloaded");
 													 global_queued_file_download_complete_count++;
 													 global_download_file_count++;
 	                                                 if(global_queued_file_download_complete_count == global_queued_file_urls.length)
@@ -643,16 +632,19 @@ IntelliDocs.download_queued_file = function(file)
 	                                                 else{             
 	                                                    IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]); 
 	                                                }
-	                                                 
-	                                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
+	
+	                                                if(Ext.getCmp('dmtFileFolderPath'))
+	                                                	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
 												}
 									     	},
 									     	function(error) {
 									     			console.log("Download failed:");
 	                                               
 	                                                //Ext.getCmp('dmt-download-progress-folder').destroy();
-									     	   		Ext.getCmp('file-download-mask').destroy();
-	                                                if(global_download_file_count > 0)
+									     			if(Ext.getCmp('file-download-mask'))
+				                                    	Ext.getCmp('file-download-mask').destroy();
+				                                    
+									     			if(global_download_file_count > 0)
 	                                                {
 	                                                    var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
 	                                                    Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
@@ -665,7 +657,9 @@ IntelliDocs.download_queued_file = function(file)
 	                                                global_queued_file_download_complete_count = 0;
 	                                                global_current_download_folder_id = 0; 
 	                                                global_download_file_count = 0;
-	                                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
+	                                                
+	                                                if(Ext.getCmp('dmtFileFolderPath'))
+	                                                	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
 									     	}
 										);
                                 });
@@ -694,7 +688,7 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
                     for(var i=0; i < obj.length; i++)
                     {
                         var data = obj[i];
-                        if(data['f_id'] == category_id   && data['f_type'] == 'folder')
+                        if((data['f_id'] == category_id   && data['f_type'] == 'folder'))
                         {
                             //match found. now get all leaf nodes from items array
                             console.log(data['f_name'] + ' Found the folder element');
@@ -718,6 +712,59 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
         }
     }
 }	
+
+/**
+ * loop through dir_list.js and find all the files to be downloaded
+ * _json_obj = initially dir_list.js
+ * category_id = objec to search for
+ * function
+ */
+IntelliDocs.loop_root_json = function(_json_obj)
+{
+    for(var key in _json_obj)
+    {
+        if(_json_obj.hasOwnProperty(key))
+        {                        
+            if(key == 'items')
+            {
+                var obj = _json_obj[key];
+                if(obj.length > 0)
+                {
+                    for(var i=0; i < obj.length; i++)
+                    {
+                        var data = obj[i];
+                        if(data['f_type'] == 'folder')
+                        {
+                            //set global folder ID
+                            global_current_download_folder_id = data['f_id'];
+                            
+                            //get all file urls
+                            IntelliDocs.dmtCreateDirectories(data['f_folder']);
+                         
+                            IntelliDocs.recursive_looping(data['items']);
+                        }
+                    }	
+                }
+            }	
+        }
+    }
+    
+    if(global_queued_file_urls.length > 0)
+    {
+        console.log('Files count' + global_queued_file_urls.length);
+        //trigger the bulk file download 
+        IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+    }
+    else{
+        //we are not triggering file download. reset globals
+        //Ext.getCmp('dmt-download-progress-folder').destroy();
+    	//Ext.getCmp('file-download-mask').destroy();
+        global_queued_file_urls = [];
+        global_queued_file_download_complete_count = 0;
+        global_current_download_folder_id = 0;
+    }
+    
+}
 
 IntelliDocs.recursive_looping = function(obj)
 {
@@ -752,7 +799,7 @@ IntelliDocs.get_all_leaf_elements = function(obj,subfolder_check)
 	}
 	else
 	{
-    for(var i=0; i < obj.length; i++)
+		for(var i=0; i < obj.length; i++)
         {
             var data = obj[i];
            

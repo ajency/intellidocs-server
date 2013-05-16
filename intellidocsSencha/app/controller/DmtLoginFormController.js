@@ -7,14 +7,14 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			//Used the action here to prevent conflict on re initialization
             dmtSecureLoginButton:'button[action=dmtSecureLoginFormSubmitButton]',
             dmtSecureLoginPanel:'[id=dmt-secure-login-panel]',
-            dmtTabsPanel:'[id=dmt-tabs-panel]',
+            dmtTabsPanel:'[id=dmt-tabs-panel]'
             
         },
         control: 
 		{
          	dmtSecureLoginButton:
 			{
-				tap:'dmtSecureLoginButtonTap',
+				tap:'dmtSecureLoginButtonTap'
 			}
         }
     },
@@ -131,7 +131,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 						Ext.Viewport.unmask();
 						Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
 					},
-					scope :this,
+					scope :this
 				});
 			}
 		}

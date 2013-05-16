@@ -4,7 +4,7 @@ Ext.define('DMTApp.controller.DmtForgotPasswordController', {
     config: {
         refs: {
             dmtForgotPasswordFormOpenButton:'button[action=dmtForgotPasswordFormOpenButton]',
-			dmtForgotPasswordFormSubmitButton:'button[action=dmtForgotPasswordFormSubmitButton]',
+			dmtForgotPasswordFormSubmitButton:'button[action=dmtForgotPasswordFormSubmitButton]'
         },
         control: {
             dmtForgotPasswordFormOpenButton:
@@ -14,7 +14,7 @@ Ext.define('DMTApp.controller.DmtForgotPasswordController', {
 			dmtForgotPasswordFormSubmitButton:
 			{
 				tap:'dmtForgotPasswordFormSubmitButtonTap'
-			},			
+			}		
         }
     },
     dmtForgotPasswordFormOpenButtonTap:function()
