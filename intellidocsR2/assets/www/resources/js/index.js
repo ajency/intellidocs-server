@@ -25,7 +25,7 @@ var global_goto_node = 0;
 
 var global_init_launch = true;
 
-var global_app_version = 'Version: 1.2.4';
+var global_app_version = 'Version: 1.2.5';
    
 //global https
 var global_https = "https://www.intellidocs.net";
@@ -81,8 +81,8 @@ document.addEventListener('deviceready',function(){
     	{
     		 // move the app one folder back
     		 Ext.getCmp('dmt-nested-list').goToNode(global_goto_node.parentNode);
-    		 if(Ext.getCmp('dmt-details-view-card'))
-    	        Ext.getCmp('dmt-details-view-card').destroy();
+    		 
+    		 IntelliDocs.dmtDetailsPanelChange(global_goto_node.parentNode,null,false);
     		 
     		 Ext.getCmp('dmt-details-container-titlebar').setTitle("");   
     		 
@@ -108,211 +108,354 @@ document.addEventListener('deviceready',function(){
 IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
 {
     var buttonText = (file_exists) ? "Open" : "Download File";
-    var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";	
-    var panel_content = {};
-    
-    if(!deafult_panel)
-        var record_data = record.getData();
-    else
-        var record_data = deafult_panel;
-    
-    var f_ext = (record_data.f_ext)?record_data.f_ext.replace('.',''):'';
-    var details_container = Ext.getCmp('dmt-details-container');
-    var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');	
-    
-    
-    //NEW CHANGES
-    var description = (record_data.f_description == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Description: </span>'+record_data.f_description+'</p>';
-    var solicitor = (record_data.f_solicitor == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Solicitor: </span>'+record_data.f_solicitor+'</p>';
-    var item_id = (record_data.f_item_id == null)?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Item Id: </span>'+record_data.f_item_id+'</p>';
-    
-    switch (record_data.f_type)
-    {
-        case 'file':
-            panel_content = {
-            id:'dmt-details-view-card',
-            cls:'dmtDetailsViewPanel',
-            scrollable:true,
-            layout: {
-                type:'vbox',
-                pack:'center',
-                align:'left',
-            },
-            items:[
-                   {
-                   styleHtmlContent:true,
-                   html:
-                   [
-                    '<div class="dmt-file-icon-big dmt-file-icon-desc dmt-file-'+ f_ext +'-large"></div>' +
-                    '<div class="dmt-file-meta-desc"><p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>' +
-                    '<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Type:</span>'+record_data.f_ext+'</p>' +
-                    solicitor+ item_id + description +
-                    '</div>'
-                    ],
-                   items:
-                   [	
-                    {
-                    xtype: 'hiddenfield',
-                    name: 'document_url',
-                    id:'dmtFileUrl',
-                    value: record_data.f_attachment
-                    
-                    },
-                    {
-                    xtype: 'hiddenfield',
-                    name: 'document_folder',
-                    id:'dmtFileFolder',
-                    value: record_data.f_folder
-                    
-                    },{
-                    xtype: 'hiddenfield',
-                    name: 'document_folder_id',
-                    id:'dmtFileFolder_id',
-                    value: record_data.f_id
-                    
-                    },]
-                   },
-                   {	
-	                   style:'margin-left:65px;margin-top:20px;',
-	                   xtype:'button',
-	                   id : 'dmt-file-action-button',
-	                   text:buttonText,
-	                   cls:'dmt-details-panel-download-button',
-	                   ui:'confirm round',
-	                   iconCls:'download',
-	                   iconMask:true,
-	                   iconAlign:'right',
-	                   width:150,
-	                   height:32,
-	                   action:buttonAction
-                   }	
-                   ]
-            }
-            
-            if(file_exists)
-            {
-                panel_content.items.push({style:'margin-left:65px;margin-top:20px;',
-                                         xtype:'button',
-                                         text:"Delete File",
-                                         cls:'dmt-details-panel-download-button',
-                                         ui:'round',
-                                         iconCls:'delete',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:150,
-                                         height:32,
-                                         action:"dmtDetailsPanelDeleteButton",});
-            }
-            
-            break
-            //END NEW CHANGES
-        case 'folder':
-            
-            
-            panel_content = {
-            layout:
-                {
-                type:'vbox',
-                pack:'center',
-                align:'center',
-                },
-            id:'dmt-details-view-card',
-            cls:'dmtDetailsViewPanel',
-            scrollable:true,
-            styleHtmlContent:true,
-            items:
-                [
-                 { html:'<div class="dmt-file-icon-big dmt-file-'+ f_ext +'-large"></div>'},
-                 
-                 { html:'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>'},
-                 
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_id',
-                 id:'dmtFileFolderId',
-                 value: record_data.f_id,
-                 
-                 },
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_path',
-                 id:'dmtFileFolderPath',
-                 value: record_data.f_folder,
-                 
-                 },
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_count',
-                 id:'dmtFileFolder_count',
-                 value: record_data.f_file_count,
-                 
-                 },
-                 {
-                 html : '<p></p>',
-                 id : 'dmt-folder-metadata'
-                 },
-                 
-                 ]
-            }
-            if(record_data.f_file_count > 0)
-            {
-                panel_content.items.push({
-                                         xtype:'button',
-                                         text:'Download all files in folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'confirm round',
-                                         iconCls:'download',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelFolderDownloadButton',
-                                         });
-            }
-            
-            var dir_count = record_data.f_sub_fld_count;
-            
-           
-            if(record_data.f_file_count > 0)
-            {
-                panel_content.items.push({
-                                         xtype:'button',
-                                         text:'Delete Files In Folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'round',
-                                         iconCls:'delete',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelFolderDeleteFilesButton',
-                                         });
-            }
-            IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count)
-            break;
-        default:
-            panel_content = null;	
-    }
+    var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";		
+	var panel_content = {};
+	
+	if(!deafult_panel)
+		var record_data = record.getData();
+	else
+		var record_data = deafult_panel;
+	
+	var f_ext = (record_data.f_ext)?record_data.f_ext.replace('.',''):'';
+	var details_container = Ext.getCmp('dmt-details-container');
+	var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');		
+	
+	var file_date 		= (record_data.f_modified && record_data.f_modified != '') ? record_data.f_modified : '';
+	var file_ext  		= (record_data.f_ext && record_data.f_ext != '')? f_ext : '';
+	var file_name 		= (record_data.f_name && record_data.f_name != '')? record_data.f_name : '';
+	var file_solicitor 	= (record_data.f_solicitor && record_data.f_solicitor != '')? record_data.f_solicitor : '';
+	var file_item_id  	= (record_data.f_item_id && record_data.f_item_id != '')? record_data.f_item_id : '';
+	var file_desc  		= (record_data.f_description && record_data.f_description != '')? record_data.f_description : '';
 
-    
-    if(Ext.getCmp('dmt-details-view-card'))
-        Ext.getCmp('dmt-details-view-card').destroy();
-    
-    if(panel_content)
-    {	
-        var new_details_panel = Ext.create('Ext.Panel',panel_content);
-        var details_container_title = (record_data.f_name)?record_data.f_name+' details':'Details Panel';
-        
-        details_container_titlebar.setTitle(details_container_title);
-        details_container.add([new_details_panel]).show({type:'pop',duration:500,easing:'ease-out'});
-    }
-    else
-    {
-        details_container_titlebar.setTitle('Details Panel');
-    }
-}
+   
+
+	switch (record_data.f_type)
+	{
+	case 'file':
+
+		console.log(file_ext.toLowerCase());
+
+		panel_content = {
+				xtype: 'formpanel',
+				id: 'dmt-details-view-card',
+				layout: {
+					align: 'center',
+					pack: 'center',
+					type: 'vbox'
+				},
+				styleHtmlContent: false,
+				scrollable: {
+					direction: 'vertical',
+					directionLock: true,
+					momentumEasing: {
+						momentum: {
+							acceleration: 30,
+							friction: 0.5
+						},
+						bounce: {
+							acceleration: 0.0001,
+							springTension: 0.9999,
+
+						},
+						minVelocity: 5
+					},
+					outOfBoundRestrictFactor: 0
+				},
+				items: [
+				        {
+				        	xtype: 'image',
+				        	height: 96,
+				        	width: 96,
+				        	src:'resources/images/folder_icons/'+ file_ext.toLowerCase() + '.png',
+				        	id:'dmt-file-icon',
+				        	margin:'0 0 30 0'
+				        },
+				        {
+				        	xtype: 'fieldset',
+				        	id: 'details-panel-fieldset',
+				        	width: '90%',
+				        	defaults: {
+				        		labelAlign: 'left'
+				        	},
+				        	instructions: '&copy; Intellidocs.net',
+				        	items: [
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-name',
+				        	        	hidden:(file_name)?false:true,
+				        	        			label: 'Name',
+				        	        			readOnly: true,
+				        	        			value:file_name
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-date',
+				        	        	hidden:(file_date)?false:true,
+				        	        			label: 'Publish Date',
+				        	        			readOnly: true,
+				        	        			value:file_date
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-ext',
+				        	        	hidden:(file_ext)?false:true,
+				        	        			label: 'Type',
+				        	        			readOnly: true,
+				        	        			value:file_ext
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-solicitor',
+				        	        	hidden:(file_solicitor)?false:true,
+				        	        			label: 'Solicitor',
+				        	        			readOnly: true,
+				        	        			value:file_solicitor
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-item-id',
+				        	        	hidden:(file_item_id)?false:true,
+				        	        			label: 'Item ID',
+				        	        			readOnly: true,
+				        	        			value:file_item_id
+				        	        },
+				        	        {
+				        	        	xtype: 'textareafield',
+				        	        	id: 'dmt-file-meta-desc',
+				        	        	hidden:(file_desc)?false:true,
+				        	        			label: 'Description',
+				        	        			readOnly: true,
+				        	        			value:file_desc
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileUrl',
+				        	        	name: 'document_url',
+				        	        	value:record_data.f_attachment
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileFolder',
+				        	        	name: 'document_folder',
+				        	        	value:record_data.f_folder
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileFolder_id',
+				        	        	name: 'document_folder_id',
+				        	        	value:record_data.f_id
+				        	        }
+				        	        ]
+				        },
+				        {
+				        	xtype: 'container',
+				        	id: 'dmt-details-panel-btn-container',
+				        	minHeight: 60,
+				        	layout: {
+				        		align: 'center',
+				        		pack: 'center',
+				        		type: 'vbox'
+				        	},
+				        	items: [
+				        	        {
+				        	        	xtype: 'button',
+				        	        	cls: 'dmt-details-panel-download-button',
+				        	        	id: 'dmt-file-action-button',
+				        	        	action:buttonAction,
+				        	        	ui: 'confirm',
+				        	        	width: 150,
+				        	        	height:40,
+				        	        	iconAlign: 'right',
+				        	        	iconCls: 'download',
+				        	        	iconMask: true,
+				        	        	text: buttonText
+				        	        }
+				        	        ]
+				        }
+				        ]
+		};
+
+		if(file_exists)
+		{
+			panel_content.items[2].items.push({
+				xtype:'button',
+				text:"Delete File",
+				margin: '30 0 0 0',
+				cls:'dmt-details-panel-download-button',
+				ui:'round',
+				iconCls:'delete',
+				iconMask:true,
+				iconAlign:'right',
+				width:150,
+				height:40,
+				action:"dmtDetailsPanelDeleteButton"
+			});
+		}	
+
+
+		break;
+		//END NEW CHANGES	
+	case 'folder':
+
+		panel_content = {
+			xtype: 'formpanel',
+			id: 'dmt-details-view-card',
+			layout: {
+				align: 'center',
+				pack: 'center',
+				type: 'vbox'
+			},
+			styleHtmlContent: false,
+			scrollable: {
+				direction: 'vertical',
+				directionLock: true,
+				momentumEasing: {
+					momentum: {
+						acceleration: 30,
+						friction: 0.5
+					},
+					bounce: {
+						acceleration: 0.0001,
+						springTension: 0.9999,
+
+					},
+					minVelocity: 5
+				},
+				outOfBoundRestrictFactor: 0
+			},
+			items: [
+			        {
+			        	xtype: 'image',
+			        	height: 96,
+			        	width: 96,
+			        	src:'resources/images/folder_icons/'+ file_ext.toLowerCase() + '.png',
+			        	id:'dmt-file-icon',
+			        	margin:'0 0 30 0'
+			        },
+			        {
+			        	xtype: 'fieldset',
+			        	id: 'details-panel-fieldset',
+			        	width: '90%',
+			        	defaults: {
+			        		labelAlign: 'left'
+			        	},
+			        	instructions: '&copy; Intellidocs.net',
+			        	items: [
+			        	        {
+			        	        	xtype: 'textfield',
+			        	        	id: 'dmt-file-meta-name',
+			        	        	hidden:(file_name)?false:true,
+			        	        			label: 'Name',
+			        	        			readOnly: true,
+			        	        			value:file_name
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolderId',
+			        	        	name:'document_folder_id',
+			        	        	value:record_data.f_id
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolderPath',
+			        	        	name:'document_folder_path',
+			        	        	value:record_data.f_folder
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolder_count',
+			        	        	name:'document_folder_count',
+			        	        	value:record_data.f_file_count
+			        	        }
+			        	        ]
+			        },
+			        {
+			        	xtype: 'container',
+			        	id: 'dmt-details-panel-btn-container',
+			        	minHeight: 60,
+			        	width:'90%',
+			        	layout: {
+			        		align: 'center',
+			        		pack: 'center',
+			        		type: 'vbox'
+			        	},
+			        	items: [
+			        	        {
+			        	        	html : '<p></p>',
+			        	        	width:'100%',
+			        	        	height: 30,
+			        	        	cls: 'dmt-folder-metadata-cls',
+			        	        	id : 'dmt-folder-metadata' 
+			        	        }
+			        	        ]
+			        }
+			        ]
+	};
+
+		var dir_count = record_data.f_sub_fld_count;
+
+		if(record_data.f_file_count > 0)
+		{
+			panel_content.items[2].items.push({ 
+				xtype:'button',
+				text:'Update Folder',
+				cls:'dmt-details-panel-folder-download-button',
+				margin:'20 0 0 0',
+				ui:'confirm round',
+				iconCls:'download',
+				iconMask:true,
+				iconAlign:'right',
+				width:250,
+				height:32,
+				action:'dmtDetailsPanelFolderDownloadButton',
+			});
+		}
+		
+		if(record_data.f_file_count > 0)
+		{
+			panel_content.items.push({ 
+				xtype:'button',
+				text:'Delete Files In Folder',
+				cls:'dmt-details-panel-folder-download-button',
+				margin:'20 0 0 0',
+				ui:'round',
+				iconCls:'delete',
+				iconMask:true,
+				iconAlign:'right',
+				width:250,
+				height:32,
+				action:'dmtDetailsPanelFolderDeleteFilesButton',
+			});
+		}
+
+		break;
+	default:
+		panel_content = null;
+		break;
+	}
+
+	
+	if(Ext.getCmp('dmt-details-view-card'))
+			Ext.getCmp('dmt-details-view-card').destroy();
+	
+	if(panel_content)
+	{		
+		//var new_details_panel = Ext.create('Ext.Panel',panel_content);
+		var new_details_panel = Ext.create('Ext.form.Panel',panel_content);
+		
+		var details_container_title = (record_data.f_name)?record_data.f_name+' details':'Details Panel';
+			
+		details_container_titlebar.setTitle(details_container_title);
+		details_container.add([new_details_panel]).show();
+		
+        IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count);
+	}
+	else
+	{
+		details_container_titlebar.setTitle('Details Panel');
+	}
+
+};
  
 
 IntelliDocs.intellidocs_session_timeout = function(controller)
