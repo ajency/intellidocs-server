@@ -574,7 +574,7 @@ function intellidocs_file_html($catid)
 						),	
 				);
 	$files = get_posts($files_args);
-	$files = intellidocs_sort_files($files);
+	//$files = intellidocs_sort_files($files);
 	foreach($files as $file)
 		{
 			$attachment_args = array(
