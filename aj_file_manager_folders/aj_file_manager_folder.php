@@ -381,7 +381,79 @@ function intellidocs_folder_display(){
 	</div>
 	<?php
 }
+function aasort (&$array, $key) {
+	$sorter=array();
+	$ret=array();
+	reset($array);
+	foreach ($array as $ii => $va) {
+		$sorter[$ii]=$va[$key];
+	}
+	asort($sorter);
+	foreach ($sorter as $ii => $va) {
+		$ret[$ii]=$array[$ii];
+	}
+	$array=$ret;
 
+	return $array;
+}
+
+function intellidocs_sort_folders($cats)
+{
+	$cats_arr = array();
+	$cats_arr_sort_by_itemid = array();
+	$cats_arr_sort_by_name = array();
+	$cats_sorted = array();
+	foreach($cats as $cat){
+	
+		$document_folders_item_id = dmt_get_document_folder_meta($cat->term_id,'document_folders_item_id');
+	
+		if($document_folders_item_id !="")
+		{
+			$cats_arr_sort_by_itemid[] = array('cats'=>$cat,'term'=>$document_folders_item_id);
+		}
+		else
+		{
+			$cats_arr_sort_by_name[] = array('cats'=>$cat,'name'=>$cat->name);
+		}
+	}
+	
+	$cats_arr_sort_by_itemid =  aasort($cats_arr_sort_by_itemid,'term');
+	$cats_arr_sort_by_name =  aasort($cats_arr_sort_by_name,'name');
+	$cats_arr = array_merge($cats_arr_sort_by_itemid, $cats_arr_sort_by_name);
+	foreach($cats_arr as $cat){
+		$cats_sorted[] = ($cat['cats']);
+	}
+	return $cats_sorted;
+}
+
+function intellidocs_sort_files($files)
+{
+	$files_arr = array();
+	$files_arr_sort_by_itemid = array();
+	$files_arr_sort_by_name = array();
+	$files_sorted = array();
+	foreach($files as $file){
+ 
+		$item_id		= get_post_meta($file->ID,'dmt_file_item_number',true);
+			
+		if($item_id !="")
+		{
+			$files_arr_sort_by_itemid[] = array('files'=>$file,'term'=>$item_id);
+		}
+		else
+		{
+			$files_arr_sort_by_name[] = array('files'=>$file,'files'=>$file->post_title);
+		}
+	}
+
+	$files_arr_sort_by_itemid =  aasort($files_arr_sort_by_itemid,'term');
+	$files_arr_sort_by_name =  aasort($files_arr_sort_by_name,'name');
+	$files_arr = array_merge($files_arr_sort_by_itemid, $files_arr_sort_by_name);
+	foreach($files_arr as $file){
+		$files_sorted[] = ($file['files']);
+	}
+	return $files_sorted;
+}
 //Function to create the folder structure.
 function intellidocs_document_folder_structure($catid = null)
 {	
@@ -435,10 +507,12 @@ function intellidocs_document_folder_structure($catid = null)
 						'pad_counts'               => true);				
 		
 		//Create the category folder structure.	
-		$cats  = get_categories($args);
-	
+		$cats  = get_categories($args); 
+		//function to sort folders by item_id , if no itemid then by name
+		$cats = intellidocs_sort_folders($cats);
 		foreach($cats as $cat){
-				$html .=  intellidocs_folder_html($cat);
+
+			$html .=  intellidocs_folder_html($cat);
 		}
 		//File html.
 		$html .= intellidocs_file_html($catid);
@@ -446,6 +520,9 @@ function intellidocs_document_folder_structure($catid = null)
 		return $html;
 	}
 }
+
+
+
 //Function to create folder tree html
 function intellidocs_folder_html($cat)
 {
@@ -497,6 +574,7 @@ function intellidocs_file_html($catid)
 						),	
 				);
 	$files = get_posts($files_args);
+	$files = intellidocs_sort_files($files);
 	foreach($files as $file)
 		{
 			$attachment_args = array(
