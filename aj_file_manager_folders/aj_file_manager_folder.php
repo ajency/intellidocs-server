@@ -442,7 +442,7 @@ function intellidocs_sort_files($files)
 		}
 		else
 		{
-			$files_arr_sort_by_name[] = array('files'=>$file,'files'=>$file->post_title);
+			$files_arr_sort_by_name[] = array('files'=>$file,'name'=>$file->post_title);
 		}
 	}
 
@@ -574,7 +574,7 @@ function intellidocs_file_html($catid)
 						),	
 				);
 	$files = get_posts($files_args);
-	//$files = intellidocs_sort_files($files);
+	$files = intellidocs_sort_files($files);
 	foreach($files as $file)
 		{
 			$attachment_args = array(
