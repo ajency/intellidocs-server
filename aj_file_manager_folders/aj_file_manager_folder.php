@@ -704,8 +704,7 @@ add_action('wp_ajax_intellidocs_fetch_tree','intellidocs_fetch_tree');
 
 
 function aj_manage_document_folders_scripts_filetreeview()
-{
-	var_dump("test");
+{ 
 	$current_screen = get_current_screen();
 	  
 
