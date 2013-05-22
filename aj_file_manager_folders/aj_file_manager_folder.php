@@ -701,20 +701,20 @@ function intellidocs_fetch_tree(){
 	die();
 }
 add_action('wp_ajax_intellidocs_fetch_tree','intellidocs_fetch_tree');
-?>
-<script type="text/javascript">
-$(document).ready(function(){
- 
-	 $('.delete-folder').click(function(){
-
-		    folder = $(this).attr("folder-name")
-			ret = confirm("Are you sure you want to delete the folder "+folder+" ?")
-			if(ret==true)
-			{  
-				window.open( $(this).attr("rel"), '_blank');
-				}
-		});
 
 
-});
-</script>
+function aj_manage_document_folders_scripts_filetreeview()
+{
+	var_dump("test");
+	$current_screen = get_current_screen();
+	  
+
+		wp_register_script('dmt-manage-tree-folder-structure-js',plugins_url('/js/dmtTreeFolderStructureModel.js',__FILE__));
+		wp_enqueue_script('dmt-manage-tree-folder-structure-js');
+
+	 
+}
+
+
+add_action('admin_print_scripts', 'aj_manage_document_folders_scripts_filetreeview');
+?> 
