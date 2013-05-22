@@ -1,15 +1,13 @@
  
-
-jQuery(document).ready(function(){ 
-	 jQuery('.delete-folder').click(function(){
-
-		    folder = jQuery(this).attr("folder-name")
-			ret = confirm("Are you sure you want to delete the folder "+folder+" ?")
+ 
+	  function funconfirmaction(rel,folder_name){ 
+		  
+		   folder = jQuery(this).attr("folder-name")
+			ret = confirm("Are you sure you want to delete the folder "+folder_name+" ?")
 			if(ret==true)
 			{  
-				window.open( jQuery(this).attr("rel"), '_blank');
-				}
-		});
+				window.open( rel, '_blank');
+				} 
+		} 
 
-
-});
+ 
