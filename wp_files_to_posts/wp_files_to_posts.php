@@ -94,7 +94,50 @@ function pp_add_files_screen_callback() {
 	
     <br style="clear: both" />
 </form>
+<style>
+	 	a {
+    color: #000000;
+    cursor: pointer;
+    text-decoration: none;
+}
+	 	</style>
 <script type="text/javascript">
+jQuery(document).ready(function(){
+	jQuery(function() {
+	    // Find list items representing folders and
+	    // style them accordingly.  Also, turn them
+	    // into links that can expand/collapse the
+	    // tree leaf.
+	   jQuery('li > ul').each(function(i) {
+	        // Find this list's parent list item.
+	        var parent_li = jQuery(this).parent('li');
+
+	        // Style the list item as folder.
+	        parent_li.addClass('folder');
+
+	        // Temporarily remove the list from the
+	        // parent list item, wrap the remaining
+	        // text in an anchor, then reattach it.
+	        var sub_ul =jQuery(this).remove(); 
+	        termcheckbox = parent_li.find('label :first-child'); 
+			parent_li.find('label :first-child').remove()
+			labelcontent = parent_li.find('label').html();
+			parent_li.html(labelcontent) 
+	        parent_li.wrapInner('<a/>')
+			termlabel = (parent_li.html())
+			parent_li.html(termcheckbox)
+			parent_li.append(termlabel)	
+			parent_li.find('a').click(function() {
+	            // Make the anchor toggle the leaf display.
+	            sub_ul.toggle();
+	        }); 		
+	        parent_li.append(sub_ul);
+	    });
+
+	    // Hide all lists except the outermost.
+	   jQuery('ul ul').hide();
+	});
+	});
 jQuery(document).ready(function() {
 
 	var settings = {
