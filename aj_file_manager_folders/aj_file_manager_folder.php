@@ -703,15 +703,15 @@ function intellidocs_fetch_tree(){
 add_action('wp_ajax_intellidocs_fetch_tree','intellidocs_fetch_tree');
 ?>
 <script type="text/javascript">
-jQuery(document).ready(function(){
+$(document).ready(function(){
  
-	 jQuery('.delete-folder').click(function(){
+	 $('.delete-folder').click(function(){
 
-		    folder = jQuery(this).attr("folder-name")
+		    folder = $(this).attr("folder-name")
 			ret = confirm("Are you sure you want to delete the folder "+folder+" ?")
 			if(ret==true)
 			{  
-				window.open( jQuery(this).attr("rel"), '_blank');
+				window.open( $(this).attr("rel"), '_blank');
 				}
 		});
 
