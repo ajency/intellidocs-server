@@ -94,11 +94,11 @@ jQuery(document).ready(function(){
 	});
 	
 	
-	jQuery('#add-group-folder-button').live('click',function(){
+	jQuery('.add-group-folder-button').live('click',function(){
 	 
 		var _ids = [];
-		button_content = jQuery('#available_group_folder').html();
-		jQuery('#available_group_folder').html(jQuery('#processing-img').html());
+		button_content = jQuery('.available_group_folder').html();
+		jQuery('.available_group_folder').html(jQuery('#processing-img').html());
 		 jQuery('.folder_list').each(function(){  
 			 if(jQuery(this).is(':checked'))
 			 {
@@ -113,15 +113,15 @@ jQuery(document).ready(function(){
 						function(response){  
 						 jQuery('#message').html(response);
 						 jQuery('#message').show();
-						 jQuery('#available_group_folder').html(button_content);
+						 jQuery('.available_group_folder').html(button_content);
 					});
 		  
 	});
-		jQuery('#add-user-group-button').live('click',function(){
+		jQuery('.add-user-group-button').live('click',function(){
 	 
 		var _ids = []; 
-	 	button_content = jQuery('#available_users_add').html();
-		jQuery('#available_users_add').html(jQuery('#processing-img').html());
+	 	button_content = jQuery('.available_users_add').html();
+		jQuery('.available_users_add').html(jQuery('#processing-img').html());
 		 jQuery('.available_user').each(function(){  
 			 if(jQuery(this).is(':checked'))
 			 {
@@ -136,7 +136,9 @@ jQuery(document).ready(function(){
 						function(response){  
 						 jQuery('#message').html(response);
 						 jQuery('#message').show();
-						 jQuery('#available_users_add').html(button_content);
+						 jQuery('.available_users_add').html(button_content);
+
+						 jQuery('#groups').trigger("change")
 					});
 		  
 	});

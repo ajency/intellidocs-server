@@ -279,6 +279,7 @@ function get_group_select_box($group_id=0)
 
 
 add_action('wp_ajax_get_group_select_box','get_group_select_box');
+ 
 function get_available_users()
 {
 	global $wpdb;
@@ -293,25 +294,33 @@ function get_available_users()
 			$selected_users[] = intval($result_usersval["user_id"]);  
 		}
 		$userdata = $wpdb->get_results("SELECT id,display_name FROM {$wpdb->prefix}users   ORDER BY display_name ", ARRAY_A);
-		$str  = '<table cellpadding="5" cellspacing="20">'; 
-		$c=1;
+		$str .='<ul class="dmtDocumentFolderStructure">';
+		$sort_users = array();
 		foreach($userdata as $userdatavalues) {
-			if($c==1)
-			{
-				$str .= '<tr>';
-			}
-			if($selected_users):  
-					  $checked = (in_array($userdatavalues['id'],$selected_users))?'checked="checked"':'';  
-				endif; 
-			$str .= '<td><input type="checkbox"  name="available_user" id="available_user" class="available_user" value="'.$userdatavalues['id'].'" '.$checked.'> '.$userdatavalues['display_name'].'</td>';
-			$c++;
-			if($c==5)
-			{
-				$c = 1;
-				$str .= '</tr>';
-			}
+			
+			if($selected_users):
+			$checked = (in_array($userdatavalues['id'],$selected_users))?'checked="checked"':'notchecked';
+			endif;
+			 
+			$sort_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked);
+			 
+			
 		}
-		$str .= '</table>';
+		$sort_users = aasort($sort_users,"sort");
+		foreach($sort_users as $userdatavalues) {
+		 
+			if($selected_users):  
+					  $checked = (in_array($userdatavalues['users_data']['id'],$selected_users))?'checked="checked"':'';  
+				endif; 
+				$str .='<li>';
+				$str .='<label class="selectit">';
+				$str .= '<input type="checkbox"  name="available_user" id="available_user" class="available_user" value="'.$userdatavalues['users_data']['id'].'" '.$checked.'> '.$userdatavalues['users_data']['display_name'];
+				$str .='</label>';
+				$str .='</li>';
+			 
+		}
+		
+	$str .='</ul>'; 
 	}
 	echo $str;
 	if (isset($_POST['call_by']))

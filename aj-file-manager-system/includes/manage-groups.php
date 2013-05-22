@@ -46,28 +46,38 @@
 	 
 	 <tr id="row-group-members">  
          <td width="595"  >
-		 <strong>Group Members:</strong><br> 
+		 <strong><h3>Group Members:</h3></strong><br> 
+		  <div id="available_users_add" style="display: inline" class="available_users_add">
+			<input id="add-user-group-button" type="button" value="Add Group Members" class="button button-primary add-user-group-button">
+		 </div>
+		 <br>
+		 <br>
 		 <div id="available_users"   class="dmtDocumentStructureWrapper">
 			 
 		 </div><br>
-		 <div id="available_users_add" style="display: inline">
-			<input id="add-user-group-button" type="button" value="Add" class="button button-primary">
+		 <div id="available_users_add" style="display: inline" class="available_users_add">
+			<input id="add-user-group-button" type="button" value="Add Group Members" class="button button-primary add-user-group-button">
 		 </div>
 		</td> 
             	  
      </tr>
 	     <tr>  
-         <td width="595"  height="20"> 
+         <td width="595"  height="20"> <hr>
 		</td> 
             	  
      </tr>
 	  <tr id="row-folder-visibility">  
          <td colspan="2"  >
-		 <strong>Folder Visibility:</strong><br> 
+		 <strong><h3>Folder Visibility:</h3></strong><br> 
+		  <div id="available_group_folder" class="available_group_folder" style="display: inline">
+			<input id="add-group-folder-button" type="button" value="Add Group Folders" class="button button-primary add-group-folder-button">
+		 </div>
+		 <br>
+		 <br>
 		 <div id="group_folder" class="dmtDocumentStructureWrapper">
 		</div><br>
-		  <div id="available_group_folder" style="display: inline">
-			<input id="add-group-folder-button" type="button" value="Add" class="button button-primary">
+		  <div id="available_group_folder" class="available_group_folder"  style="display: inline">
+			<input id="add-group-folder-button" type="button" value="Add Group Folders" class="button button-primary add-group-folder-button">
 		 </div>
 		</td> 
             	  
