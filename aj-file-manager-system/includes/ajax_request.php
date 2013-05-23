@@ -5,9 +5,9 @@ $path = $_SERVER['DOCUMENT_ROOT'];
 $mypath = '/intellidocs';
 $path = $path.$mypath;
 //include_once $path . '/wp-config.php';
-include_once $path . '/wp-load.php';
-include_once $path . '/wp-includes/wp-db.php';
-include_once $path . '/wp-includes/pluggable.php';
+//include_once $path . '/wp-load.php';
+//include_once $path . '/wp-includes/wp-db.php';
+//include_once $path . '/wp-includes/pluggable.php';
 
 ob_start();
 //var_dump($_REQUEST);
