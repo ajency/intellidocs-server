@@ -4,3 +4,8 @@ intellidocsSencha/archive/app.js/
 intellidocsSencha/build/IntellidocsSencha/testing/resources/js/encryption.js
 intellidocsSencha/version.properties
 intellidocsSencha/build
+intellidocsR2/.classpath
+intellidocsR2/.settings/org.eclipse.jdt.core.prefs
+intellidocsR2/lint.xml
+intellidocsR2/project.properties
+intellidocsR2/src/com/intellidocs/Intellidocs.java
