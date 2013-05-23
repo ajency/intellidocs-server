@@ -202,7 +202,54 @@ jQuery(document).ready(function(){
 							alert('Something seems to have gone wrong with the copy. Try again later.');
 						}
 					});
-			});		
+			});
+		
+		
+		jQuery('.dmtOptionDelete').click(function(){
+
+			confirmmsg = "Are you sure you want to delete this folder ?"
+
+				recursive = "no"
+					if(jQuery('#applydelete_recursively:checked').val()=="yes")
+					{
+						recursive = "yes"
+							confirmmsg = "Are you sure you want to delete this folder and recursively delete  all the folders under it ?"
+					}
+
+			ret_ans = confirm(confirmmsg)
+			if(ret_ans==true)
+			{
+
+
+				var folder_data = 
+				{
+						action 			: 'dmt_ajax_folder_delete',
+						recursive 			: recursive,
+						folder_id 		: jQuery('#dmt_folder_term_id').val() 
+				};
+				jQuery('#dmt_folder_delete_spinner').show();
+				deleteredirect = jQuery('#delete_redirect').val();
+				jQuery.post(ajaxurl, folder_data, function(response) {
+
+					if(response.success == true)
+					{
+						jQuery('#dmt_folder_delete_spinner').hide();
+
+						window.location.replace(deleteredirect);		
+					}
+					else
+					{
+						jQuery('#dmt_folder_delete_spinner').hide();
+						alert('Something seems to have gone wrong with the delete. Try again later.');
+					}
+				});
+
+			}
+			else
+			{ 
+				return false;
+			}
+		});
 	});
 	
 //Function to get the values of the folders selcted.

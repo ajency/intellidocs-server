@@ -71,6 +71,12 @@ color: white;
 cursor: default;
 }
 
+div.custom-radio-container div.deleteaction {
+background-color: #DF013A;
+color: white;
+cursor: default;
+}
+
 span.dmtdesc{margin-top:10px; display:inline-block;}
 
 div.dmtAjaxSpinner{width: 30px;

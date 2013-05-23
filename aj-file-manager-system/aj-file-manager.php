@@ -202,6 +202,18 @@ License: GPL3
             </div>
             </td>
 		</tr>
+		
+		<tr class="form-field">
+			<th scope="row" valign="top"><label for="description"><?php _ex('Actions', 'Taxonomy Description'); ?></label></th>
+			<td>  
+            <div class="custom-radio-container small-lm">
+                <div class="dmtOptionDelete deleteaction">Delete</div> 
+         	</div>
+           <span style="line-height:31px;" > <input type="checkbox" id="applydelete_recursively" value="yes" style="width:5%; margin-right:-10px" >Apply Recursively</span>
+            <!-- Publish Email Settings -->
+         	 <div class="dmtAjaxSpinner" id="dmt_folder_delete_spinner" style="display:none;" ></div> 
+            <input type="hidden" name="delete_redirect" id="delete_redirect" value="<?php echo home_url().'/wp-admin/edit.php?post_type=document_files&page=intellidocs-document-files';?>">
+		</tr>
        
 	<?php 
 	}
@@ -485,6 +497,29 @@ License: GPL3
 		exit;
 	}
 	add_action('wp_ajax_dmt_ajax_folder_deactivate', 'dmt_ajax_folder_deactivate');
+	
+	
+	function dmt_ajax_folder_delete()
+	{
+		global $wpdb;
+		$folder_id 		= $_POST['folder_id']; 
+		$recursive 		= $_POST['recursive']; 
+		if($recursive=="yes")
+		{
+			$termchildren = get_term_children( $folder_id, 'document_folders' );
+			foreach ( $termchildren as $child ) 
+			{ 
+				wp_delete_term( $child, 'document_folders' );
+			}
+		}
+		wp_delete_term( $folder_id, 'document_folders' );
+		$success =  true;
+		$response = json_encode( array( 'success' => $success,'folder_id' => $folder_id ,'terms'=>$termchildren,'recursive'=>$recursive) );
+		header( "Content-Type: application/json" );
+		echo $response;
+		exit;
+	}
+	add_action('wp_ajax_dmt_ajax_folder_delete', 'dmt_ajax_folder_delete');
 	
 	function dmt_get_folder_structure_files($cat_details)
 	{
