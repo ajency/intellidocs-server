@@ -167,7 +167,7 @@ class DMT_FolderStructure
 					'f_attachment' 		=> ($file_attchment)?$file_attchment:'no-file',
 					'f_modified'		=> $file->post_date,
 					'f_folder'			=> $folder,
-					'f_parent'			=> $file_parent_id,
+					'f_parent'			=> $file_parent_id[0]->term_id,
 					'f_description' 	=> $file->post_excerpt,
 					'f_solicitor'		=> get_post_meta($file->ID,'dmt_file_solicitor',true),
 					'f_item_id'			=> get_post_meta($file->ID,'dmt_file_item_number',true),
@@ -260,9 +260,7 @@ foreach($access_cats as $access_cat)
 	if(dmt_check_folder_status_is_published($access_cat->category_id))
 	{
 		if(!empty($folder_details->term_id))
-			 
-			$folder_details =  get_term_by( 'id', $folder_details->term_id , 'document_folders');
-			$folder_parent_id = $folder_details->parent;
+			  
 			$files_folders[] = array(
 							'f_id'				=> $folder_details->term_id,
 							'fld_item_id'		=> dmt_get_document_folder_meta($folder_details->term_id,'document_folders_item_id'),
@@ -272,7 +270,7 @@ foreach($access_cats as $access_cat)
 							'f_attachment'		=> '',
 							'f_modified' 		=> '-', 
 							'f_folder'	 		=> $folder,
-							'f_parent'			=> $folder_parent_id,
+							'f_parent'			=> $folder_details->parent,
 							'f_description' 	=> $folder_details->description,
 							'f_file_count'  	=> count($new_object->get_files_in_category($folder_details->term_id)), 
 							'f_sub_fld_count'	=>  $new_object->get_sub_folder_count($folder_details->term_id,'document_folders'),
