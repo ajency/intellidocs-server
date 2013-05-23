@@ -68,7 +68,7 @@ document.addEventListener('deviceready',function(){
      */
      document.addEventListener("backbutton", function(e){
     	e.preventDefault();
-    	if(global_root_view)
+    	if(global_root_view || global_goto_node.parentNode == null || global_goto_node.parentNode == 'undefined')
     	{
     		Ext.Msg.confirm('','Are you sure you want to exit?',
                     function(buttonId){
