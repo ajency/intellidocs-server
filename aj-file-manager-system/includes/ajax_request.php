@@ -76,7 +76,8 @@ class DMT_FolderStructure
 			{	
 				if(!empty($id))
 				{
-					$folder_parent_id = get_term_by( 'id', $id , 'document_folders');
+					$folder_details = get_term_by( 'id', $id , 'document_folders');
+					$folder_parent_id = $folder_details->parent;
 					$files_array[] = array( 
 							'f_id'				=>	$id,
 							'fld_item_id'		=> 	dmt_get_document_folder_meta($id,'document_folders_item_id'),
@@ -259,8 +260,9 @@ foreach($access_cats as $access_cat)
 	if(dmt_check_folder_status_is_published($access_cat->category_id))
 	{
 		if(!empty($folder_details->term_id))
-			
-			$folder_parent_id = get_term_by( 'id', $folder_details->term_id , 'document_folders');
+			 
+			$folder_details =  get_term_by( 'id', $folder_details->term_id , 'document_folders');
+			$folder_parent_id = $folder_details->parent;
 			$files_folders[] = array(
 							'f_id'				=> $folder_details->term_id,
 							'fld_item_id'		=> dmt_get_document_folder_meta($folder_details->term_id,'document_folders_item_id'),
