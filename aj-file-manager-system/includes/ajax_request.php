@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 $path = $_SERVER['DOCUMENT_ROOT'];
-$mypath = '';
+$mypath = '/intellidocs';
 $path = $path.$mypath;
 //include_once $path . '/wp-config.php';
 include_once $path . '/wp-load.php';
@@ -75,6 +75,8 @@ class DMT_FolderStructure
 			if(dmt_check_folder_status_is_published($id))
 			{	
 				if(!empty($id))
+				{
+					$folder_parent_id = get_term_by( 'id', $id , 'document_folders');
 					$files_array[] = array( 
 							'f_id'				=>	$id,
 							'fld_item_id'		=> 	dmt_get_document_folder_meta($id,'document_folders_item_id'),
@@ -84,11 +86,13 @@ class DMT_FolderStructure
 							'f_attachment'		=> 	'',
 							'f_modified' 		=> 	'-', 
 							'f_folder'	 		=> 	$folder ,
+							'f_parent'	 		=> 	$folder_parent_id ,
 							'f_description' 	=> 	$cat->description,
 							'f_file_count'  	=> 	count($this->get_files_in_category($id)),
 							'f_sub_fld_count'	=>  $this->get_sub_folder_count($id,'document_folders'),
 							'items'				=> 	$this->get_cat_hierchy_n_files($child_of,$cat->cat_ID,$args,$folder),
-					   );		  
+					   );
+				}		  
 			}
 		}
 		return $files_array;
@@ -153,7 +157,7 @@ class DMT_FolderStructure
 			$attachments = get_posts($attachment_args);
 			
 			$file_attchment =  wp_get_attachment_url($attachments[0]->ID);
-			
+			$file_parent_id = wp_get_post_terms($file->ID, 'document_folders'  );
 			$files_in_folder[]= array(
 					'f_id' 				=> $file->ID, 
 					'f_name'			=> $file->post_title,
@@ -162,6 +166,7 @@ class DMT_FolderStructure
 					'f_attachment' 		=> ($file_attchment)?$file_attchment:'no-file',
 					'f_modified'		=> $file->post_date,
 					'f_folder'			=> $folder,
+					'f_parent'			=> $file_parent_id,
 					'f_description' 	=> $file->post_excerpt,
 					'f_solicitor'		=> get_post_meta($file->ID,'dmt_file_solicitor',true),
 					'f_item_id'			=> get_post_meta($file->ID,'dmt_file_item_number',true),
@@ -254,6 +259,8 @@ foreach($access_cats as $access_cat)
 	if(dmt_check_folder_status_is_published($access_cat->category_id))
 	{
 		if(!empty($folder_details->term_id))
+			
+			$folder_parent_id = get_term_by( 'id', $folder_details->term_id , 'document_folders');
 			$files_folders[] = array(
 							'f_id'				=> $folder_details->term_id,
 							'fld_item_id'		=> dmt_get_document_folder_meta($folder_details->term_id,'document_folders_item_id'),
@@ -263,6 +270,7 @@ foreach($access_cats as $access_cat)
 							'f_attachment'		=> '',
 							'f_modified' 		=> '-', 
 							'f_folder'	 		=> $folder,
+							'f_parent'			=> $folder_parent_id,
 							'f_description' 	=> $folder_details->description,
 							'f_file_count'  	=> count($new_object->get_files_in_category($folder_details->term_id)), 
 							'f_sub_fld_count'	=>  $new_object->get_sub_folder_count($folder_details->term_id,'document_folders'),
