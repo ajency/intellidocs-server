@@ -385,6 +385,7 @@ function get_all_folders()
 	$selected_folderss = "";
 	//$result = $wpdb->get_results("insert into {$wpdb->prefix}dmt_group (group_name)values ('".$group_name."')");	
 	$selected_folders = array();
+	$sort_category = array();
 	$result_folders =$wpdb->get_results("SELECT folder_id FROM {$wpdb->prefix}dmt_group_folder where group_id = $group_id ", ARRAY_A);
 	foreach ($result_folders as $result_foldersval) 
 	{
@@ -393,13 +394,21 @@ function get_all_folders()
 	$str .='<ul class="dmtDocumentFolderStructure">';
 	 foreach($categories as $category): 
 				if($selected_folders):  
-					  $checked = (in_array($category->cat_ID,$selected_folders))?'checked="checked"':'';  
+					  $checked = (in_array($category->cat_ID,$selected_folders))?'checked="checked"':'notchecked';  
 				endif; 
-				$str .='<li>';
-				$str .='<label class="selectit">';
-				$str .='<input value="'.$category->cat_ID.'" type="checkbox" name="folder_list" id="folder_list"  class="folder_list" '.$checked.'/> '.$category->cat_name;
-				$str .='</label>';
-				$str .='</li>';
+		 $sort_category[] = array("category_data"=>$category,"sort"=>$checked);
+			 
+	  endforeach ;
+	  $sort_users = aasort($sort_category,"sort");
+	  foreach($sort_category as $category):
+	 
+		  	$checked = ( $category['sort']);
+		 
+		  $str .='<li>';
+		  $str .='<label class="selectit">';
+		  $str .='<input value="'.$category["category_data"]->cat_ID.'" type="checkbox" name="folder_list" id="folder_list"  class="folder_list" '.$checked.'/> '.$category["category_data"]->cat_name;
+		  $str .='</label>';
+		  $str .='</li>';
 	  endforeach ;
 	$str .='</ul>'; 
 	 

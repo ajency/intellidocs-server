@@ -114,6 +114,7 @@ jQuery(document).ready(function(){
 						 jQuery('#message').html(response);
 						 jQuery('#message').show();
 						 jQuery('.available_group_folder').html(button_content);
+						 jQuery('#groups').trigger("change")
 					});
 		  
 	});
