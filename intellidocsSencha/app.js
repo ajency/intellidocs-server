@@ -40,6 +40,7 @@ Ext.application({
 				'DmtTabsPanel.DmtDetailsPanel.DmtNotificationsDetailPanel',
 				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList',
 				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListSortPanel',
+				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListTitleBar',
                 'DmtTabsPanel.DmtSubTabsPanel.DmtMessagesPanel'
 			],
 
@@ -67,11 +68,11 @@ Ext.application({
     },
     mainlaunch: function() {
                 
-        if(!device || !this.launched)
+       /* if(!device || !this.launched)
         {
             console.log("Returnning here");
             return;
-        }
+        }*/
     	
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();

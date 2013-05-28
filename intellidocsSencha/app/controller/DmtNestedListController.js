@@ -19,8 +19,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 				leafitemtap	:'dmtNestedListLeafItemTap',
 				back		:'dmtNestedListBackTap',
 				initialize	:'dmtNestedListInitialize',
-				load 		:'dmtNestedListLoad',
-				listchange  :'dmtNestedListChange'
+				//load 		:'dmtNestedListLoad',
+				//listchange  :'dmtNestedListChange'
 			},
 			dmtNestedListRefreshButton:
 			{
@@ -83,8 +83,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		{
 		case 'file':
 
-			console.log(file_ext.toLowerCase());
-
+			
 			panel_content = {
 					xtype: 'formpanel',
 					id: 'dmt-details-view-card',
@@ -429,16 +428,57 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	dmtNestedListInitialize:function(list)
 	{
         var _this = this;
-		console.log('List Initialized')
+        //list.setStore('DmtFolderStructureStore');
+        console.log('List Initialized')
 		//Add the sorting panel to the nested list
+        list.insert(0,{xtype: 'dmtnestedlisttitlebar'});
 		list.insert(1,{xtype: 'dmtnestedlistsortpanel'});	
 		
+		var str = Ext.getStore('DmtFolderStructureStore');
+		list.setStore(str);
+      
 		//Reload the store to enable re-initialization
-		Ext.getStore('DmtFolderStructureStore').load();
-		list.setStore('DmtFolderStructureStore');	
-		
-		
+		//Ext.getStore('DmtFolderStructureStore').load();
+		//we have all data in db. trigger db here
+		db.transaction(function(tx){
+  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='0'",[], 
+  				   function(tx, results){
+  			   				var len = results.rows.length;
+  			   				var f_data = [];
+  			   				for (var i=0; i<len; i++)
+  			   				{
+ 	        			        f_data.push({
+ 	        			        		items	: [],
+ 	        			        		f_id   	: results.rows.item(i).f_id,
+ 	        			        		f_name 	: results.rows.item(i).f_name,
+ 	        			        		f_type	: results.rows.item(i).f_type,
+ 	        			        		f_ext	: results.rows.item(i).f_ext,
+ 	        			        		f_attachment	: results.rows.item(i).f_attachment,
+ 	        			        		f_modified		: results.rows.item(i).f_modified,
+ 	        			        		f_folder		: results.rows.item(i).f_folder,
+ 	        			        		f_description 	: results.rows.item(i).f_description,
+ 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
+ 	        			        		f_item_id		: '',
+ 	        			        		f_file_count	: results.rows.item(i).f_file_count,
+ 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
+ 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
+ 	        			        		f_folders		: []
+ 	        			        	
+ 	        			        });
+ 	        			    }
+  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
+  			   				str.setData({'items' : f_data});
+  			   				//store.setProxy({data:{'items' : f_data}});
+      			   			//
+                            Ext.getCmp('dmt-nested-list').unmask();
+  		   				}, 
+ 	        		   function(err){
+ 	        			   console.log("Error fetching data");
+ 	        		   });
+  	    });
 		console.log('List Store loaded');
+		//Ext.getStore('DmtFolderStructureStore').load();
+		Ext.getCmp('dmt-nested-list').unmask();
 		Ext.Viewport.unmask();
 		//Add the user_name param to the polling function
 		var base_params ={
@@ -488,63 +528,103 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.direct.Manager.addProvider(dmt_polling);        
     },
 	//When a  node is tapped on the nested list
-	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
+	dmtNestedListItemTap:function(list, index, target, record, e, eOpts)
 	{
-		console.log('Item Tapped');
-		if(!record.isLeaf())
+		 var _this = this;
+		/** check if record is leaf record */
+		if(!record.getData().f_type == 'file')
 			Ext.Viewport.mask({xtype:'loadmask'});
+		
 	  	this.getDmtDetailsPanel().mask({xtype:'loadmask',message:'Loading...'});
 		
 		global_goto_node = record;
-		var rcds = this.dmtTreverseNodes(record,[]);
-        global_root_view = (rcds.length == 0) ? true : false; 
-         
-		if(global_long_press)
-        {
-           global_long_press = false;
-           return;
-        }
+		var rcds = [];// this.dmtTreverseNodes(record,[]);
+        
+		db.transaction(function(tx){
+	  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='17'",[], 
+	  				   function(tx, results){
+  			   				var len = results.rows.length;
+  			   				var f_data = [];
+  			   				for (var i=0; i<len; i++)
+  			   				{
+ 	        			        f_data.push({
+ 	        			        		items	: [],
+ 	        			        		f_id   	: results.rows.item(i).f_id,
+ 	        			        		f_name 	: results.rows.item(i).f_name,
+ 	        			        		f_type	: results.rows.item(i).f_type,
+ 	        			        		f_ext	: results.rows.item(i).f_ext,
+ 	        			        		f_attachment	: results.rows.item(i).f_attachment,
+ 	        			        		f_modified		: results.rows.item(i).f_modified,
+ 	        			        		f_folder		: results.rows.item(i).f_folder,
+ 	        			        		f_description 	: results.rows.item(i).f_description,
+ 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
+ 	        			        		f_item_id		: '',
+ 	        			        		f_file_count	: results.rows.item(i).f_file_count,
+ 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
+ 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
+ 	        			        		f_folders		: []
+ 	        			        	
+ 	        			        });
+ 	        			    }
+  			   				
+  			   				//console.log(_this);
+  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
+  			   				list.getStore().setData({'items' : f_data});
+  			   				//store.setProxy({data:{'items' : f_data}});
+      			   			global_root_view = (f_data.length == 0) ? true : false; 
+                        
+                    		if(global_long_press)
+                            {
+                               global_long_press = false;
+                               return;
+                            }
+                		
+                			if(_prev_record != record)
+                	        {
+                			 
+                			  var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
+                			   
+                    	           if(record.getData().f_type == 'file')
+                    	           {
+                    		           //check if file exists
+                    		           var file_name_url = record.getData().f_attachment;   
+                    		           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                    		           var folder_path = record.getData().f_folder;
+                    		           _prev_record = record;
+                    		           
+                    		           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                    		                   {},
+                    		                   function(fileEntry){
+                    		                	   window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
+                    		                       _this.dmtDetailsPanelChange(record,null,true);
+                    		                   },
+                    		                   function(err){
+                    		                       Ext.Msg.confirm('','Download file?',
+                    		                                   function(buttonId){
+                    		                                       if(buttonId == 'yes')
+                    		                                       {
+                    		                                           IntelliDocs.downloadFile(record);
+                    		                                       }
+                    		                                   });
+                    		                       _this.dmtDetailsPanelChange(record,null,false);
+                    		             });
+                    	           }
+                    	           else
+                    	           {
+                    	               current_f_id = record.getData().f_id;
+                    	               _this.dmtDetailsPanelChange(record,null,false);
+                    	           }
+                			  });
+                			  
+                			  createDetailsPanelDelayed.delay(100);
+                        };
+                		
+	   				}, 
+        		   function(err){
+        			   console.log("Error fetching data");
+        		   });
+	  	    });
 		
-			if(_prev_record != record)
-	        {
-			  var _this = this;
-			  var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
-			   
-	           console.log('Item Tapped');
-	           if(record.isLeaf())
-	           {
-		           //check if file exists
-		           var file_name_url = record.getData().f_attachment;   
-		           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-		           var folder_path = record.getData().f_folder;
-		           _prev_record = record;
-		           
-		           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
-		                   {},
-		                   function(fileEntry){
-		                	   window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
-		                       _this.dmtDetailsPanelChange(record,null,true);
-		                   },
-		                   function(err){
-		                       Ext.Msg.confirm('','Download file?',
-		                                   function(buttonId){
-		                                       if(buttonId == 'yes')
-		                                       {
-		                                           IntelliDocs.downloadFile(record);
-		                                       }
-		                                   });
-		                       _this.dmtDetailsPanelChange(record,null,false);
-		             });
-	           }
-	           else
-	           {
-	               current_f_id = record.getData().f_id;
-	               _this.dmtDetailsPanelChange(record,null,false);
-	           }
-	        });
-			  
-			createDetailsPanelDelayed.delay(100);
-        };
 		
 		
     },
@@ -580,6 +660,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         global_goto_node = last_node.parentNode;
 		
 		this.dmtDetailsPanelChange(last_node.parentNode,null);
+	},
+	dmtFetchChildNode : function(rec)
+	{
+		var _this = this;
+		
 	},
 	//When the user clicks on the refresh button on the nested list
 	dmtNestedListRefreshButton:function(button)
@@ -675,6 +760,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	},
 	dmtGetUsernameFromCache:function()
 	{
+		return;
 		var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 		login_info_store.load();
 		var index = login_info_store.find('key','dmtScLgInfo');

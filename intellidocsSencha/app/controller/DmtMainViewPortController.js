@@ -16,7 +16,7 @@ Ext.define('DMTApp.controller.DmtMainViewPortController', {
     },
 	dmtMainContainerInitialize:function(main_container)
 	{
-		if(!this.dmtMainContainerLoginCheck())
+		if(this.dmtMainContainerLoginCheck())
 		{
 			var dmt_secure_login_panel = Ext.create('DMTApp.view.DmtSecureLogin');
 			main_container.setActiveItem(dmt_secure_login_panel);

@@ -53384,1672 +53384,6 @@ Ext.define('Ext.data.JsonP', {
 });
 
 /**
- * @class Ext.data.NodeInterface
- * This class is meant to be used as a set of methods that are applied to the prototype of a
- * Record to decorate it with a Node API. This means that models used in conjunction with a tree
- * will have all of the tree related methods available on the model. In general this class will
- * not be used directly by the developer. This class also creates extra fields on the model if
- * they do not exist, to help maintain the tree state and UI. These fields are:
- *
- * - parentId
- * - index
- * - depth
- * - expanded
- * - expandable
- * - checked
- * - leaf
- * - cls
- * - iconCls
- * - root
- * - isLast
- * - isFirst
- * - allowDrop
- * - allowDrag
- * - loaded
- * - loading
- * - href
- * - hrefTarget
- * - qtip
- * - qtitle
- */
-Ext.define('Ext.data.NodeInterface', {
-    requires: ['Ext.data.Field', 'Ext.data.ModelManager'],
-
-    alternateClassName: 'Ext.data.Node',
-
-    /**
-     * @property nextSibling
-     * A reference to this node's next sibling node. `null` if this node does not have a next sibling.
-     */
-
-    /**
-     * @property previousSibling
-     * A reference to this node's previous sibling node. `null` if this node does not have a previous sibling.
-     */
-
-    /**
-     * @property parentNode
-     * A reference to this node's parent node. `null` if this node is the root node.
-     */
-
-    /**
-     * @property lastChild
-     * A reference to this node's last child node. `null` if this node has no children.
-     */
-
-    /**
-     * @property firstChild
-     * A reference to this node's first child node. `null` if this node has no children.
-     */
-
-    /**
-     * @property childNodes
-     * An array of this nodes children.  Array will be empty if this node has no children.
-     */
-
-    statics: {
-        /**
-         * This method allows you to decorate a Record's prototype to implement the NodeInterface.
-         * This adds a set of methods, new events, new properties and new fields on every Record
-         * with the same Model as the passed Record.
-         * @param {Ext.data.Model} record The Record you want to decorate the prototype of.
-         * @static
-         */
-        decorate: function(record) {
-            if (!record.isNode) {
-                // Apply the methods and fields to the prototype
-                var mgr = Ext.data.ModelManager,
-                    modelName = record.modelName,
-                    modelClass = mgr.getModel(modelName),
-                    newFields = [],
-                    i, newField, len;
-
-                // Start by adding the NodeInterface methods to the Model's prototype
-                modelClass.override(this.getPrototypeBody());
-
-                newFields = this.applyFields(modelClass, [
-                    {name: 'parentId',   type: 'string',  defaultValue: null},
-                    {name: 'index',      type: 'int',     defaultValue: 0},
-                    {name: 'depth',      type: 'int',     defaultValue: 0,     persist: false},
-                    {name: 'expanded',   type: 'bool',    defaultValue: false, persist: false},
-                    {name: 'expandable', type: 'bool',    defaultValue: true,  persist: false},
-                    {name: 'checked',    type: 'auto',    defaultValue: null},
-                    {name: 'leaf',       type: 'bool',    defaultValue: false, persist: false},
-                    {name: 'cls',        type: 'string',  defaultValue: null,  persist: false},
-                    {name: 'iconCls',    type: 'string',  defaultValue: null,  persist: false},
-                    {name: 'root',       type: 'boolean', defaultValue: false, persist: false},
-                    {name: 'isLast',     type: 'boolean', defaultValue: false, persist: false},
-                    {name: 'isFirst',    type: 'boolean', defaultValue: false, persist: false},
-                    {name: 'allowDrop',  type: 'boolean', defaultValue: true,  persist: false},
-                    {name: 'allowDrag',  type: 'boolean', defaultValue: true,  persist: false},
-                    {name: 'loaded',     type: 'boolean', defaultValue: false, persist: false},
-                    {name: 'loading',    type: 'boolean', defaultValue: false, persist: false},
-                    {name: 'href',       type: 'string',  defaultValue: null,  persist: false},
-                    {name: 'hrefTarget', type: 'string',  defaultValue: null,  persist: false},
-                    {name: 'qtip',       type: 'string',  defaultValue: null,  persist: false},
-                    {name: 'qtitle',     type: 'string',  defaultValue: null,  persist: false}
-                ]);
-
-                len = newFields.length;
-
-                // We set a dirty flag on the fields collection of the model. Any reader that
-                // will read in data for this model will update their extractor functions.
-                modelClass.getFields().isDirty = true;
-
-                // Set default values
-                for (i = 0; i < len; ++i) {
-                    newField = newFields[i];
-                    if (record.get(newField.getName()) === undefined) {
-                        record.data[newField.getName()] = newField.getDefaultValue();
-                    }
-                }
-            }
-
-            if (!record.isDecorated) {
-                record.isDecorated = true;
-
-                Ext.applyIf(record, {
-                    firstChild: null,
-                    lastChild: null,
-                    parentNode: null,
-                    previousSibling: null,
-                    nextSibling: null,
-                    childNodes: []
-                });
-
-                record.enableBubble([
-                    /**
-                     * @event append
-                     * Fires when a new child node is appended.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} node The newly appended node.
-                     * @param {Number} index The index of the newly appended node.
-                     */
-                    "append",
-
-                    /**
-                     * @event remove
-                     * Fires when a child node is removed.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} node The removed node.
-                     */
-                    "remove",
-
-                    /**
-                     * @event move
-                     * Fires when this node is moved to a new location in the tree.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} oldParent The old parent of this node.
-                     * @param {Ext.data.NodeInterface} newParent The new parent of this node.
-                     * @param {Number} index The index it was moved to.
-                     */
-                    "move",
-
-                    /**
-                     * @event insert
-                     * Fires when a new child node is inserted.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} node The child node inserted.
-                     * @param {Ext.data.NodeInterface} refNode The child node the node was inserted before.
-                     */
-                    "insert",
-
-                    /**
-                     * @event beforeappend
-                     * Fires before a new child is appended, return `false` to cancel the append.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} node The child node to be appended.
-                     */
-                    "beforeappend",
-
-                    /**
-                     * @event beforeremove
-                     * Fires before a child is removed, return `false` to cancel the remove.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} node The child node to be removed.
-                     */
-                    "beforeremove",
-
-                    /**
-                     * @event beforemove
-                     * Fires before this node is moved to a new location in the tree. Return `false` to cancel the move.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface} oldParent The parent of this node.
-                     * @param {Ext.data.NodeInterface} newParent The new parent this node is moving to.
-                     * @param {Number} index The index it is being moved to.
-                     */
-                    "beforemove",
-
-                     /**
-                      * @event beforeinsert
-                      * Fires before a new child is inserted, return false to cancel the insert.
-                      * @param {Ext.data.NodeInterface} this This node
-                      * @param {Ext.data.NodeInterface} node The child node to be inserted
-                      * @param {Ext.data.NodeInterface} refNode The child node the node is being inserted before
-                      */
-                    "beforeinsert",
-
-                    /**
-                     * @event expand
-                     * Fires when this node is expanded.
-                     * @param {Ext.data.NodeInterface} this The expanding node.
-                     */
-                    "expand",
-
-                    /**
-                     * @event collapse
-                     * Fires when this node is collapsed.
-                     * @param {Ext.data.NodeInterface} this The collapsing node.
-                     */
-                    "collapse",
-
-                    /**
-                     * @event beforeexpand
-                     * Fires before this node is expanded.
-                     * @param {Ext.data.NodeInterface} this The expanding node.
-                     */
-                    "beforeexpand",
-
-                    /**
-                     * @event beforecollapse
-                     * Fires before this node is collapsed.
-                     * @param {Ext.data.NodeInterface} this The collapsing node.
-                     */
-                    "beforecollapse",
-
-                    /**
-                     * @event sort
-                     * Fires when this node's childNodes are sorted.
-                     * @param {Ext.data.NodeInterface} this This node.
-                     * @param {Ext.data.NodeInterface[]} childNodes The childNodes of this node.
-                     */
-                    "sort",
-
-                    'load'
-                ]);
-            }
-
-            return record;
-        },
-
-        applyFields: function(modelClass, addFields) {
-            var modelPrototype = modelClass.prototype,
-                fields = modelPrototype.fields,
-                keys = fields.keys,
-                ln = addFields.length,
-                addField, i,
-                newFields = [];
-
-            for (i = 0; i < ln; i++) {
-                addField = addFields[i];
-                if (!Ext.Array.contains(keys, addField.name)) {
-                    addField = Ext.create('Ext.data.Field', addField);
-
-                    newFields.push(addField);
-                    fields.add(addField);
-                }
-            }
-
-            return newFields;
-        },
-
-        getPrototypeBody: function() {
-            return {
-                isNode: true,
-
-                /**
-                 * Ensures that the passed object is an instance of a Record with the NodeInterface applied
-                 * @return {Boolean}
-                 * @private
-                 */
-                createNode: function(node) {
-                    if (Ext.isObject(node) && !node.isModel) {
-                        node = Ext.data.ModelManager.create(node, this.modelName);
-                    }
-                    // Make sure the node implements the node interface
-                    return Ext.data.NodeInterface.decorate(node);
-                },
-
-                /**
-                 * Returns true if this node is a leaf
-                 * @return {Boolean}
-                 */
-                isLeaf : function() {
-                    return this.get('leaf') === true;
-                },
-
-                /**
-                 * Sets the first child of this node
-                 * @private
-                 * @param {Ext.data.NodeInterface} node
-                 */
-                setFirstChild : function(node) {
-                    this.firstChild = node;
-                },
-
-                /**
-                 * Sets the last child of this node
-                 * @private
-                 * @param {Ext.data.NodeInterface} node
-                 */
-                setLastChild : function(node) {
-                    this.lastChild = node;
-                },
-
-                /**
-                 * Updates general data of this node like isFirst, isLast, depth. This
-                 * method is internally called after a node is moved. This shouldn't
-                 * have to be called by the developer unless they are creating custom
-                 * Tree plugins.
-                 * @return {Boolean}
-                 */
-                updateInfo: function(silent) {
-                    var me = this,
-                        parentNode = me.parentNode,
-                        isFirst = (!parentNode ? true : parentNode.firstChild == me),
-                        isLast = (!parentNode ? true : parentNode.lastChild == me),
-                        depth = 0,
-                        parent = me,
-                        children = me.childNodes,
-                        ln = children.length,
-                        i;
-
-                    while (parent.parentNode) {
-                        ++depth;
-                        parent = parent.parentNode;
-                    }
-
-                    me.beginEdit();
-                    me.set({
-                        isFirst: isFirst,
-                        isLast: isLast,
-                        depth: depth,
-                        index: parentNode ? parentNode.indexOf(me) : 0,
-                        parentId: parentNode ? parentNode.getId() : null
-                    });
-                    me.endEdit(silent);
-                    if (silent) {
-                        me.commit(silent);
-                    }
-
-                    for (i = 0; i < ln; i++) {
-                        children[i].updateInfo(silent);
-                    }
-                },
-
-                /**
-                 * Returns `true` if this node is the last child of its parent.
-                 * @return {Boolean}
-                 */
-                isLast : function() {
-                   return this.get('isLast');
-                },
-
-                /**
-                 * Returns `true` if this node is the first child of its parent.
-                 * @return {Boolean}
-                 */
-                isFirst : function() {
-                   return this.get('isFirst');
-                },
-
-                /**
-                 * Returns `true` if this node has one or more child nodes, else `false`.
-                 * @return {Boolean}
-                 */
-                hasChildNodes : function() {
-                    return !this.isLeaf() && this.childNodes.length > 0;
-                },
-
-                /**
-                 * Returns `true` if this node has one or more child nodes, or if the `expandable`
-                 * node attribute is explicitly specified as `true`, otherwise returns `false`.
-                 * @return {Boolean}
-                 */
-                isExpandable : function() {
-                    var me = this;
-
-                    if (me.get('expandable')) {
-                        return !(me.isLeaf() || (me.isLoaded() && !me.hasChildNodes()));
-                    }
-                    return false;
-                },
-
-                /**
-                 * Insert node(s) as the last child node of this node.
-                 *
-                 * If the node was previously a child node of another parent node, it will be removed from that node first.
-                 *
-                 * @param {Ext.data.NodeInterface/Ext.data.NodeInterface[]} node The node or Array of nodes to append.
-                 * @return {Ext.data.NodeInterface} The appended node if single append, or `null` if an array was passed.
-                 */
-                appendChild : function(node, suppressEvents, suppressNodeUpdate) {
-                    var me = this,
-                        i, ln,
-                        index,
-                        oldParent,
-                        ps;
-
-                    // if passed an array or multiple args do them one by one
-                    if (Ext.isArray(node)) {
-                        for (i = 0, ln = node.length; i < ln; i++) {
-                            me.appendChild(node[i]);
-                        }
-                    } else {
-                        // Make sure it is a record
-                        node = me.createNode(node);
-
-                        if (suppressEvents !== true && me.fireEvent("beforeappend", me, node) === false) {
-                            return false;
-                        }
-
-                        index = me.childNodes.length;
-                        oldParent = node.parentNode;
-
-                        // it's a move, make sure we move it cleanly
-                        if (oldParent) {
-                            if (suppressEvents !== true && node.fireEvent("beforemove", node, oldParent, me, index) === false) {
-                                return false;
-                            }
-                            oldParent.removeChild(node, null, false, true);
-                        }
-
-                        index = me.childNodes.length;
-                        if (index === 0) {
-                            me.setFirstChild(node);
-                        }
-
-                        me.childNodes.push(node);
-                        node.parentNode = me;
-                        node.nextSibling = null;
-
-                        me.setLastChild(node);
-
-                        ps = me.childNodes[index - 1];
-                        if (ps) {
-                            node.previousSibling = ps;
-                            ps.nextSibling = node;
-                            ps.updateInfo(suppressNodeUpdate);
-                        } else {
-                            node.previousSibling = null;
-                        }
-
-                        node.updateInfo(suppressNodeUpdate);
-
-                        // As soon as we append a child to this node, we are loaded
-                        if (!me.isLoaded()) {
-                            me.set('loaded', true);
-                        }
-                        // If this node didn't have any childnodes before, update myself
-                        else if (me.childNodes.length === 1) {
-                            me.set('loaded', me.isLoaded());
-                        }
-
-                        if (suppressEvents !== true) {
-                            me.fireEvent("append", me, node, index);
-
-                            if (oldParent) {
-                                node.fireEvent("move", node, oldParent, me, index);
-                            }
-                        }
-
-                        return node;
-                    }
-                },
-
-                /**
-                 * Returns the bubble target for this node.
-                 * @private
-                 * @return {Object} The bubble target.
-                 */
-                getBubbleTarget: function() {
-                    return this.parentNode;
-                },
-
-                /**
-                 * Removes a child node from this node.
-                 * @param {Ext.data.NodeInterface} node The node to remove.
-                 * @param {Boolean} [destroy=false] `true` to destroy the node upon removal.
-                 * @return {Ext.data.NodeInterface} The removed node.
-                 */
-                removeChild : function(node, destroy, suppressEvents, suppressNodeUpdate) {
-                    var me = this,
-                        index = me.indexOf(node);
-
-                    if (index == -1 || (suppressEvents !== true && me.fireEvent("beforeremove", me, node) === false)) {
-                        return false;
-                    }
-
-                    // remove it from childNodes collection
-                    Ext.Array.erase(me.childNodes, index, 1);
-
-                    // update child refs
-                    if (me.firstChild == node) {
-                        me.setFirstChild(node.nextSibling);
-                    }
-                    if (me.lastChild == node) {
-                        me.setLastChild(node.previousSibling);
-                    }
-
-                    if (suppressEvents !== true) {
-                        me.fireEvent("remove", me, node);
-                    }
-
-                    // update siblings
-                    if (node.previousSibling) {
-                        node.previousSibling.nextSibling = node.nextSibling;
-                        node.previousSibling.updateInfo(suppressNodeUpdate);
-                    }
-                    if (node.nextSibling) {
-                        node.nextSibling.previousSibling = node.previousSibling;
-                        node.nextSibling.updateInfo(suppressNodeUpdate);
-                    }
-
-                    // If this node suddenly doesn't have childnodes anymore, update myself
-                    if (!me.childNodes.length) {
-                        me.set('loaded', me.isLoaded());
-                    }
-
-                    if (destroy) {
-                        node.destroy(true);
-                    } else {
-                        node.clear();
-                    }
-
-                    return node;
-                },
-
-                /**
-                 * Creates a copy (clone) of this Node.
-                 * @param {String} id (optional) A new id, defaults to this Node's id.
-                 * @param {Boolean} deep (optional) If passed as `true`, all child Nodes are recursively copied into the new Node.
-                 * If omitted or `false`, the copy will have no child Nodes.
-                 * @return {Ext.data.NodeInterface} A copy of this Node.
-                 */
-                copy: function(newId, deep) {
-                    var me = this,
-                        result = me.callOverridden(arguments),
-                        len = me.childNodes ? me.childNodes.length : 0,
-                        i;
-
-                    // Move child nodes across to the copy if required
-                    if (deep) {
-                        for (i = 0; i < len; i++) {
-                            result.appendChild(me.childNodes[i].copy(true));
-                        }
-                    }
-                    return result;
-                },
-
-                /**
-                 * Clear the node.
-                 * @private
-                 * @param {Boolean} destroy `true` to destroy the node.
-                 */
-                clear : function(destroy) {
-                    var me = this;
-
-                    // clear any references from the node
-                    me.parentNode = me.previousSibling = me.nextSibling = null;
-                    if (destroy) {
-                        me.firstChild = me.lastChild = null;
-                    }
-                },
-
-                /**
-                 * Destroys the node.
-                 */
-                destroy : function(silent) {
-                    /*
-                     * Silent is to be used in a number of cases
-                     * 1) When setRoot is called.
-                     * 2) When destroy on the tree is called
-                     * 3) For destroying child nodes on a node
-                     */
-                    var me = this,
-                        options = me.destroyOptions;
-
-                    if (silent === true) {
-                        me.clear(true);
-                        Ext.each(me.childNodes, function(n) {
-                            n.destroy(true);
-                        });
-                        me.childNodes = null;
-                        delete me.destroyOptions;
-                        me.callOverridden([options]);
-                    } else {
-                        me.destroyOptions = silent;
-                        // overridden method will be called, since remove will end up calling destroy(true);
-                        me.remove(true);
-                    }
-                },
-
-                /**
-                 * Inserts the first node before the second node in this nodes `childNodes` collection.
-                 * @param {Ext.data.NodeInterface} node The node to insert.
-                 * @param {Ext.data.NodeInterface} refNode The node to insert before (if `null` the node is appended).
-                 * @return {Ext.data.NodeInterface} The inserted node.
-                 */
-                insertBefore : function(node, refNode, suppressEvents) {
-                    var me = this,
-                        index     = me.indexOf(refNode),
-                        oldParent = node.parentNode,
-                        refIndex  = index,
-                        ps;
-
-                    if (!refNode) { // like standard Dom, refNode can be null for append
-                        return me.appendChild(node);
-                    }
-
-                    // nothing to do
-                    if (node == refNode) {
-                        return false;
-                    }
-
-                    // Make sure it is a record with the NodeInterface
-                    node = me.createNode(node);
-
-                    if (suppressEvents !== true && me.fireEvent("beforeinsert", me, node, refNode) === false) {
-                        return false;
-                    }
-
-                    // when moving internally, indexes will change after remove
-                    if (oldParent == me && me.indexOf(node) < index) {
-                        refIndex--;
-                    }
-
-                    // it's a move, make sure we move it cleanly
-                    if (oldParent) {
-                        if (suppressEvents !== true && node.fireEvent("beforemove", node, oldParent, me, index, refNode) === false) {
-                            return false;
-                        }
-                        oldParent.removeChild(node);
-                    }
-
-                    if (refIndex === 0) {
-                        me.setFirstChild(node);
-                    }
-
-                    Ext.Array.splice(me.childNodes, refIndex, 0, node);
-                    node.parentNode = me;
-
-                    node.nextSibling = refNode;
-                    refNode.previousSibling = node;
-
-                    ps = me.childNodes[refIndex - 1];
-                    if (ps) {
-                        node.previousSibling = ps;
-                        ps.nextSibling = node;
-                        ps.updateInfo();
-                    } else {
-                        node.previousSibling = null;
-                    }
-
-                    node.updateInfo();
-
-                    if (!me.isLoaded()) {
-                        me.set('loaded', true);
-                    }
-                    // If this node didn't have any childnodes before, update myself
-                    else if (me.childNodes.length === 1) {
-                        me.set('loaded', me.isLoaded());
-                    }
-
-                    if (suppressEvents !== true) {
-                        me.fireEvent("insert", me, node, refNode);
-
-                        if (oldParent) {
-                            node.fireEvent("move", node, oldParent, me, refIndex, refNode);
-                        }
-                    }
-
-                    return node;
-                },
-
-                /**
-                 * Insert a node into this node.
-                 * @param {Number} index The zero-based index to insert the node at.
-                 * @param {Ext.data.Model} node The node to insert.
-                 * @return {Ext.data.Model} The record you just inserted.
-                 */
-                insertChild: function(index, node) {
-                    var sibling = this.childNodes[index];
-                    if (sibling) {
-                        return this.insertBefore(node, sibling);
-                    }
-                    else {
-                        return this.appendChild(node);
-                    }
-                },
-
-                /**
-                 * Removes this node from its parent.
-                 * @param {Boolean} [destroy=false] `true` to destroy the node upon removal.
-                 * @return {Ext.data.NodeInterface} this
-                 */
-                remove : function(destroy, suppressEvents) {
-                    var parentNode = this.parentNode;
-
-                    if (parentNode) {
-                        parentNode.removeChild(this, destroy, suppressEvents, true);
-                    }
-                    return this;
-                },
-
-                /**
-                 * Removes all child nodes from this node.
-                 * @param {Boolean} [destroy=false] `true` to destroy the node upon removal.
-                 * @return {Ext.data.NodeInterface} this
-                 */
-                removeAll : function(destroy, suppressEvents) {
-                    var cn = this.childNodes,
-                        n;
-
-                    while ((n = cn[0])) {
-                        this.removeChild(n, destroy, suppressEvents);
-                    }
-                    return this;
-                },
-
-                /**
-                 * Returns the child node at the specified index.
-                 * @param {Number} index
-                 * @return {Ext.data.NodeInterface}
-                 */
-                getChildAt : function(index) {
-                    return this.childNodes[index];
-                },
-
-                /**
-                 * Replaces one child node in this node with another.
-                 * @param {Ext.data.NodeInterface} newChild The replacement node.
-                 * @param {Ext.data.NodeInterface} oldChild The node to replace.
-                 * @return {Ext.data.NodeInterface} The replaced node.
-                 */
-                replaceChild : function(newChild, oldChild, suppressEvents) {
-                    var s = oldChild ? oldChild.nextSibling : null;
-
-                    this.removeChild(oldChild, suppressEvents);
-                    this.insertBefore(newChild, s, suppressEvents);
-                    return oldChild;
-                },
-
-                /**
-                 * Returns the index of a child node.
-                 * @param {Ext.data.NodeInterface} node
-                 * @return {Number} The index of the node or -1 if it was not found.
-                 */
-                indexOf : function(child) {
-                    return Ext.Array.indexOf(this.childNodes, child);
-                },
-
-                /**
-                 * Gets the hierarchical path from the root of the current node.
-                 * @param {String} field (optional) The field to construct the path from. Defaults to the model `idProperty`.
-                 * @param {String} [separator=/] (optional) A separator to use.
-                 * @return {String} The node path
-                 */
-                getPath: function(field, separator) {
-                    field = field || this.idProperty;
-                    separator = separator || '/';
-
-                    var path = [this.get(field)],
-                        parent = this.parentNode;
-
-                    while (parent) {
-                        path.unshift(parent.get(field));
-                        parent = parent.parentNode;
-                    }
-                    return separator + path.join(separator);
-                },
-
-                /**
-                 * Returns depth of this node (the root node has a depth of 0).
-                 * @return {Number}
-                 */
-                getDepth : function() {
-                    return this.get('depth');
-                },
-
-                /**
-                 * Bubbles up the tree from this node, calling the specified function with each node. The arguments to the function
-                 * will be the args provided or the current node. If the function returns `false` at any point,
-                 * the bubble is stopped.
-                 * @param {Function} fn The function to call.
-                 * @param {Object} scope (optional) The scope (`this` reference) in which the function is executed. Defaults to the current Node.
-                 * @param {Array} args (optional) The args to call the function with (default to passing the current Node).
-                 */
-                bubble : function(fn, scope, args) {
-                    var p = this;
-                    while (p) {
-                        if (fn.apply(scope || p, args || [p]) === false) {
-                            break;
-                        }
-                        p = p.parentNode;
-                    }
-                },
-
-
-                /**
-                 * Cascades down the tree from this node, calling the specified function with each node. The arguments to the function
-                 * will be the args provided or the current node. If the function returns false at any point,
-                 * the cascade is stopped on that branch.
-                 * @param {Function} fn The function to call
-                 * @param {Object} scope (optional) The scope (`this` reference) in which the function is executed. Defaults to the current Node.
-                 * @param {Array} args (optional) The args to call the function with (default to passing the current Node).
-                 */
-                cascadeBy : function(fn, scope, args) {
-                    if (fn.apply(scope || this, args || [this]) !== false) {
-                        var childNodes = this.childNodes,
-                            length     = childNodes.length,
-                            i;
-
-                        for (i = 0; i < length; i++) {
-                            childNodes[i].cascadeBy(fn, scope, args);
-                        }
-                    }
-                },
-
-                /**
-                 * Iterates the child nodes of this node, calling the specified function with each node. The arguments to the function
-                 * will be the args provided or the current node. If the function returns false at any point,
-                 * the iteration stops.
-                 * @param {Function} fn The function to call.
-                 * @param {Object} scope (optional) The scope (`this` reference) in which the function is executed. Defaults to the current Node in the iteration.
-                 * @param {Array} args (optional) The args to call the function with (default to passing the current Node).
-                 */
-                eachChild : function(fn, scope, args) {
-                    var childNodes = this.childNodes,
-                        length     = childNodes.length,
-                        i;
-
-                    for (i = 0; i < length; i++) {
-                        if (fn.apply(scope || this, args || [childNodes[i]]) === false) {
-                            break;
-                        }
-                    }
-                },
-
-                /**
-                 * Finds the first child that has the attribute with the specified value.
-                 * @param {String} attribute The attribute name.
-                 * @param {Object} value The value to search for.
-                 * @param {Boolean} deep (Optional) `true` to search through nodes deeper than the immediate children.
-                 * @return {Ext.data.NodeInterface} The found child or `null` if none was found.
-                 */
-                findChild : function(attribute, value, deep) {
-                    return this.findChildBy(function() {
-                        return this.get(attribute) == value;
-                    }, null, deep);
-                },
-
-                /**
-                 * Finds the first child by a custom function. The child matches if the function passed returns `true`.
-                 * @param {Function} fn A function which must return `true` if the passed Node is the required Node.
-                 * @param {Object} scope (optional) The scope (`this` reference) in which the function is executed. Defaults to the Node being tested.
-                 * @param {Boolean} deep (Optional) True to search through nodes deeper than the immediate children.
-                 * @return {Ext.data.NodeInterface} The found child or null if `none` was found.
-                 */
-                findChildBy : function(fn, scope, deep) {
-                    var cs = this.childNodes,
-                        len = cs.length,
-                        i = 0, n, res;
-
-                    for (; i < len; i++) {
-                        n = cs[i];
-                        if (fn.call(scope || n, n) === true) {
-                            return n;
-                        }
-                        else if (deep) {
-                            res = n.findChildBy(fn, scope, deep);
-                            if (res !== null) {
-                                return res;
-                            }
-                        }
-                    }
-
-                    return null;
-                },
-
-                /**
-                 * Returns `true` if this node is an ancestor (at any point) of the passed node.
-                 * @param {Ext.data.NodeInterface} node
-                 * @return {Boolean}
-                 */
-                contains : function(node) {
-                    return node.isAncestor(this);
-                },
-
-                /**
-                 * Returns `true` if the passed node is an ancestor (at any point) of this node.
-                 * @param {Ext.data.NodeInterface} node
-                 * @return {Boolean}
-                 */
-                isAncestor : function(node) {
-                    var p = this.parentNode;
-                    while (p) {
-                        if (p == node) {
-                            return true;
-                        }
-                        p = p.parentNode;
-                    }
-                    return false;
-                },
-
-                /**
-                 * Sorts this nodes children using the supplied sort function.
-                 * @param {Function} sortFn A function which, when passed two Nodes, returns -1, 0 or 1 depending upon required sort order.
-                 * @param {Boolean} recursive Whether or not to apply this sort recursively.
-                 * @param {Boolean} suppressEvent Set to true to not fire a sort event.
-                 */
-                sort: function(sortFn, recursive, suppressEvent) {
-                    var cs  = this.childNodes,
-                        ln = cs.length,
-                        i, n;
-
-                    if (ln > 0) {
-                        Ext.Array.sort(cs, sortFn);
-                        for (i = 0; i < ln; i++) {
-                            n = cs[i];
-                            n.previousSibling = cs[i-1];
-                            n.nextSibling = cs[i+1];
-
-                            if (i === 0) {
-                                this.setFirstChild(n);
-                            }
-                            if (i == ln - 1) {
-                                this.setLastChild(n);
-                            }
-
-                            n.updateInfo(suppressEvent);
-
-                            if (recursive && !n.isLeaf()) {
-                                n.sort(sortFn, true, true);
-                            }
-                        }
-
-                        this.notifyStores('afterEdit', ['sorted'], {sorted: 'sorted'});
-
-                        if (suppressEvent !== true) {
-                            this.fireEvent('sort', this, cs);
-                        }
-                    }
-                },
-
-                /**
-                 * Returns `true` if this node is expanded.
-                 * @return {Boolean}
-                 */
-                isExpanded: function() {
-                    return this.get('expanded');
-                },
-
-                /**
-                 * Returns `true` if this node is loaded.
-                 * @return {Boolean}
-                 */
-                isLoaded: function() {
-                    return this.get('loaded');
-                },
-
-                /**
-                 * Returns `true` if this node is loading.
-                 * @return {Boolean}
-                 */
-                isLoading: function() {
-                    return this.get('loading');
-                },
-
-                /**
-                 * Returns `true` if this node is the root node.
-                 * @return {Boolean}
-                 */
-                isRoot: function() {
-                    return !this.parentNode;
-                },
-
-                /**
-                 * Returns `true` if this node is visible.
-                 * @return {Boolean}
-                 */
-                isVisible: function() {
-                    var parent = this.parentNode;
-                    while (parent) {
-                        if (!parent.isExpanded()) {
-                            return false;
-                        }
-                        parent = parent.parentNode;
-                    }
-                    return true;
-                },
-
-                /**
-                 * Expand this node.
-                 * @param {Function} recursive (Optional) `true` to recursively expand all the children.
-                 * @param {Function} callback (Optional) The function to execute once the expand completes.
-                 * @param {Object} scope (Optional) The scope to run the callback in.
-                 */
-                expand: function(recursive, callback, scope) {
-                    var me = this;
-
-                    if (!me.isLeaf()) {
-                        if (me.isLoading()) {
-                            me.on('expand', function() {
-                                me.expand(recursive, callback, scope);
-                            }, me, {single: true});
-                        }
-                        else {
-                            if (!me.isExpanded()) {
-                                // The TreeStore actually listens for the beforeexpand method and checks
-                                // whether we have to asynchronously load the children from the server
-                                // first. Thats why we pass a callback function to the event that the
-                                // store can call once it has loaded and parsed all the children.
-                                me.fireAction('expand', [this], function() {
-                                    me.set('expanded', true);
-                                    Ext.callback(callback, scope || me, [me.childNodes]);
-                                });
-                            }
-                            else {
-                                Ext.callback(callback, scope || me, [me.childNodes]);
-                            }
-                        }
-                    } else {
-                        Ext.callback(callback, scope || me);
-                    }
-                },
-
-                /**
-                 * Collapse this node.
-                 * @param {Function} recursive (Optional) `true` to recursively collapse all the children.
-                 * @param {Function} callback (Optional) The function to execute once the collapse completes.
-                 * @param {Object} scope (Optional) The scope to run the callback in.
-                 */
-                collapse: function(recursive, callback, scope) {
-                    var me = this;
-
-                    // First we start by checking if this node is a parent
-                    if (!me.isLeaf() && me.isExpanded()) {
-                        this.fireAction('collapse', [me], function() {
-                            me.set('expanded', false);
-                            Ext.callback(callback, scope || me, [me.childNodes]);
-                        });
-                    } else {
-                        Ext.callback(callback, scope || me, [me.childNodes]);
-                    }
-                }
-            };
-        }
-    }
-});
-
-/**
- * @private
- */
-Ext.define('Ext.data.NodeStore', {
-    extend: 'Ext.data.Store',
-    alias: 'store.node',
-    requires: ['Ext.data.NodeInterface'],
-
-    config: {
-        /**
-         * @cfg {Ext.data.Model} node The Record you want to bind this Store to. Note that
-         * this record will be decorated with the {@link Ext.data.NodeInterface} if this is not the
-         * case yet.
-         * @accessor
-         */
-        node: null,
-
-        /**
-         * @cfg {Boolean} recursive Set this to `true` if you want this NodeStore to represent
-         * all the descendants of the node in its flat data collection. This is useful for
-         * rendering a tree structure to a DataView and is being used internally by
-         * the TreeView. Any records that are moved, removed, inserted or appended to the
-         * node at any depth below the node this store is bound to will be automatically
-         * updated in this Store's internal flat data structure.
-         * @accessor
-         */
-        recursive: false,
-
-        /**
-         * @cfg {Boolean} rootVisible `false` to not include the root node in this Stores collection.
-         * @accessor
-         */
-        rootVisible: false,
-
-        sorters: undefined,
-        filters: undefined,
-
-        /**
-         * @cfg {Boolean} folderSort
-         * Set to `true` to automatically prepend a leaf sorter.
-         */
-        folderSort: false
-    },
-
-    afterEdit: function(record, modifiedFields) {
-        if (modifiedFields) {
-            if (modifiedFields.indexOf('loaded') !== -1) {
-                return this.add(this.retrieveChildNodes(record));
-            }
-            if (modifiedFields.indexOf('expanded') !== -1) {
-                return this.filter();
-            }
-            if (modifiedFields.indexOf('sorted') !== -1) {
-                return this.sort();
-            }
-        }
-        this.callParent(arguments);
-    },
-
-    onNodeAppend: function(parent, node) {
-        this.add([node].concat(this.retrieveChildNodes(node)));
-    },
-
-    onNodeInsert: function(parent, node) {
-        this.add([node].concat(this.retrieveChildNodes(node)));
-    },
-
-    onNodeRemove: function(parent, node) {
-        this.remove([node].concat(this.retrieveChildNodes(node)));
-    },
-
-    onNodeSort: function() {
-        this.sort();
-    },
-
-    updateFolderSort: function(folderSort) {
-        if (folderSort) {
-            this.setGrouper(function(node) {
-                if (node.isLeaf()) {
-                    return 1;
-                }
-                return 0;
-            });
-        } else {
-            this.setGrouper(null);
-        }
-    },
-
-    createDataCollection: function() {
-        var collection = this.callParent();
-        collection.handleSort = Ext.Function.bind(this.handleTreeSort, this, [collection], true);
-        collection.findInsertionIndex = Ext.Function.bind(this.handleTreeInsertionIndex, this, [collection, collection.findInsertionIndex], true);
-        return collection;
-    },
-
-    handleTreeInsertionIndex: function(items, item, collection, originalFn) {
-        return originalFn.call(collection, items, item, this.treeSortFn);
-    },
-
-    handleTreeSort: function(data) {
-        Ext.Array.sort(data, this.treeSortFn);
-        return data;
-    },
-
-    /**
-     * This is a custom tree sorting algorithm. It uses the index property on each node to determine
-     * how to sort siblings. It uses the depth property plus the index to create a weight for each node.
-     * This weight algorithm has the limitation of not being able to go more then 80 levels in depth, or
-     * more then 10k nodes per parent. The end result is a flat collection being correctly sorted based
-     * on this one single sort function.
-     * @param node1
-     * @param node2
-     * @return {Number}
-     * @private
-     */
-    treeSortFn: function(node1, node2) {
-        // A shortcut for siblings
-        if (node1.parentNode === node2.parentNode) {
-            return (node1.data.index < node2.data.index) ? -1 : 1;
-        }
-
-        // @NOTE: with the following algorithm we can only go 80 levels deep in the tree
-        // and each node can contain 10000 direct children max
-        var weight1 = 0,
-            weight2 = 0,
-            parent1 = node1,
-            parent2 = node2;
-
-        while (parent1) {
-            weight1 += (Math.pow(10, (parent1.data.depth+1) * -4) * (parent1.data.index+1));
-            parent1 = parent1.parentNode;
-        }
-        while (parent2) {
-            weight2 += (Math.pow(10, (parent2.data.depth+1) * -4) * (parent2.data.index+1));
-            parent2 = parent2.parentNode;
-        }
-
-        if (weight1 > weight2) {
-            return 1;
-        } else if (weight1 < weight2) {
-            return -1;
-        }
-        return (node1.data.index > node2.data.index) ? 1 : -1;
-    },
-
-    applyFilters: function(filters) {
-        var me = this;
-        return function(item) {
-            return me.isVisible(item);
-        };
-    },
-
-    applyProxy: function(proxy) {
-    },
-
-    applyNode: function(node) {
-        if (node) {
-            node = Ext.data.NodeInterface.decorate(node);
-        }
-        return node;
-    },
-
-    updateNode: function(node, oldNode) {
-        if (oldNode && !oldNode.isDestroyed) {
-            oldNode.un({
-                append  : 'onNodeAppend',
-                insert  : 'onNodeInsert',
-                remove  : 'onNodeRemove',
-                load    : 'onNodeLoad',
-                scope: this
-            });
-            oldNode.unjoin(this);
-        }
-
-        if (node) {
-            node.on({
-                scope   : this,
-                append  : 'onNodeAppend',
-                insert  : 'onNodeInsert',
-                remove  : 'onNodeRemove',
-                load    : 'onNodeLoad'
-            });
-
-            node.join(this);
-
-            var data = [];
-            if (node.childNodes.length) {
-                data = data.concat(this.retrieveChildNodes(node));
-            }
-            if (this.getRootVisible()) {
-                data.push(node);
-            } else if (node.isLoaded() || node.isLoading()) {
-                node.set('expanded', true);
-            }
-
-            this.data.clear();
-            this.fireEvent('clear', this);
-
-            this.suspendEvents();
-            this.add(data);
-            this.resumeEvents();
-
-            this.fireEvent('refresh', this, this.data);
-        }
-    },
-
-    /**
-     * Private method used to deeply retrieve the children of a record without recursion.
-     * @private
-     * @param root
-     * @return {Array}
-     */
-    retrieveChildNodes: function(root) {
-        var node = this.getNode(),
-            recursive = this.getRecursive(),
-            added = [],
-            child = root;
-
-        if (!root.childNodes.length || (!recursive && root !== node)) {
-            return added;
-        }
-
-        if (!recursive) {
-            return root.childNodes;
-        }
-
-        while (child) {
-            if (child._added) {
-                delete child._added;
-                if (child === root) {
-                    break;
-                } else {
-                    child = child.nextSibling || child.parentNode;
-                }
-            } else {
-                if (child !== root) {
-                    added.push(child);
-                }
-                if (child.firstChild) {
-                    child._added = true;
-                    child = child.firstChild;
-                } else {
-                    child = child.nextSibling || child.parentNode;
-                }
-            }
-        }
-
-        return added;
-    },
-
-    /**
-     * @param {Object} node
-     * @return {Boolean}
-     */
-    isVisible: function(node) {
-        var parent = node.parentNode;
-
-        if (!this.getRecursive() && parent !== this.getNode()) {
-            return false;
-        }
-
-        while (parent) {
-            if (!parent.isExpanded()) {
-                return false;
-            }
-
-            //we need to check this because for a nodestore the node is not likely to be the root
-            //so we stop going up the chain when we hit the original node as we don't care about any
-            //ancestors above the configured node
-            if (parent === this.getNode()) {
-                break;
-            }
-
-            parent = parent.parentNode;
-        }
-        return true;
-    }
-});
-
-/**
- * @aside guide stores
- *
- * The TreeStore is a store implementation that allows for nested data.
- *
- * It provides convenience methods for loading nodes, as well as the ability to use
- * the hierarchical tree structure combined with a store. This class also relays many events from
- * the Tree for convenience.
- *
- * # Using Models
- *
- * If no Model is specified, an implicit model will be created that implements {@link Ext.data.NodeInterface}.
- * The standard Tree fields will also be copied onto the Model for maintaining their state. These fields are listed
- * in the {@link Ext.data.NodeInterface} documentation.
- *
- * # Reading Nested Data
- *
- * For the tree to read nested data, the {@link Ext.data.reader.Reader} must be configured with a root property,
- * so the reader can find nested data for each node. If a root is not specified, it will default to
- * 'children'.
- */
-Ext.define('Ext.data.TreeStore', {
-    extend: 'Ext.data.NodeStore',
-    alias: 'store.tree',
-
-    config: {
-        /**
-         * @cfg {Ext.data.Model/Ext.data.NodeInterface/Object} root
-         * The root node for this store. For example:
-         *
-         *     root: {
-         *         expanded: true,
-         *         text: "My Root",
-         *         children: [
-         *             { text: "Child 1", leaf: true },
-         *             { text: "Child 2", expanded: true, children: [
-         *                 { text: "GrandChild", leaf: true }
-         *             ] }
-         *         ]
-         *     }
-         *
-         * Setting the `root` config option is the same as calling {@link #setRootNode}.
-         * @accessor
-         */
-        root: undefined,
-
-        /**
-         * @cfg {Boolean} clearOnLoad
-         * Remove previously existing child nodes before loading. Default to true.
-         * @accessor
-         */
-        clearOnLoad : true,
-
-        /**
-         * @cfg {String} nodeParam
-         * The name of the parameter sent to the server which contains the identifier of the node.
-         * Defaults to 'node'.
-         * @accessor
-         */
-        nodeParam: 'node',
-
-        /**
-         * @cfg {String} defaultRootId
-         * The default root id. Defaults to 'root'
-         * @accessor
-         */
-        defaultRootId: 'root',
-
-        /**
-         * @cfg {String} defaultRootProperty
-         * The root property to specify on the reader if one is not explicitly defined.
-         * @accessor
-         */
-        defaultRootProperty: 'children',
-
-        /**
-         * @cfg {Boolean} recursive
-         * @private
-         * @hide
-         */
-        recursive: true
-
-        /**
-         * @cfg {Object} node
-         * @private
-         * @hide
-         */
-    },
-
-    applyProxy: function() {
-        return Ext.data.Store.prototype.applyProxy.apply(this, arguments);
-    },
-
-    applyRoot: function(root) {
-        var me = this;
-        root = root || {};
-        root = Ext.apply({}, root);
-
-        if (!root.isModel) {
-            Ext.applyIf(root, {
-                id: me.getStoreId() + '-' + me.getDefaultRootId(),
-                text: 'Root',
-                allowDrag: false
-            });
-
-            root = Ext.data.ModelManager.create(root, me.getModel());
-        }
-
-        Ext.data.NodeInterface.decorate(root);
-        root.set(root.raw);
-
-        return root;
-    },
-
-    handleTreeInsertionIndex: function(items, item, collection, originalFn) {
-        if (item.parentNode) {
-            item.parentNode.sort(collection.getSortFn(), true, true);
-        }
-        return this.callParent(arguments);
-    },
-
-    handleTreeSort: function(data, collection) {
-        if (this._sorting) {
-            return data;
-        }
-
-        this._sorting = true;
-        this.getNode().sort(collection.getSortFn(), true, true);
-        delete this._sorting;
-        return this.callParent(arguments);
-    },
-
-    updateRoot: function(root, oldRoot) {
-        if (oldRoot) {
-            oldRoot.unBefore({
-                expand: 'onNodeBeforeExpand',
-                scope: this
-            });
-            oldRoot.unjoin(this);
-        }
-
-        root.onBefore({
-            expand: 'onNodeBeforeExpand',
-            scope: this
-        });
-
-        this.onNodeAppend(null, root);
-        this.setNode(root);
-
-        if (!root.isLoaded() && !root.isLoading() && root.isExpanded()) {
-            this.load({
-                node: root
-            });
-        }
-
-        /**
-         * @event rootchange
-         * Fires whenever the root node changes on this TreeStore.
-         * @param {Ext.data.TreeStore} store This tree Store
-         * @param {Ext.data.Model} newRoot The new root node
-         * @param {Ext.data.Model} oldRoot The old root node
-         */
-        this.fireEvent('rootchange', this, root, oldRoot);
-    },
-
-    /**
-     * Returns the record node by id
-     * @return {Ext.data.NodeInterface}
-     */
-    getNodeById: function(id) {
-        return this.data.getByKey(id);
-    },
-
-    onNodeBeforeExpand: function(node, options, e) {
-        if (node.isLoading()) {
-            e.pause();
-            this.on('load', function() {
-                e.resume();
-            }, this, {single: true});
-        }
-        else if (!node.isLoaded()) {
-            e.pause();
-            this.load({
-                node: node,
-                callback: function() {
-                    e.resume();
-                }
-            });
-        }
-    },
-
-    onNodeAppend: function(parent, node) {
-        var proxy = this.getProxy(),
-            reader = proxy.getReader(),
-            Model = this.getModel(),
-            data = node.raw,
-            records = [],
-            rootProperty = reader.getRootProperty(),
-            dataRoot, processedData, i, ln, processedDataItem;
-
-        if (!node.isLeaf()) {
-            dataRoot = reader.getRoot(data);
-            if (dataRoot) {
-                processedData = reader.extractData(dataRoot);
-                for (i = 0, ln = processedData.length; i < ln; i++) {
-                    processedDataItem = processedData[i];
-                    records.push(new Model(processedDataItem.data, processedDataItem.id, processedDataItem.node));
-                }
-
-                if (records.length) {
-                    this.fillNode(node, records);
-                } else {
-                    node.set('loaded', true);
-                }
-                // If the child record is not a leaf, and it has a data root (e.g. items: [])
-                // and there are items in this data root, then we call fillNode to automatically
-                // add these items. fillNode sets the loaded property on the node, meaning that
-                // the next time you expand that node, it's not going to the server to request the
-                // children. If however you pass back an empty array as items, we have to set the
-                // loaded property to true here as well to prevent the items from being be loaded
-                // from the server the next time you expand it.
-                // If you want to have the items loaded on the next expand, then the data for the
-                // node should not contain the items: [] array.
-                delete data[rootProperty];
-            }
-        }
-    },
-
-    updateAutoLoad: function(autoLoad) {
-        if (autoLoad) {
-            var root = this.getRoot();
-            if (!root.isLoaded() && !root.isLoading()) {
-                this.load({node: root});
-            }
-        }
-    },
-
-    /**
-     * Loads the Store using its configured {@link #proxy}.
-     * @param {Object} options (Optional) config object. This is passed into the {@link Ext.data.Operation Operation}
-     * object that is created and then sent to the proxy's {@link Ext.data.proxy.Proxy#read} function.
-     * The options can also contain a node, which indicates which node is to be loaded. If not specified, it will
-     * default to the root node.
-     * @return {Object}
-     */
-    load: function(options) {
-        options = options || {};
-        options.params = options.params || {};
-
-        var me = this,
-            node = options.node = options.node || me.getRoot();
-
-        options.params[me.getNodeParam()] = node.getId();
-
-        if (me.getClearOnLoad()) {
-            node.removeAll(true);
-        }
-        node.set('loading', true);
-
-        return me.callParent([options]);
-    },
-
-    updateProxy: function(proxy) {
-        this.callParent(arguments);
-
-        var reader = proxy.getReader();
-        if (!reader.getRootProperty()) {
-            reader.setRootProperty(this.getDefaultRootProperty());
-            reader.buildExtractors();
-        }
-    },
-
-    /**
-     * @inheritdoc
-     */
-    removeAll: function() {
-        this.getRoot().removeAll(true);
-        this.callParent(arguments);
-    },
-
-    /**
-     * @inheritdoc
-     */
-    onProxyLoad: function(operation) {
-        var me = this,
-            records = operation.getRecords(),
-            successful = operation.wasSuccessful(),
-            node = operation.getNode();
-
-        node.beginEdit();
-        node.set('loading', false);
-        if (successful) {
-            records = me.fillNode(node, records);
-        }
-        node.endEdit();
-
-        me.loading = false;
-        me.loaded = true;
-
-        node.fireEvent('load', node, records, successful);
-        me.fireEvent('load', this, records, successful, operation);
-
-        //this is a callback that would have been passed to the 'read' function and is optional
-        Ext.callback(operation.getCallback(), operation.getScope() || me, [records, operation, successful]);
-    },
-
-    /**
-     * Fills a node with a series of child records.
-     * @private
-     * @param {Ext.data.NodeInterface} node The node to fill.
-     * @param {Ext.data.Model[]} records The records to add.
-     */
-    fillNode: function(node, records) {
-        var ln = records ? records.length : 0,
-            i, child;
-
-        for (i = 0; i < ln; i++) {
-            // true/true to suppress any events fired by the node, or the new child node
-            child = node.appendChild(records[i], true, true);
-            this.onNodeAppend(node, child);
-        }
-        node.set('loaded', true);
-
-        return records;
-    }
-
-});
-
-/**
  * @author Ed Spencer
  * @aside guide models
  *
@@ -60346,830 +58680,6 @@ Ext.define('Ext.dataview.List', {
         this.callParent();
     }
 });
-
-/**
- * NestedList provides a miller column interface to navigate between nested sets
- * and provide a clean interface with limited screen real-estate.
- *
- *     @example miniphone preview
- *      var data = {
- *          text: 'Groceries',
- *          items: [{
- *              text: 'Drinks',
- *              items: [{
- *                  text: 'Water',
- *                  items: [{
- *                      text: 'Sparkling',
- *                      leaf: true
- *                  }, {
- *                      text: 'Still',
- *                      leaf: true
- *                  }]
- *              }, {
- *                  text: 'Coffee',
- *                  leaf: true
- *              }, {
- *                  text: 'Espresso',
- *                  leaf: true
- *              }, {
- *                  text: 'Redbull',
- *                  leaf: true
- *              }, {
- *                  text: 'Coke',
- *                  leaf: true
- *              }, {
- *                  text: 'Diet Coke',
- *                  leaf: true
- *              }]
- *          }, {
- *              text: 'Fruit',
- *              items: [{
- *                  text: 'Bananas',
- *                  leaf: true
- *              }, {
- *                  text: 'Lemon',
- *                  leaf: true
- *              }]
- *          }, {
- *              text: 'Snacks',
- *              items: [{
- *                  text: 'Nuts',
- *                  leaf: true
- *              }, {
- *                  text: 'Pretzels',
- *                  leaf: true
- *              }, {
- *                  text: 'Wasabi Peas',
- *                  leaf: true
- *              }]
- *          }]
- *      };
- *
- *      Ext.define('ListItem', {
- *          extend: 'Ext.data.Model',
- *          config: {
- *              fields: [{
- *                  name: 'text',
- *                  type: 'string'
- *              }]
- *          }
- *      });
- *
- *      var store = Ext.create('Ext.data.TreeStore', {
- *          model: 'ListItem',
- *          defaultRootProperty: 'items',
- *          root: data
- *      });
- *
- *      var nestedList = Ext.create('Ext.NestedList', {
- *          fullscreen: true,
- *          title: 'Groceries',
- *          displayField: 'text',
- *          store: store
- *      });
- *
- * @aside guide nested_list
- * @aside example nested-list
- * @aside example navigation-view
- */
-Ext.define('Ext.dataview.NestedList', {
-    alternateClassName: 'Ext.NestedList',
-    extend: 'Ext.Container',
-    xtype: 'nestedlist',
-    requires: [
-        'Ext.List',
-        'Ext.TitleBar',
-        'Ext.Button',
-        'Ext.XTemplate',
-        'Ext.data.StoreManager',
-        'Ext.data.NodeStore',
-        'Ext.data.TreeStore'
-    ],
-
-    config: {
-        /**
-         * @cfg
-         * @inheritdoc
-         */
-        cls: Ext.baseCSSPrefix + 'nested-list',
-
-        /**
-         * @cfg {String/Object/Boolean} cardSwitchAnimation
-         * Animation to be used during transitions of cards.
-         * @removed 2.0.0 please use {@link Ext.layout.Card#animation}
-         */
-
-        /**
-         * @cfg {String} backText
-         * The label to display for the back button.
-         * @accessor
-         */
-        backText: 'Back',
-
-        /**
-         * @cfg {Boolean} useTitleAsBackText
-         * `true` to use title as a label for back button.
-         * @accessor
-         */
-        useTitleAsBackText: true,
-
-        /**
-         * @cfg {Boolean} updateTitleText
-         * Update the title with the currently selected category.
-         * @accessor
-         */
-        updateTitleText: true,
-
-        /**
-         * @cfg {String} displayField
-         * Display field to use when setting item text and title.
-         * This configuration is ignored when overriding {@link #getItemTextTpl} or
-         * {@link #getTitleTextTpl} for the item text or title.
-         * @accessor
-         */
-        displayField: 'text',
-
-        /**
-         * @cfg {String} loadingText
-         * Loading text to display when a subtree is loading.
-         * @accessor
-         */
-        loadingText: 'Loading...',
-
-        /**
-         * @cfg {String} emptyText
-         * Empty text to display when a subtree is empty.
-         * @accessor
-         */
-        emptyText: 'No items available.',
-
-        /**
-         * @cfg {Boolean/Function} onItemDisclosure
-         * Maps to the {@link Ext.List#onItemDisclosure} configuration for individual lists.
-         * @accessor
-         */
-        onItemDisclosure: false,
-
-        /**
-         * @cfg {Boolean} allowDeselect
-         * Set to `true` to allow the user to deselect leaf items via interaction.
-         * @accessor
-         */
-        allowDeselect: false,
-
-        /**
-         * @deprecated 2.0.0 Please set the {@link #toolbar} configuration to `false` instead
-         * @cfg {Boolean} useToolbar `true` to show the header toolbar.
-         * @accessor
-         */
-        useToolbar: null,
-
-        /**
-         * @cfg {Ext.Toolbar/Object/Boolean} toolbar
-         * The configuration to be used for the toolbar displayed in this nested list.
-         * @accessor
-         */
-        toolbar: {
-            docked: 'top',
-            xtype: 'titlebar',
-            ui: 'light',
-            inline: true
-        },
-
-        /**
-         * @cfg {String} title The title of the toolbar
-         * @accessor
-         */
-        title: '',
-
-        /**
-         * @cfg {String} layout
-         * @hide
-         * @accessor
-         */
-        layout: {
-            type: 'card',
-            animation: {
-                type: 'slide',
-                duration: 250,
-                direction: 'left'
-            }
-        },
-
-        /**
-         * @cfg {Ext.data.TreeStore/String} store The tree store to be used for this nested list.
-         */
-        store: null,
-
-        /**
-         * @cfg {Ext.Container} detailContainer The container of the `detailCard`.
-         * @accessor
-         */
-        detailContainer: undefined,
-
-        /**
-         * @cfg {Ext.Component} detailCard to provide a final card for leaf nodes.
-         * @accessor
-         */
-        detailCard: null,
-
-        /**
-         * @cfg {Object} backButton The configuration for the back button used in the nested list.
-         */
-        backButton: {
-            ui: 'back',
-            hidden: true
-        },
-
-        /**
-         * @cfg {Object} listConfig An optional config object which is merged with the default
-         * configuration used to create each nested list.
-         */
-        listConfig: null,
-
-        // @private
-        lastNode: null,
-
-        // @private
-        lastActiveList: null
-    },
-
-    /**
-     * @event itemtap
-     * Fires when a node is tapped on.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
-     * @param {Number} index The index of the item tapped.
-     * @param {Ext.dom.Element} target The element tapped.
-     * @param {Ext.data.Record} record The record tapped.
-     * @param {Ext.event.Event} e The event object.
-     */
-
-    /**
-     * @event itemdoubletap
-     * Fires when a node is double tapped on.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
-     * @param {Number} index The index of the item that was tapped.
-     * @param {Ext.dom.Element} target The element tapped.
-     * @param {Ext.data.Record} record The record tapped.
-     * @param {Ext.event.Event} e The event object.
-     */
-
-    /**
-     * @event containertap
-     * Fires when a tap occurs and it is not on a template node.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
-     * @param {Ext.event.Event} e The raw event object.
-     */
-
-    /**
-     * @event selectionchange
-     * Fires when the selected nodes change.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
-     * @param {Array} selections Array of the selected nodes.
-     */
-
-    /**
-     * @event beforeselectionchange
-     * Fires before a selection is made.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.dataview.List} list The Ext.dataview.List that is currently active.
-     * @param {HTMLElement} node The node to be selected.
-     * @param {Array} selections Array of currently selected nodes.
-     * @deprecated 2.0.0 Please listen to the {@link #selectionchange} event with an order of `before` instead.
-     */
-
-    /**
-     * @event listchange
-     * Fires when the user taps a list item.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Object} listitem The new active list.
-     */
-
-    /**
-     * @event leafitemtap
-     * Fires when the user taps a leaf list item.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.List} list The subList the item is on.
-     * @param {Number} index The index of the item tapped.
-     * @param {Ext.dom.Element} target The element tapped.
-     * @param {Ext.data.Record} record The record tapped.
-     * @param {Ext.event.Event} e The event.
-     */
-
-    /**
-     * @event back
-     * @preventable doBack
-     * Fires when the user taps Back.
-     * @param {Ext.dataview.NestedList} this
-     * @param {HTMLElement} node The node to be selected.
-     * @param {Ext.dataview.List} lastActiveList The Ext.dataview.List that was last active.
-     * @param {Boolean} detailCardActive Flag set if the detail card is currently active.
-     */
-
-    /**
-     * @event beforeload
-     * Fires before a request is made for a new data object.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.data.Store} store The store instance.
-     * @param {Ext.data.Operation} operation The Ext.data.Operation object that will be passed to the Proxy to
-     * load the Store.
-     */
-
-    /**
-     * @event load
-     * Fires whenever records have been loaded into the store.
-     * @param {Ext.dataview.NestedList} this
-     * @param {Ext.data.Store} store The store instance.
-     * @param {Ext.util.Grouper[]} records An array of records.
-     * @param {Boolean} successful `true` if the operation was successful.
-     * @param {Ext.data.Operation} operation The associated operation.
-     */
-    constructor: function (config) {
-        if (Ext.isObject(config)) {
-            if (config.getTitleTextTpl) {
-                this.getTitleTextTpl = config.getTitleTextTpl;
-            }
-            if (config.getItemTextTpl) {
-                this.getItemTextTpl = config.getItemTextTpl;
-            }
-        }
-        this.callParent(arguments);
-    },
-
-    onItemInteraction: function () {
-        if (this.isGoingTo) {
-            return false;
-        }
-    },
-
-    applyDetailContainer: function (config) {
-        if (!config) {
-            config = this;
-        }
-
-        return config;
-    },
-
-    updateDetailContainer: function (newContainer, oldContainer) {
-        if (newContainer) {
-            newContainer.onBefore('activeitemchange', 'onBeforeDetailContainerChange', this);
-            newContainer.onAfter('activeitemchange', 'onDetailContainerChange', this);
-        }
-    },
-
-    onBeforeDetailContainerChange: function () {
-        this.isGoingTo = true;
-    },
-
-    onDetailContainerChange: function () {
-        this.isGoingTo = false;
-    },
-
-    /**
-     * Called when an list item has been tapped.
-     * @param {Ext.List} list The subList the item is on.
-     * @param {Number} index The id of the item tapped.
-     * @param {Ext.Element} target The list item tapped.
-     * @param {Ext.data.Record} record The record which as tapped.
-     * @param {Ext.event.Event} e The event.
-     */
-    onItemTap: function (list, index, target, record, e) {
-        var me = this,
-            store = list.getStore(),
-            node = store.getAt(index);
-
-        me.fireEvent('itemtap', this, list, index, target, record, e);
-        if (node.isLeaf()) {
-            me.fireEvent('leafitemtap', this, list, index, target, record, e);
-            me.goToLeaf(node);
-        }
-        else {
-            this.goToNode(node);
-        }
-    },
-
-    onBeforeSelect: function () {
-        this.fireEvent.apply(this, [].concat('beforeselect', this, Array.prototype.slice.call(arguments)));
-    },
-
-    onContainerTap: function () {
-        this.fireEvent.apply(this, [].concat('containertap', this, Array.prototype.slice.call(arguments)));
-    },
-
-    onSelectionChange: function () {
-        this.fireEvent.apply(this, [].concat('selectionchange', this, Array.prototype.slice.call(arguments)));
-    },
-
-    onItemDoubleTap: function () {
-        this.fireEvent.apply(this, [].concat('itemdoubletap', this, Array.prototype.slice.call(arguments)));
-    },
-
-    onStoreBeforeLoad: function () {
-        var loadingText = this.getLoadingText(),
-            scrollable = this.getScrollable();
-
-        if (loadingText) {
-            this.setMasked({
-                xtype: 'loadmask',
-                message: loadingText
-            });
-
-            //disable scrolling while it is masked
-            if (scrollable) {
-                scrollable.getScroller().setDisabled(true);
-            }
-        }
-
-        this.fireEvent.apply(this, [].concat('beforeload', this, Array.prototype.slice.call(arguments)));
-    },
-
-    onStoreLoad: function (store, records, successful, operation) {
-        this.setMasked(false);
-        this.fireEvent.apply(this, [].concat('load', this, Array.prototype.slice.call(arguments)));
-
-        if (store.indexOf(this.getLastNode()) === -1) {
-            this.goToNode(store.getRoot());
-        }
-    },
-
-    /**
-     * Called when the backButton has been tapped.
-     */
-    onBackTap: function () {
-        var me = this,
-            node = me.getLastNode(),
-            detailCard = me.getDetailCard(),
-            detailCardActive = detailCard && me.getActiveItem() == detailCard,
-            lastActiveList = me.getLastActiveList();
-
-        this.fireAction('back', [this, node, lastActiveList, detailCardActive], 'doBack');
-    },
-
-    doBack: function (me, node, lastActiveList, detailCardActive) {
-        var layout = me.getLayout(),
-            animation = (layout) ? layout.getAnimation() : null;
-
-        if (detailCardActive && lastActiveList) {
-            if (animation) {
-                animation.setReverse(true);
-            }
-            me.setActiveItem(lastActiveList);
-            me.setLastNode(node.parentNode);
-            me.syncToolbar();
-        }
-        else {
-            this.goToNode(node.parentNode);
-        }
-    },
-
-    updateData: function (data) {
-        if (!this.getStore()) {
-            this.setStore(new Ext.data.TreeStore({
-                root: data
-            }));
-        }
-    },
-
-    applyStore: function (store) {
-        if (store) {
-            if (Ext.isString(store)) {
-                // store id
-                store = Ext.data.StoreManager.get(store);
-            } else {
-                // store instance or store config
-                if (!(store instanceof Ext.data.TreeStore)) {
-                    store = Ext.factory(store, Ext.data.TreeStore, null);
-                }
-            }
-
-        }
-
-        return store;
-    },
-
-    storeListeners: {
-        rootchange: 'onStoreRootChange',
-        load: 'onStoreLoad',
-        beforeload: 'onStoreBeforeLoad'
-    },
-
-    updateStore: function (newStore, oldStore) {
-        var me = this,
-            listeners = this.storeListeners;
-
-        listeners.scope = me;
-
-        if (oldStore && Ext.isObject(oldStore) && oldStore.isStore) {
-            if (oldStore.autoDestroy) {
-                oldStore.destroy();
-            }
-            oldStore.un(listeners);
-        }
-
-        if (newStore) {
-            me.goToNode(newStore.getRoot());
-            newStore.on(listeners);
-        }
-    },
-
-    onStoreRootChange: function (store, node) {
-        this.goToNode(node);
-    },
-
-    applyBackButton: function (config) {
-        return Ext.factory(config, Ext.Button, this.getBackButton());
-    },
-
-    applyDetailCard: function (config, oldDetailCard) {
-        if (config === null) {
-            return Ext.factory(config, Ext.Component, oldDetailCard);
-        } else {
-            return Ext.factory(config, Ext.Component);
-        }
-    },
-
-    updateBackButton: function (newButton, oldButton) {
-        if (newButton) {
-            var me = this;
-            newButton.on('tap', me.onBackTap, me);
-            newButton.setText(me.getBackText());
-            me.getToolbar().insert(0, newButton);
-        }
-        else if (oldButton) {
-            oldButton.destroy();
-        }
-    },
-
-    applyToolbar: function (config) {
-        return Ext.factory(config, Ext.TitleBar, this.getToolbar());
-    },
-
-    updateToolbar: function (newToolbar, oldToolbar) {
-        var me = this;
-        if (newToolbar) {
-            newToolbar.setTitle(me.getTitle());
-            if (!newToolbar.getParent()) {
-                me.add(newToolbar);
-            }
-        }
-        else if (oldToolbar) {
-            oldToolbar.destroy();
-        }
-    },
-
-    updateUseToolbar: function (newUseToolbar, oldUseToolbar) {
-        if (!newUseToolbar) {
-            this.setToolbar(false);
-        }
-    },
-
-    updateTitle: function (newTitle) {
-        var me = this,
-            toolbar = me.getToolbar();
-        if (toolbar) {
-            if (me.getUpdateTitleText()) {
-                toolbar.setTitle(newTitle);
-            }
-        }
-    },
-
-    /**
-     * Override this method to provide custom template rendering of individual
-     * nodes. The template will receive all data within the Record and will also
-     * receive whether or not it is a leaf node.
-     * @param {Ext.data.Record} node
-     * @return {String}
-     */
-    getItemTextTpl: function (node) {
-        return '{' + this.getDisplayField() + '}';
-    },
-
-    /**
-     * Override this method to provide custom template rendering of titles/back
-     * buttons when {@link #useTitleAsBackText} is enabled.
-     * @param {Ext.data.Record} node
-     * @return {String}
-     */
-    getTitleTextTpl: function (node) {
-        return '{' + this.getDisplayField() + '}';
-    },
-
-    /**
-     * @private
-     */
-    renderTitleText: function (node, forBackButton) {
-        if (!node.titleTpl) {
-            node.titleTpl = Ext.create('Ext.XTemplate', this.getTitleTextTpl(node));
-        }
-
-        if (node.isRoot()) {
-            var initialTitle = this.getInitialConfig('title');
-            return (forBackButton && initialTitle === '') ? this.getInitialConfig('backText') : initialTitle;
-        }
-
-        return  node.titleTpl.applyTemplate(node.data);
-    },
-
-    /**
-     * Method to handle going to a specific node within this nested list. Node must be part of the
-     * internal {@link #store}.
-     * @param {Ext.data.NodeInterface} node The specified node to navigate to.
-     */
-    goToNode: function (node) {
-        if (!node) {
-            return;
-        }
-
-        var me = this,
-            activeItem = me.getActiveItem(),
-            detailCard = me.getDetailCard(),
-            detailCardActive = detailCard && me.getActiveItem() == detailCard,
-            reverse = me.goToNodeReverseAnimation(node),
-            firstList = me.firstList,
-            secondList = me.secondList,
-            layout = me.getLayout(),
-            animation = (layout) ? layout.getAnimation() : null,
-            list;
-
-        //if the node is a leaf, throw an error
-        if (node.isLeaf()) {
-            throw new Error('goToNode: passed a node which is a leaf.');
-        }
-
-        //if we are currently at the passed node, do nothing.
-        if (node == me.getLastNode() && !detailCardActive) {
-            return;
-        }
-
-        if (detailCardActive) {
-            if (animation) {
-                animation.setReverse(true);
-            }
-            list = me.getLastActiveList();
-            list.getStore().setNode(node);
-            node.expand();
-            me.setActiveItem(list);
-        }
-        else {
-            if (firstList && secondList) {
-                //firstList and secondList have both been created
-                activeItem = me.getActiveItem();
-
-                me.setLastActiveList(activeItem);
-                list = (activeItem == firstList) ? secondList : firstList;
-                list.getStore().setNode(node);
-                node.expand();
-
-                if (animation) {
-                    animation.setReverse(reverse);
-                }
-                me.setActiveItem(list);
-                list.deselectAll();
-            }
-            else if (firstList) {
-                //only firstList has been created
-                me.setLastActiveList(me.getActiveItem());
-                me.setActiveItem(me.getList(node));
-                me.secondList = me.getActiveItem();
-            }
-            else {
-                //no lists have been created
-                me.setActiveItem(me.getList(node));
-                me.firstList = me.getActiveItem();
-            }
-        }
-
-        me.fireEvent('listchange', this, me.getActiveItem());
-
-        me.setLastNode(node);
-
-        me.syncToolbar();
-    },
-
-
-    /**
-     * The leaf you want to navigate to. You should pass a node instance.
-     * @param {Ext.data.NodeInterface} node The specified node to navigate to.
-     */
-    goToLeaf: function (node) {
-        if (!node.isLeaf()) {
-            throw new Error('goToLeaf: passed a node which is not a leaf.');
-        }
-
-        var me = this,
-            card = me.getDetailCard(node),
-            container = me.getDetailContainer(),
-            sharedContainer = container == this,
-            layout = me.getLayout(),
-            animation = (layout) ? layout.getAnimation() : false;
-
-        if (card) {
-            if (container.getItems().indexOf(card) === -1) {
-                container.add(card);
-            }
-            if (sharedContainer) {
-                if (me.getActiveItem() instanceof Ext.dataview.List) {
-                    me.setLastActiveList(me.getActiveItem());
-                }
-                me.setLastNode(node);
-            }
-            if (animation) {
-                animation.setReverse(false);
-            }
-            container.setActiveItem(card);
-            me.syncToolbar();
-        }
-    },
-
-    /**
-     * @private
-     * Method which updates the {@link #backButton} and {@link #toolbar} with the latest information from
-     * the current node.
-     */
-    syncToolbar: function (forceDetail) {
-        var me = this,
-            detailCard = me.getDetailCard(),
-            node = me.getLastNode(),
-            detailActive = forceDetail || (detailCard && (me.getActiveItem() == detailCard)),
-            parentNode = (detailActive) ? node : node.parentNode,
-            backButton = me.getBackButton();
-
-        //show/hide the backButton, and update the backButton text, if one exists
-        if (backButton) {
-            backButton[parentNode ? 'show' : 'hide']();
-            if (parentNode && me.getUseTitleAsBackText()) {
-                backButton.setText(me.renderTitleText(node.parentNode, true));
-            }
-        }
-
-        if (node) {
-            me.setTitle(me.renderTitleText(node));
-        }
-    },
-
-    updateBackText: function (newText) {
-        this.getBackButton().setText(newText);
-    },
-
-    /**
-     * @private
-     * Returns `true` if the passed node should have a reverse animation from the previous current node.
-     * @param {Ext.data.NodeInterface} node
-     */
-    goToNodeReverseAnimation: function (node) {
-        var me = this,
-            lastNode = me.getLastNode();
-        if (!lastNode) {
-            return false;
-        }
-
-        return (!lastNode.contains(node) && lastNode.isAncestor(node)) ? true : false;
-    },
-
-    /**
-     * @private
-     * Returns the list config for a specified node.
-     * @param {HTMLElement} node The node for the list config.
-     */
-    getList: function (node) {
-        var me = this,
-            nodeStore = Ext.create('Ext.data.NodeStore', {
-                recursive: false,
-                node: node,
-                rootVisible: false,
-                model: me.getStore().getModel()
-            });
-
-        node.expand();
-
-        return Ext.Object.merge({
-            xtype: 'list',
-            pressedDelay: 250,
-            autoDestroy: true,
-            store: nodeStore,
-            onItemDisclosure: me.getOnItemDisclosure(),
-            allowDeselect: me.getAllowDeselect(),
-            variableHeights: false,
-            listeners: [
-                { event: 'itemdoubletap', fn: 'onItemDoubleTap', scope: me },
-                { event: 'itemtap', fn: 'onItemInteraction', scope: me, order: 'before'},
-                { event: 'itemtouchstart', fn: 'onItemInteraction', scope: me, order: 'before'},
-                { event: 'itemtap', fn: 'onItemTap', scope: me },
-                { event: 'beforeselectionchange', fn: 'onBeforeSelect', scope: me },
-                { event: 'containertap', fn: 'onContainerTap', scope: me },
-                { event: 'selectionchange', fn: 'onSelectionChange', order: 'before', scope: me }
-            ],
-            itemTpl: '<span<tpl if="leaf == true"> class="x-list-item-leaf"</tpl>>' + me.getItemTextTpl(node) + '</span>'
-        }, this.getListConfig());
-    }
-
-}, function () {
-});
-
 
 /**
  * @private
@@ -70571,7 +68081,7 @@ Ext.define('DMTApp.controller.DmtForgotPasswordController', {
     config: {
         refs: {
             dmtForgotPasswordFormOpenButton:'button[action=dmtForgotPasswordFormOpenButton]',
-			dmtForgotPasswordFormSubmitButton:'button[action=dmtForgotPasswordFormSubmitButton]',
+			dmtForgotPasswordFormSubmitButton:'button[action=dmtForgotPasswordFormSubmitButton]'
         },
         control: {
             dmtForgotPasswordFormOpenButton:
@@ -70581,7 +68091,7 @@ Ext.define('DMTApp.controller.DmtForgotPasswordController', {
 			dmtForgotPasswordFormSubmitButton:
 			{
 				tap:'dmtForgotPasswordFormSubmitButtonTap'
-			},			
+			}		
         }
     },
     dmtForgotPasswordFormOpenButtonTap:function()
@@ -70796,7 +68306,7 @@ Ext.define('DMTApp.controller.DmtNotificationsTabClickController', {
            //fix the removal of the details panel and change the title bar.
             
            var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');	
-           details_container_titlebar.setTitle('Details Panel');
+           details_container_titlebar.setTitle('Details Panel333');
            //End fix
            
            
@@ -71219,7 +68729,7 @@ Ext.define('DMTApp.controller.DmtMainViewPortController', {
     config: {
         refs: 
 		{
-			dmtMainContainer:'#dmt-main-container',
+			dmtMainContainer:'#dmt-main-container'
         },
         control: 
 		{
@@ -71231,7 +68741,7 @@ Ext.define('DMTApp.controller.DmtMainViewPortController', {
     },
 	dmtMainContainerInitialize:function(main_container)
 	{
-		if(!this.dmtMainContainerLoginCheck())
+		if(this.dmtMainContainerLoginCheck())
 		{
 			var dmt_secure_login_panel = Ext.create('DMTApp.view.DmtSecureLogin');
 			main_container.setActiveItem(dmt_secure_login_panel);
@@ -71275,14 +68785,14 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 			//Used the action here to prevent conflict on re initialization
             dmtSecureLoginButton:'button[action=dmtSecureLoginFormSubmitButton]',
             dmtSecureLoginPanel:'[id=dmt-secure-login-panel]',
-            dmtTabsPanel:'[id=dmt-tabs-panel]',
+            dmtTabsPanel:'[id=dmt-tabs-panel]'
             
         },
         control: 
 		{
          	dmtSecureLoginButton:
 			{
-				tap:'dmtSecureLoginButtonTap',
+				tap:'dmtSecureLoginButtonTap'
 			}
         }
     },
@@ -71399,7 +68909,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 						Ext.Viewport.unmask();
 						Ext.Msg.alert('Oops..','The request did not go through', Ext.emptyFn);
 					},
-					scope :this,
+					scope :this
 				});
 			}
 		}
@@ -71452,7 +68962,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
             dmtNestedList			  :'.dmtnestedfolderlist',
 			 //Used the button action to prevent conflict on reinitialization.
 			dmtNestedListRefreshButton:'button[action=dmtNestedListRefreshButton]',
-			dmtDetailsPanel:'[id=dmt-details-container]',
+			dmtDetailsPanel:'[id=dmt-details-container]'
         },
         control: {
             dmtNestedList:
@@ -71461,12 +68971,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 				leafitemtap	:'dmtNestedListLeafItemTap',
 				back		:'dmtNestedListBackTap',
 				initialize	:'dmtNestedListInitialize',
-				load 		:'dmtNestedListLoad',
-				listchange  :'dmtNestedListChange'
+				//load 		:'dmtNestedListLoad',
+				//listchange  :'dmtNestedListChange'
 			},
 			dmtNestedListRefreshButton:
 			{
-				tap			:'dmtNestedListRefreshButton',		
+				tap			:'dmtNestedListRefreshButton'		
 			}
         }
     },
@@ -71525,9 +69035,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		{
 		case 'file':
 
-			console.log(file_ext.toLowerCase());
-
-			var panel_content = {
+			
+			panel_content = {
 					xtype: 'formpanel',
 					id: 'dmt-details-view-card',
 					layout: {
@@ -71689,7 +69198,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			//END NEW CHANGES	
 		case 'folder':
 
-			var panel_content = {
+			panel_content = {
 				xtype: 'formpanel',
 				id: 'dmt-details-view-card',
 				layout: {
@@ -71840,7 +69349,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 
 			break;
 		default:
-			panel_content = null;		
+			panel_content = null;
+			break;
 		}
 	
 		
@@ -71870,16 +69380,57 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	dmtNestedListInitialize:function(list)
 	{
         var _this = this;
-		console.log('List Initialized')
+        //list.setStore('DmtFolderStructureStore');
+        console.log('List Initialized')
 		//Add the sorting panel to the nested list
+        list.insert(0,{xtype: 'dmtnestedlisttitlebar'});
 		list.insert(1,{xtype: 'dmtnestedlistsortpanel'});	
 		
+		var str = Ext.getStore('DmtFolderStructureStore');
+		list.setStore(str);
+      
 		//Reload the store to enable re-initialization
-		Ext.getStore('DmtFolderStructureStore').load();
-		list.setStore('DmtFolderStructureStore');	
-		
-		
+		//Ext.getStore('DmtFolderStructureStore').load();
+		//we have all data in db. trigger db here
+		db.transaction(function(tx){
+  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='0'",[], 
+  				   function(tx, results){
+  			   				var len = results.rows.length;
+  			   				var f_data = [];
+  			   				for (var i=0; i<len; i++)
+  			   				{
+ 	        			        f_data.push({
+ 	        			        		items	: [],
+ 	        			        		f_id   	: results.rows.item(i).f_id,
+ 	        			        		f_name 	: results.rows.item(i).f_name,
+ 	        			        		f_type	: results.rows.item(i).f_type,
+ 	        			        		f_ext	: results.rows.item(i).f_ext,
+ 	        			        		f_attachment	: results.rows.item(i).f_attachment,
+ 	        			        		f_modified		: results.rows.item(i).f_modified,
+ 	        			        		f_folder		: results.rows.item(i).f_folder,
+ 	        			        		f_description 	: results.rows.item(i).f_description,
+ 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
+ 	        			        		f_item_id		: '',
+ 	        			        		f_file_count	: results.rows.item(i).f_file_count,
+ 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
+ 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
+ 	        			        		f_folders		: []
+ 	        			        	
+ 	        			        });
+ 	        			    }
+  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
+  			   				str.setData({'items' : f_data});
+  			   				//store.setProxy({data:{'items' : f_data}});
+      			   			//
+                            Ext.getCmp('dmt-nested-list').unmask();
+  		   				}, 
+ 	        		   function(err){
+ 	        			   console.log("Error fetching data");
+ 	        		   });
+  	    });
 		console.log('List Store loaded');
+		//Ext.getStore('DmtFolderStructureStore').load();
+		Ext.getCmp('dmt-nested-list').unmask();
 		Ext.Viewport.unmask();
 		//Add the user_name param to the polling function
 		var base_params ={
@@ -71929,63 +69480,103 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.direct.Manager.addProvider(dmt_polling);        
     },
 	//When a  node is tapped on the nested list
-	dmtNestedListItemTap:function(nested_list,current_list,index,target,record)
+	dmtNestedListItemTap:function(list, index, target, record, e, eOpts)
 	{
-		console.log('Item Tapped');
-		if(!record.isLeaf())
+		 var _this = this;
+		/** check if record is leaf record */
+		if(!record.getData().f_type == 'file')
 			Ext.Viewport.mask({xtype:'loadmask'});
+		
 	  	this.getDmtDetailsPanel().mask({xtype:'loadmask',message:'Loading...'});
 		
 		global_goto_node = record;
-		var rcds = this.dmtTreverseNodes(record,[]);
-        global_root_view = (rcds.length == 0) ? true : false; 
-         
-		if(global_long_press)
-        {
-           global_long_press = false;
-           return;
-        }
+		var rcds = [];// this.dmtTreverseNodes(record,[]);
+        
+		db.transaction(function(tx){
+	  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='17'",[], 
+	  				   function(tx, results){
+  			   				var len = results.rows.length;
+  			   				var f_data = [];
+  			   				for (var i=0; i<len; i++)
+  			   				{
+ 	        			        f_data.push({
+ 	        			        		items	: [],
+ 	        			        		f_id   	: results.rows.item(i).f_id,
+ 	        			        		f_name 	: results.rows.item(i).f_name,
+ 	        			        		f_type	: results.rows.item(i).f_type,
+ 	        			        		f_ext	: results.rows.item(i).f_ext,
+ 	        			        		f_attachment	: results.rows.item(i).f_attachment,
+ 	        			        		f_modified		: results.rows.item(i).f_modified,
+ 	        			        		f_folder		: results.rows.item(i).f_folder,
+ 	        			        		f_description 	: results.rows.item(i).f_description,
+ 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
+ 	        			        		f_item_id		: '',
+ 	        			        		f_file_count	: results.rows.item(i).f_file_count,
+ 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
+ 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
+ 	        			        		f_folders		: []
+ 	        			        	
+ 	        			        });
+ 	        			    }
+  			   				
+  			   				//console.log(_this);
+  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
+  			   				list.getStore().setData({'items' : f_data});
+  			   				//store.setProxy({data:{'items' : f_data}});
+      			   			global_root_view = (f_data.length == 0) ? true : false; 
+                        
+                    		if(global_long_press)
+                            {
+                               global_long_press = false;
+                               return;
+                            }
+                		
+                			if(_prev_record != record)
+                	        {
+                			 
+                			  var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
+                			   
+                    	           if(record.getData().f_type == 'file')
+                    	           {
+                    		           //check if file exists
+                    		           var file_name_url = record.getData().f_attachment;   
+                    		           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                    		           var folder_path = record.getData().f_folder;
+                    		           _prev_record = record;
+                    		           
+                    		           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                    		                   {},
+                    		                   function(fileEntry){
+                    		                	   window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
+                    		                       _this.dmtDetailsPanelChange(record,null,true);
+                    		                   },
+                    		                   function(err){
+                    		                       Ext.Msg.confirm('','Download file?',
+                    		                                   function(buttonId){
+                    		                                       if(buttonId == 'yes')
+                    		                                       {
+                    		                                           IntelliDocs.downloadFile(record);
+                    		                                       }
+                    		                                   });
+                    		                       _this.dmtDetailsPanelChange(record,null,false);
+                    		             });
+                    	           }
+                    	           else
+                    	           {
+                    	               current_f_id = record.getData().f_id;
+                    	               _this.dmtDetailsPanelChange(record,null,false);
+                    	           }
+                			  });
+                			  
+                			  createDetailsPanelDelayed.delay(100);
+                        };
+                		
+	   				}, 
+        		   function(err){
+        			   console.log("Error fetching data");
+        		   });
+	  	    });
 		
-			if(_prev_record != record)
-	        {
-			  var _this = this;
-			  var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
-			   
-	           console.log('Item Tapped');
-	           if(record.isLeaf())
-	           {
-		           //check if file exists
-		           var file_name_url = record.getData().f_attachment;   
-		           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-		           var folder_path = record.getData().f_folder;
-		           _prev_record = record;
-		           
-		           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
-		                   {},
-		                   function(fileEntry){
-		                	   window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
-		                       _this.dmtDetailsPanelChange(record,null,true);
-		                   },
-		                   function(err){
-		                       Ext.Msg.confirm('','Download file?',
-		                                   function(buttonId){
-		                                       if(buttonId == 'yes')
-		                                       {
-		                                           IntelliDocs.downloadFile(record);
-		                                       }
-		                                   });
-		                       _this.dmtDetailsPanelChange(record,null,false);
-		             });
-	           }
-	           else
-	           {
-	               current_f_id = record.getData().f_id;
-	               _this.dmtDetailsPanelChange(record,null,false);
-	           }
-	        });
-			  
-			createDetailsPanelDelayed.delay(100);
-        };
 		
 		
     },
@@ -72022,6 +69613,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		
 		this.dmtDetailsPanelChange(last_node.parentNode,null);
 	},
+	dmtFetchChildNode : function(rec)
+	{
+		var _this = this;
+		
+	},
 	//When the user clicks on the refresh button on the nested list
 	dmtNestedListRefreshButton:function(button)
 	{
@@ -72052,11 +69648,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
 		button.removeCls('dmtRefreshToRemoveNotifications');
 		this.dmtDetailsPanelChange(null,{f_type:''},null);
-           }
-           else
-           {
-           Ext.Msg.alert('','You are currently offline');
-           }
+       }
+       else
+       {
+       Ext.Msg.alert('','You are currently offline');
+       }
 	},
 	dmtNestedListLoad:function(list,store,records,successful,oprtn)
 	{
@@ -72116,6 +69712,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	},
 	dmtGetUsernameFromCache:function()
 	{
+		return;
 		var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 		login_info_store.load();
 		var index = login_info_store.find('key','dmtScLgInfo');
@@ -72176,12 +69773,12 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     {
     	if(Ext.device.Connection.isOnline())
         {
-           var folder_id = Ext.getCmp('dmtFileFolderId')._value;
+           var folder_id = 0;
            
           /* if(global_current_download_folder_id == 0)
            {*/
                
-                Ext.Msg.confirm('','Download all files in sub folder also? This action might take long time.',
+                Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
@@ -72190,7 +69787,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 request.onreadystatechange = function(){
                                     if (request.readyState == 4) {
                                         if (request.status == 200 || request.status == 0) {
-                                            IntelliDocs.loop_json( eval(request.responseText) , folder_id , true);
+                                            IntelliDocs.loop_root_json( eval(request.responseText));
                                         }
                                     }
                                 }
@@ -72292,8 +69889,8 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
-           if(global_current_download_folder_id == 0)
-           {
+          // if(global_current_download_folder_id == 0)
+          // {
                
                 Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
@@ -72314,17 +69911,18 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 }
                                 request.send();            
                            }
+                           
                            else
                            {}
                            });
-           }
+          /* }
            else if(global_current_download_folder_id = folder_id)
            {
                Ext.Msg.alert('Please Wait','Currently downloading files from this folder');
            }
            else{
                Ext.Msg.alert('Please Wait','Until current download ends');
-           }
+           }*/
            
         }
         else
@@ -72381,7 +69979,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
             		id:'file-download-mask',
             		indicator: true,
             		html: '<p>'+ file_name +'</p><p>Downloading...</p><p id="dmt-file-percent"></p>',
-            		message:'',
+            		message:''
                 });
                 Ext.Viewport.add(fileProgressPanel);
                 
@@ -72503,16 +70101,16 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
     config: {
         refs: {
             dmtMessagesList			  			:'.dmtmessageslist',
-			dmtMessageDetailsPanelCloseButton	:'button[action=dmtMessagesDetailPanelClose]',
+			dmtMessageDetailsPanelCloseButton	:'button[action=dmtMessagesDetailPanelClose]'
         },
         control: {
             dmtMessagesList:
 			{
-				itemtap		:'dmtMessagesListItemTap',
+				itemtap		:'dmtMessagesListItemTap'
 			},
 			dmtMessageDetailsPanelCloseButton:
 			{
-				tap			:'dmtMessageDetailsPanelClose',
+				tap			:'dmtMessageDetailsPanelClose'
 			}
         }
     },
@@ -72546,8 +70144,7 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
                 },
                 bounce: {
                     acceleration: 0.0001,
-                    springTension: 0.9999,
-                    
+                    springTension: 0.9999                    
                 },
                 minVelocity: 5
             },
@@ -72555,7 +70152,7 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
         },
 		layout:
 		{
-			type:'vbox',
+			type:'vbox'
 		},
         items: [
 			
@@ -72577,10 +70174,10 @@ Ext.define('DMTApp.controller.DmtMessagesListController', {
 										iconCls:'delete',
 										iconMask:true,
 										ui:'plain',
-										align:'right',
+										align:'right'
 									}
 								]
-			},
+			}
 			]
 		};
 		
@@ -72726,12 +70323,13 @@ Ext.define('DMTApp.model.DmtMessagesModel', {
 });
 
 Ext.define("DMTApp.store.DmtFolderStructureStore", {
-	extend: "Ext.data.TreeStore",
+	extend: "Ext.data.Store",
 	requires:['Ext.data.proxy.Memory'],
     name: 'nisheed',
     config: {
 		autoLoad:false,
         model: 'DMTApp.model.DmtFolderStructureModel',
+        data : [],
         sorters:
         [
          {property:'f_type',direction:'DESC'},
@@ -72762,54 +70360,15 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
 		{
            beforeload:function(store)
            {
-            var _this = this;
-            
-            /** check for intial launch and trigger write json */
-            /**if((global_init_launch || global_is_user_logged_in) && navigator.onLine)
-            {
-            	global_is_user_logged_in = global_init_launch = false;
-            	console.log("This is initial launch write json");
-                IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache());
-                Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
-            }
-            else
-            {*/
-            	/*check if dir_list.js exists. may be false so change to online store and write dir_list.js now */
-            	fileSystemRoot.getFile(root_file_path+"/dir_list.js",
-                                  {},
-                                  function(fileEntry){
-                                	  console.log("File exists");
-                                      console.log("Offline Store"); 
-                                       	var reader = new FileReader();
-                                		reader.onloadend = function(evt) {
-                                	       
-                                	        store.setProxy({data:evt.target.result});
-                                	        Ext.getCmp('dmt-nested-list').unmask();
-                                	    };
-                                	    reader.readAsText(fileEntry);
-                                 
-                                   },
-                                   function(err){
-                                    //if file doesn't exists
-                                    console.log("File not present");
-                                    console.log("Online Store");
-                                    if(Ext.device.Connection.isOnline())
-                                    {
-                                        IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache());
-                                        Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
-                                   }
-                                   else
-                                   {
-                                        Ext.Msg.alert('','You are currently offline.');
-                                   }
-                    });
+        	   var _this = this;
+        	  // _this.dmtRemoveNotificationsFromServer();
+        	   
             }
 		}
 	},
 	//Run the ajax request to delete items from the server
 	dmtRemoveNotificationsFromServer:function()
 	{
-           console.log('username:' + this.dmtGetUsernameFromCache());
            Ext.data.JsonP.request({
             url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_notification_uodate.php',
 			callbackKey: 'dmt_delete_notifications',
@@ -72891,14 +70450,15 @@ Ext.define("DMTApp.store.DmtMessagesStore", {
 });
 
 Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList", {
-    extend: 'Ext.dataview.NestedList',
+    extend: 'Ext.dataview.List',
 	xtype:'dmtnestedfolderlist',
     config: {
-		title:'Files',
+    	title:'Files',
 		id:'dmt-nested-list',
+		ui : 'dark',
 		cls:'dmtNestedList',
-		displayField:'f_name',
-		toolbar:
+		//displayField:'f_name',
+		/*toolbar:
 		{
 			ui:'dark',
 			cls:'dmtNestedListToolBar',
@@ -72914,7 +70474,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 						action:'dmtNestedListRefreshButton'
 					}
 			]
-		},
+		},*/
 		masked: 
 		{
     			xtype: 'loadmask',
@@ -72942,31 +70502,28 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 	        },
 			variableHeights:true,
 		},
+		itemTpl: '<table class="dmtNestedListItem">' + 
+	           '<tbody>'+
+	           '<tr>'+
+	           '<td style="width:17%" align="center">{[values.fld_item_id != null ? values.fld_item_id : values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
+	           '<td style="width:70%">'+
+	           '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
+	           '<span class="dmt-list-item-fname">{f_name}</span>'+
+	           '<div class="dmtMessagesDate">'+
+	           '{[values.f_description.length > 130 ? values.f_description.substring(0,127)+\'.....\' : values.f_description]}'+  
+	           '</div>'+
+	           '</td>'+
+	           '<td class="dmtNestedListItemType">'+
+	           '<span class="dmtMetaData">{f_ext}</span>'+
+	           '</td></tr></tbody></table>',
 		layout: {
 					animation: {
 						type: 'fade',
 						duration: 100
 					},
-					type: 'card'
+					type: 'fit'
 				},
-    },
-    getItemTextTpl: function(node){
-        var tplConstructor = '<table class="dmtNestedListItem">' + 
-           '<tbody>'+
-           '<tr>'+
-           '<td style="width:17%" align="center">{[values.fld_item_id != null ? values.fld_item_id : values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
-           '<td style="width:70%">'+
-           '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
-           '<span class="dmt-list-item-fname">{f_name}</span>'+
-           '<div class="dmtMessagesDate">'+
-           '{[values.f_description.length > 130 ? values.f_description.substring(0,127)+\'.....\' : values.f_description]}'+  
-           '</div>'+
-           '</td>'+
-           '<td class="dmtNestedListItemType">'+
-           '<span class="dmtMetaData">{f_ext}</span>'+
-           '</td></tr></tbody></table>';
-           return tplConstructor;
-    },
+    }
 });
 
 Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure", {
@@ -73288,6 +70845,11 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtDetailsPanel", {
 		{
 			xtype:'panel',
 			cls:'dmtDetailsViewPanelMain',
+			layout: {
+				align: 'center',
+				pack: 'center',
+				type: 'vbox'
+			},
 			scrollable:{
 	            direction: 'vertical',
 	            directionLock: true,
@@ -73306,6 +70868,27 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtDetailsPanel", {
 	            outOfBoundRestrictFactor: 0
 	        },
 			styleHtmlContent:false,
+			items : [
+						{	
+							xtype:'panel',
+							width:320,
+							height:172,
+						},
+						{	
+							xtype:'button',
+							text:'Download all documents',
+							cls:'dmt-details-panel-folder-download-button',
+							margin:'20 0 0 0',
+							ui:'confirm round',
+							iconCls:'download',
+							iconMask:true,
+							iconAlign:'right',
+							width:220,
+							paddingTop : 60,
+							height:32,
+							action:'dmtDetailsPanelSubFolderDownloadButton',
+						}     	
+					]
 		}
 		],
 		
@@ -73697,6 +71280,38 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 			}
 })
 
+Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListTitleBar", {
+    extend: 'Ext.TitleBar',
+	xtype:'dmtnestedlisttitlebar',
+    config: {
+		id:'dmt-nested-list-title-bar',
+		docked:'top',
+		title: 'Navigation',
+		cls:'dmtNestedListTitleBar',
+		layout: {
+			type:'hbox',
+		},
+		items:[{
+			xtype: 'button',
+            ui: 'back',
+            width : '70px',
+            align:'left',
+            text : 'Back',
+			id:'dmt-nested-list-back-button',
+			action:'dmtNestedListBackButton'
+		},
+		{
+			xtype:'button',
+			align:'right',
+			iconCls:'refresh',
+			iconMask:true,
+			id:'dmt-nested-list-refresh-button',
+			ui:'plain',
+			action:'dmtNestedListRefreshButton'
+		}]
+	}
+})
+
 Ext.application({
     models: ["ChangePasswordFormModel", "DmtForgotPasswordModel", "DmtNotificationsModel", "DmtLocalStorageCookieModel", "DmtLoginFormModel", "DmtFolderStructureModel","DmtMessagesModel"],
                 
@@ -73739,6 +71354,7 @@ Ext.application({
 				'DmtTabsPanel.DmtDetailsPanel.DmtNotificationsDetailPanel',
 				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList',
 				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListSortPanel',
+				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListTitleBar',
                 'DmtTabsPanel.DmtSubTabsPanel.DmtMessagesPanel'
 			],
 
@@ -73766,11 +71382,11 @@ Ext.application({
     },
     mainlaunch: function() {
                 
-        if(!device || !this.launched)
+       /* if(!device || !this.launched)
         {
             console.log("Returnning here");
             return;
-        }
+        }*/
     	
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();

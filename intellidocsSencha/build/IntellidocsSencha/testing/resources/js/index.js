@@ -1,3 +1,998 @@
+var loop_data = {
+    "items": [{
+        "f_id": "26",
+        "fld_item_id": null,
+        "f_name": "Special ROPC Meeting - 27th November 2012",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "Special ROPC Meeting - 27th November 2012",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 4,
+        "f_sub_fld_count": 0,
+        "items": [{
+            "f_id": 1881,
+            "f_name": "DraftRegsfor2011-Christinasversion-tableddoc.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-22 00:00:00",
+            "f_folder": "Special ROPC Meeting - 27th November 2012",
+            "f_parent": "26",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Special ROPC Meeting - 27th November 2012"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1883,
+            "f_name": "121108ExplanatoryMemoDraftSARs_REV8 - with table_FINAL.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-22 00:00:00",
+            "f_folder": "Special ROPC Meeting - 27th November 2012",
+            "f_parent": "26",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Special ROPC Meeting - 27th November 2012"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1885,
+            "f_name": "121119Memo.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-22 00:00:00",
+            "f_folder": "Special ROPC Meeting - 27th November 2012",
+            "f_parent": "26",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Special ROPC Meeting - 27th November 2012"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1887,
+            "f_name": "121127agit-NewSolicitorsAccountsRegulations.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-22 00:00:00",
+            "f_folder": "Special ROPC Meeting - 27th November 2012",
+            "f_parent": "26",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Special ROPC Meeting - 27th November 2012"],
+            "items": [],
+            "leaf": true
+        }]
+    },
+    {
+        "f_id": "25",
+        "fld_item_id": null,
+        "f_name": "Solicitors Acts",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "Solicitors Acts",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 1,
+        "f_sub_fld_count": 0,
+        "items": [{
+            "f_id": 3473,
+            "f_name": "eCompendium2010.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-28 14:14:33",
+            "f_folder": "Solicitors Acts",
+            "f_parent": "25",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Solicitors Acts"],
+            "items": [],
+            "leaf": true
+        }]
+    },
+    {
+        "f_id": "23",
+        "fld_item_id": null,
+        "f_name": "ROPC Emergency 021112",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "ROPC Emergency 021112",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 3,
+        "f_sub_fld_count": 0,
+        "items": [{
+            "f_id": 1838,
+            "f_name": "121025appendices.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-01 00:00:00",
+            "f_folder": "ROPC Emergency 021112",
+            "f_parent": "23",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["ROPC Emergency 021112"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1840,
+            "f_name": "121025invrep.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-01 00:00:00",
+            "f_folder": "ROPC Emergency 021112",
+            "f_parent": "23",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["ROPC Emergency 021112"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1842,
+            "f_name": "121030Blet.pdf",
+            "f_type": "file",
+            "f_ext": "no-file",
+            "f_attachment": "no-file",
+            "f_modified": "2012-11-01 00:00:00",
+            "f_folder": "ROPC Emergency 021112",
+            "f_parent": "23",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["ROPC Emergency 021112"],
+            "items": [],
+            "leaf": true
+        }]
+    },
+    {
+        "f_id": "16",
+        "fld_item_id": null,
+        "f_name": "Root1",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "Root1",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 0,
+        "f_sub_fld_count": 2,
+        "items": [{
+            "f_id": "17",
+            "fld_item_id": "5",
+            "f_name": "Subroot1",
+            "f_type": "folder",
+            "f_ext": "folder",
+            "f_attachment": "",
+            "f_modified": "-",
+            "f_folder": "Root1\/Subroot1",
+            "f_parent": "16",
+            "f_description": "",
+            "f_file_count": 5,
+            "f_sub_fld_count": 2,
+            "items": [{
+                "f_id": 388,
+                "f_name": "10.png",
+                "f_type": "file",
+                "f_ext": ".png",
+                "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/10.png",
+                "f_modified": "2012-10-04 00:00:00",
+                "f_folder": "Root1\/Subroot1",
+                "f_parent": "9",
+                "f_description": "",
+                "f_solicitor": "",
+                "f_item_id": "",
+                "f_folders": ["New Fo", "Root1\/Subroot1"],
+                "items": [],
+                "leaf": true
+            },
+            {
+                "f_id": 370,
+                "f_name": "roc.png",
+                "f_type": "file",
+                "f_ext": ".png",
+                "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/roc.png",
+                "f_modified": "2012-09-03 12:33:23",
+                "f_folder": "Root1\/Subroot1",
+                "f_parent": "13",
+                "f_description": "",
+                "f_solicitor": "",
+                "f_item_id": "",
+                "f_folders": ["Donal Root Folder", "Parent Folder 1\/Parent Sub Sub 1\/nested sub 1", "Parent Folder 1\/Parent Sub Sub 1\/Parent Sub 1", "Root1\/Subroot1"],
+                "items": [],
+                "leaf": true
+            },
+            {
+                "f_id": 343,
+                "f_name": "IntelliTrack MC70.doc",
+                "f_type": "file",
+                "f_ext": ".doc",
+                "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/IntelliTrack_MC70.doc",
+                "f_modified": "2012-08-31 15:14:46",
+                "f_folder": "Root1\/Subroot1",
+                "f_parent": "13",
+                "f_description": "",
+                "f_solicitor": "",
+                "f_item_id": "",
+                "f_folders": ["Donal Root Folder", "Root1\/Subroot1"],
+                "items": [],
+                "leaf": true
+            },
+            {
+                "f_id": 341,
+                "f_name": "IntelliSurvey.doc",
+                "f_type": "file",
+                "f_ext": ".doc",
+                "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/IntelliSurvey.doc",
+                "f_modified": "2012-08-31 15:14:43",
+                "f_folder": "Root1\/Subroot1",
+                "f_parent": "13",
+                "f_description": "",
+                "f_solicitor": "",
+                "f_item_id": "",
+                "f_folders": ["Donal Root Folder", "Root1\/Subroot1"],
+                "items": [],
+                "leaf": true
+            },
+            {
+                "f_id": 232,
+                "f_name": "",
+                "f_type": "file",
+                "f_ext": ".doc",
+                "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/2012\/08\/IntelliServe.doc",
+                "f_modified": "2012-08-30 10:24:25",
+                "f_folder": "Root1\/Subroot1",
+                "f_parent": "13",
+                "f_description": "",
+                "f_solicitor": "",
+                "f_item_id": "",
+                "f_folders": ["Donal Root Folder", "Root1\/Subroot1"],
+                "items": [],
+                "leaf": true
+            },
+            {
+                "f_id": "20",
+                "fld_item_id": "5",
+                "f_name": "double sub",
+                "f_type": "folder",
+                "f_ext": "folder",
+                "f_attachment": "",
+                "f_modified": "-",
+                "f_folder": "Root1\/Subroot1\/double sub",
+                "f_parent": "17",
+                "f_description": "",
+                "f_file_count": 1,
+                "f_sub_fld_count": 0,
+                "items": [{
+                    "f_id": 2219,
+                    "f_name": "1.png",
+                    "f_type": "file",
+                    "f_ext": ".png",
+                    "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/1.png",
+                    "f_modified": "2013-02-19 10:57:36",
+                    "f_folder": "Root1\/Subroot1\/double sub",
+                    "f_parent": "20",
+                    "f_description": "",
+                    "f_solicitor": "",
+                    "f_item_id": "",
+                    "f_folders": ["Root1\/Subroot1\/double sub"],
+                    "items": [],
+                    "leaf": true
+                }]
+            },
+            {
+                "f_id": "21",
+                "fld_item_id": null,
+                "f_name": "double sub 2",
+                "f_type": "folder",
+                "f_ext": "folder",
+                "f_attachment": "",
+                "f_modified": "-",
+                "f_folder": "Root1\/Subroot1\/double sub 2",
+                "f_parent": "17",
+                "f_description": "",
+                "f_file_count": 0,
+                "f_sub_fld_count": 0,
+                "items": []
+            }]
+        }]
+    },
+    {
+        "f_id": "22",
+        "fld_item_id": null,
+        "f_name": "Regulation of Practice Committee",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "Regulation of Practice Committee",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 0,
+        "f_sub_fld_count": 4,
+        "items": []
+    },
+    {
+        "f_id": "3",
+        "fld_item_id": "24",
+        "f_name": "Parent Folder 1",
+        "f_type": "folder",
+        "f_ext": "folder",
+        "f_attachment": "",
+        "f_modified": "-",
+        "f_folder": "Parent Folder 1",
+        "f_parent": "0",
+        "f_description": "",
+        "f_file_count": 40,
+        "f_sub_fld_count": 1,
+        "items": [{
+            "f_id": 2209,
+            "f_name": "butterfly.png",
+            "f_type": "file",
+            "f_ext": ".png",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/butterfly1.png",
+            "f_modified": "2013-02-18 10:54:59",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 2167,
+            "f_name": "IntelliSurvey.pdf",
+            "f_type": "file",
+            "f_ext": ".pdf",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/IntelliSurvey1.pdf",
+            "f_modified": "2013-02-12 01:34:02",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "14",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1\/Parent Sub Sub 1\/Meeting 091011", "Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 1859,
+            "f_name": "721285444.png",
+            "f_type": "file",
+            "f_ext": ".png",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/721285444.png",
+            "f_modified": "2013-02-11 12:35:59",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 329,
+            "f_name": "Wengle-macdonell-1500-px-180x140.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_180x140.jpg",
+            "f_modified": "2012-10-17 00:00:00",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "63",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 339,
+            "f_name": "Wengle-macdonell-1500-px-1024x1024.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_1024x1024.jpg",
+            "f_modified": "2012-08-31 14:44:24",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 337,
+            "f_name": "Wengle-macdonell-1500-px-625x250.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_625x250.jpg",
+            "f_modified": "2012-08-31 14:44:18",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 335,
+            "f_name": "Wengle-macdonell-1500-px-305x465.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_305x465.jpg",
+            "f_modified": "2012-08-31 14:44:16",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 333,
+            "f_name": "Wengle-macdonell-1500-px-300x300.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_300x300.jpg",
+            "f_modified": "2012-08-31 14:44:14",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 331,
+            "f_name": "Wengle-macdonell-1500-px-295x200.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_295x200.jpg",
+            "f_modified": "2012-08-31 14:44:13",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "Nisheed Jagadish 1",
+            "f_item_id": "290092",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 327,
+            "f_name": "Wengle-macdonell-1500-px-150x150.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px_150x150.jpg",
+            "f_modified": "2012-08-31 14:44:10",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1", "Parent Folder 1\/Parent Sub Sub 1\/Parent Sub 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 323,
+            "f_name": "Wengle-macdonell-1500-px.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Wengle_macdonell_1500_px.jpg",
+            "f_modified": "2012-08-31 14:44:07",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1", "Parent Folder 1\/Parent Sub Sub 1\/Parent Sub 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 321,
+            "f_name": "rosenthal-Macdonell-1500px-1024x1024.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_1024x1024.jpg",
+            "f_modified": "2012-08-31 14:43:13",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 315,
+            "f_name": "rosenthal-Macdonell-1500px-300x300.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_300x300.jpg",
+            "f_modified": "2012-08-31 14:43:03",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 313,
+            "f_name": "rosenthal-Macdonell-1500px-295x200.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_295x200.jpg",
+            "f_modified": "2012-08-31 14:43:00",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 311,
+            "f_name": "rosenthal-Macdonell-1500px-180x140.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_180x140.jpg",
+            "f_modified": "2012-08-31 14:42:56",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 309,
+            "f_name": "rosenthal-Macdonell-1500px-150x150.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_150x150.jpg",
+            "f_modified": "2012-08-31 14:42:54",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 307,
+            "f_name": "rosenthal-Macdonell-1500px-138x120.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px_138x120.jpg",
+            "f_modified": "2012-08-31 14:42:52",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 305,
+            "f_name": "rosenthal-Macdonell-1500px.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/rosenthal_Macdonell_1500px.jpg",
+            "f_modified": "2012-08-31 14:42:49",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 303,
+            "f_name": "Kassum-Macdonell-6889-1500px-1024x1024.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_1024x1024.jpg",
+            "f_modified": "2012-08-31 14:42:05",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 301,
+            "f_name": "Kassum-Macdonell-6889-1500px-625x250.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_625x250.jpg",
+            "f_modified": "2012-08-31 14:41:54",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 299,
+            "f_name": "Kassum-Macdonell-6889-1500px-305x465.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_305x465.jpg",
+            "f_modified": "2012-08-31 14:41:51",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 297,
+            "f_name": "Kassum-Macdonell-6889-1500px-300x300.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_300x300.jpg",
+            "f_modified": "2012-08-31 14:41:49",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 295,
+            "f_name": "Kassum-Macdonell-6889-1500px-295x200.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_295x200.jpg",
+            "f_modified": "2012-08-31 14:41:47",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 293,
+            "f_name": "Kassum-Macdonell-6889-1500px-180x140.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_180x140.jpg",
+            "f_modified": "2012-08-31 14:41:46",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 291,
+            "f_name": "Kassum-Macdonell-6889-1500px-150x150.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_150x150.jpg",
+            "f_modified": "2012-08-31 14:41:45",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1", "Parent Folder 1\/Parent Sub Sub 1\/Parent Sub 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 289,
+            "f_name": "Kassum-Macdonell-6889-1500px-138x120.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px_138x120.jpg",
+            "f_modified": "2012-08-31 14:41:44",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 287,
+            "f_name": "Kassum-Macdonell-6889-1500px1-1024x1024.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_1024x1024.jpg",
+            "f_modified": "2012-08-31 14:41:43",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 285,
+            "f_name": "Kassum-Macdonell-6889-1500px1-625x250.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_625x250.jpg",
+            "f_modified": "2012-08-31 14:41:34",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 283,
+            "f_name": "Kassum-Macdonell-6889-1500px1-305x465.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_305x465.jpg",
+            "f_modified": "2012-08-31 14:41:30",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 281,
+            "f_name": "Kassum-Macdonell-6889-1500px1-300x300.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_300x300.jpg",
+            "f_modified": "2012-08-31 14:41:24",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 279,
+            "f_name": "Kassum-Macdonell-6889-1500px1-295x200.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_295x200.jpg",
+            "f_modified": "2012-08-31 14:41:22",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 277,
+            "f_name": "Kassum-Macdonell-6889-1500px1-180x140.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_180x140.jpg",
+            "f_modified": "2012-08-31 14:41:19",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 275,
+            "f_name": "Kassum-Macdonell-6889-1500px1-150x150.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_150x150.jpg",
+            "f_modified": "2012-08-31 14:41:16",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 273,
+            "f_name": "Kassum-Macdonell-6889-1500px1-138x120.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px1_138x120.jpg",
+            "f_modified": "2012-08-31 14:41:14",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 271,
+            "f_name": "Kassum-Macdonell-6889-1500px.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Kassum_Macdonell_6889_1500px.jpg",
+            "f_modified": "2012-08-31 14:40:48",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 269,
+            "f_name": "Gill-Macdonell-3682-1200-px-1024x960.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Gill_Macdonell_3682_1200_px_1024x960.jpg",
+            "f_modified": "2012-08-31 14:39:48",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 267,
+            "f_name": "Gill-Macdonell-3682-1200-px-625x250.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Gill_Macdonell_3682_1200_px_625x250.jpg",
+            "f_modified": "2012-08-31 14:39:41",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 263,
+            "f_name": "Gill-Macdonell-3682-1200-px-305x465.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Gill_Macdonell_3682_1200_px_305x465.jpg",
+            "f_modified": "2012-08-31 14:39:36",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 261,
+            "f_name": "Gill-Macdonell-3682-1200-px-295x200.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/Gill_Macdonell_3682_1200_px_295x200.jpg",
+            "f_modified": "2012-08-31 14:39:32",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "3",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        },
+        {
+            "f_id": 259,
+            "f_name": "stress.jpg",
+            "f_type": "file",
+            "f_ext": ".jpg",
+            "f_attachment": "https:\/\/www.press-port.com\/wp-content\/uploads\/stress.jpg",
+            "f_modified": "2012-08-31 14:35:00",
+            "f_folder": "Parent Folder 1",
+            "f_parent": "9",
+            "f_description": "",
+            "f_solicitor": "",
+            "f_item_id": "",
+            "f_folders": ["New Fo", "Parent Folder 1"],
+            "items": [],
+            "leaf": true
+        }]
+    }]
+};
+
 var fileSystemRoot;
 var root_file_path;
 var IntelliDocs = {};
@@ -25,14 +1020,35 @@ var global_goto_node = 0;
 
 var global_init_launch = true;
 
-var global_app_version = 'Version: 1.2.4';
+var global_app_version = 'Version: 1.2.5';
    
 //global https
 var global_https = "https://www.intellidocs.net";
 //var global_https = "https://www.press-port.com";
 
+var db = {};
+
+/*
+(function(){
+	db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+})();
+*/
 document.addEventListener('deviceready',function(){
-    //request a file system
+    
+	//instantiate the DB
+	db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+	db.transaction(function (tx) {
+   		tx.executeSql('DROP TABLE intellidocs_folders');
+   		
+   		setTimeout(function(){
+   				tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
+   		},1000);	
+	   		
+	});
+	console.log("Database created");
+	IntelliDocs.refillSQLData(loop_data);
+	
+	//request a file system
     window.requestFileSystem(LocalFileSystem.PERSISTENT,
                              0,
                              IntelliDocs.fileSystemSuccessCallbck,
@@ -68,7 +1084,7 @@ document.addEventListener('deviceready',function(){
      */
      document.addEventListener("backbutton", function(e){
     	e.preventDefault();
-    	if(global_root_view)
+    	if(global_root_view || global_goto_node.parentNode == null || global_goto_node.parentNode == 'undefined')
     	{
     		Ext.Msg.confirm('','Are you sure you want to exit?',
                     function(buttonId){
@@ -81,8 +1097,8 @@ document.addEventListener('deviceready',function(){
     	{
     		 // move the app one folder back
     		 Ext.getCmp('dmt-nested-list').goToNode(global_goto_node.parentNode);
-    		 if(Ext.getCmp('dmt-details-view-card'))
-    	        Ext.getCmp('dmt-details-view-card').destroy();
+    		 
+    		 IntelliDocs.dmtDetailsPanelChange(global_goto_node.parentNode,null,false);
     		 
     		 Ext.getCmp('dmt-details-container-titlebar').setTitle("");   
     		 
@@ -103,233 +1119,403 @@ document.addEventListener('deviceready',function(){
     
 },false);
 
+var random = 100;
+IntelliDocs.refillSQLData = function(loop)
+{
+	//make all entries
+	for(var key in loop)
+    {
+        if(loop.hasOwnProperty(key))
+        {                        
+            if(key == 'items')
+            {
+                var obj = loop[key];
+                if(obj.length > 0)
+                {
+                    for(var i=0; i < obj.length; i++)
+                    {
+                        var d = obj[i];
+                        
+                        if(d['f_type'] == 'folder' && d['items'].length > 0)
+                        {
+                            db.transaction(function (tx) {
+                                tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                                                                            [random, d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none',          d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0,       d['f_parent']]);
+                                                        
+                                random++;
+                            });
+                                    
+                            IntelliDocs.refillSQLData(d);
+                        }
+                        else if(d['leaf'] === true)
+                        {
+                            db.transaction(function (tx) {
+                            	tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
+                                                                                [random, d['f_id'], 'none',         d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0,            0,              1,       d['f_parent']]);
+                                random++;
+                            });
+                        }
+                    }	
+                }
+            }	
+        }
+    }
+	
+	random = 100;
+}
 
 
 IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
 {
     var buttonText = (file_exists) ? "Open" : "Download File";
-    var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";	
-    var panel_content = {};
-    
-    if(!deafult_panel)
-        var record_data = record.getData();
-    else
-        var record_data = deafult_panel;
-    
-    var f_ext = (record_data.f_ext)?record_data.f_ext.replace('.',''):'';
-    var details_container = Ext.getCmp('dmt-details-container');
-    var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');	
-    
-    
-    //NEW CHANGES
-    var description = (record_data.f_description == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Description: </span>'+record_data.f_description+'</p>';
-    var solicitor = (record_data.f_solicitor == "")?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Solicitor: </span>'+record_data.f_solicitor+'</p>';
-    var item_id = (record_data.f_item_id == null)?'':'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Item Id: </span>'+record_data.f_item_id+'</p>';
-    
-    switch (record_data.f_type)
-    {
-        case 'file':
-            panel_content = {
-            id:'dmt-details-view-card',
-            cls:'dmtDetailsViewPanel',
-            scrollable:true,
-            layout:
-                {
-                type:'vbox',
-                pack:'center',
-                align:'left',
-                },
-            items:[
-                   {
-                   styleHtmlContent:true,
-                   html:
-                   [
-                    '<div class="dmt-file-icon-big dmt-file-icon-desc dmt-file-'+ f_ext +'-large"></div>' +
-                    '<div class="dmt-file-meta-desc"><p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>' +
-                    '<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Type:</span>'+record_data.f_ext+'</p>' +
-                    solicitor+ item_id + description +
-                    '</div>'
-                    ],
-                   items:
-                   [	
-                    {
-                    xtype: 'hiddenfield',
-                    name: 'document_url',
-                    id:'dmtFileUrl',
-                    value: record_data.f_attachment
-                    
-                    },
-                    {
-                    xtype: 'hiddenfield',
-                    name: 'document_folder',
-                    id:'dmtFileFolder',
-                    value: record_data.f_folder
-                    
-                    },{
-                    xtype: 'hiddenfield',
-                    name: 'document_folder_id',
-                    id:'dmtFileFolder_id',
-                    value: record_data.f_id
-                    
-                    },]
-                   },
-                   {	
-                   style:'margin-left:65px;margin-top:20px;',
-                   xtype:'button',
-                   id : 'dmt-file-action-button',
-                   text:buttonText,
-                   cls:'dmt-details-panel-download-button',
-                   ui:'confirm round',
-                   iconCls:'download',
-                   iconMask:true,
-                   iconAlign:'right',
-                   width:150,
-                   height:32,
-                   action:buttonAction,
-                   }	
-                   ]
-            }
-            
-            if(file_exists)
-            {
-                panel_content.items.push({style:'margin-left:65px;margin-top:20px;',
-                                         xtype:'button',
-                                         text:"Delete File",
-                                         cls:'dmt-details-panel-download-button',
-                                         ui:'round',
-                                         iconCls:'delete',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:150,
-                                         height:32,
-                                         action:"dmtDetailsPanelDeleteButton",});
-            }
-            
-            break
-            //END NEW CHANGES
-        case 'folder':
-            
-            
-            panel_content = {
-            layout:
-                {
-                type:'vbox',
-                pack:'center',
-                align:'center',
-                },
-            id:'dmt-details-view-card',
-            cls:'dmtDetailsViewPanel',
-            scrollable:true,
-            styleHtmlContent:true,
-            items:
-                [
-                 { html:'<div class="dmt-file-icon-big dmt-file-'+ f_ext +'-large"></div>'},
-                 
-                 { html:'<p class="dmt-file-meta-data"><span class="dmt-file-meta-data-field-label">Name:</span>'+record_data.f_name+'</p>'},
-                 
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_id',
-                 id:'dmtFileFolderId',
-                 value: record_data.f_id,
-                 
-                 },
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_path',
-                 id:'dmtFileFolderPath',
-                 value: record_data.f_folder,
-                 
-                 },
-                 {
-                 xtype: 'hiddenfield',
-                 name: 'document_folder_count',
-                 id:'dmtFileFolder_count',
-                 value: record_data.f_file_count,
-                 
-                 },
-                 {
-                 html : '<p></p>',
-                 id : 'dmt-folder-metadata'
-                 },
-                 
-                 ]
-            }
-            if(record_data.f_file_count > 0)
-            {
-                panel_content.items.push({
-                                         xtype:'button',
-                                         text:'Download all files in folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'confirm round',
-                                         iconCls:'download',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelFolderDownloadButton',
-                                         });
-            }
-            
-            var dir_count = record_data.f_sub_fld_count;
-            
-            if(dir_count > 0)
-            {
-                panel_content.items.push({	
-                                         xtype:'button',
-                                         text:'Download Files In Sub Folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'confirm round',
-                                         iconCls:'download',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelSubFolderDownloadButton',
-                                         });
-            }
-            
-            if(record_data.f_file_count > 0)
-            {
-                panel_content.items.push({
-                                         xtype:'button',
-                                         text:'Delete Files In Folder',
-                                         cls:'dmt-details-panel-folder-download-button',
-                                         ui:'round',
-                                         iconCls:'delete',
-                                         iconMask:true,
-                                         iconAlign:'right',
-                                         width:250,
-                                         height:32,
-                                         style:'margin-top:20px',
-                                         action:'dmtDetailsPanelFolderDeleteFilesButton',
-                                         });
-            }
-            IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count)
-            break;
-        default:
-            panel_content = null;	
-    }
+    var buttonAction = (file_exists) ? "dmtDetailsPanelOpenButton" : "dmtDetailsPanelDownloadButton";		
+	var panel_content = {};
+	
+	if(!deafult_panel)
+		var record_data = record.getData();
+	else
+		var record_data = deafult_panel;
+	
+	var f_ext = (record_data.f_ext)?record_data.f_ext.replace('.',''):'';
+	var details_container = Ext.getCmp('dmt-details-container');
+	var details_container_titlebar = Ext.getCmp('dmt-details-container-titlebar');		
+	
+	var file_date 		= (record_data.f_modified && record_data.f_modified != '') ? record_data.f_modified : '';
+	var file_ext  		= (record_data.f_ext && record_data.f_ext != '')? f_ext : '';
+	var file_name 		= (record_data.f_name && record_data.f_name != '')? record_data.f_name : '';
+	var file_solicitor 	= (record_data.f_solicitor && record_data.f_solicitor != '')? record_data.f_solicitor : '';
+	var file_item_id  	= (record_data.f_item_id && record_data.f_item_id != '')? record_data.f_item_id : '';
+	var file_desc  		= (record_data.f_description && record_data.f_description != '')? record_data.f_description : '';
 
-    
-    if(Ext.getCmp('dmt-details-view-card'))
-        Ext.getCmp('dmt-details-view-card').destroy();
-    
-    if(panel_content)
-    {	
-        var new_details_panel = Ext.create('Ext.Panel',panel_content);
-        var details_container_title = (record_data.f_name)?record_data.f_name+' details':'Details Panel';
-        
-        details_container_titlebar.setTitle(details_container_title);
-        details_container.add([new_details_panel]).show({type:'pop',duration:500,easing:'ease-out'});
-    }
-    else
-    {
-        details_container_titlebar.setTitle('Details Panel');
-    }
-}
+   
+
+	switch (record_data.f_type)
+	{
+	case 'file':
+
+		console.log(file_ext.toLowerCase());
+
+		panel_content = {
+				xtype: 'formpanel',
+				id: 'dmt-details-view-card',
+				layout: {
+					align: 'center',
+					pack: 'center',
+					type: 'vbox'
+				},
+				styleHtmlContent: false,
+				scrollable: {
+					direction: 'vertical',
+					directionLock: true,
+					momentumEasing: {
+						momentum: {
+							acceleration: 30,
+							friction: 0.5
+						},
+						bounce: {
+							acceleration: 0.0001,
+							springTension: 0.9999,
+
+						},
+						minVelocity: 5
+					},
+					outOfBoundRestrictFactor: 0
+				},
+				items: [
+				        {
+				        	xtype: 'image',
+				        	height: 96,
+				        	width: 96,
+				        	src:'resources/images/folder_icons/'+ file_ext.toLowerCase() + '.png',
+				        	id:'dmt-file-icon',
+				        	margin:'0 0 30 0'
+				        },
+				        {
+				        	xtype: 'fieldset',
+				        	id: 'details-panel-fieldset',
+				        	width: '90%',
+				        	defaults: {
+				        		labelAlign: 'left'
+				        	},
+				        	instructions: '&copy; Intellidocs.net',
+				        	items: [
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-name',
+				        	        	hidden:(file_name)?false:true,
+				        	        			label: 'Name',
+				        	        			readOnly: true,
+				        	        			value:file_name
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-date',
+				        	        	hidden:(file_date)?false:true,
+				        	        			label: 'Publish Date',
+				        	        			readOnly: true,
+				        	        			value:file_date
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-ext',
+				        	        	hidden:(file_ext)?false:true,
+				        	        			label: 'Type',
+				        	        			readOnly: true,
+				        	        			value:file_ext
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-solicitor',
+				        	        	hidden:(file_solicitor)?false:true,
+				        	        			label: 'Solicitor',
+				        	        			readOnly: true,
+				        	        			value:file_solicitor
+				        	        },
+				        	        {
+				        	        	xtype: 'textfield',
+				        	        	id: 'dmt-file-meta-item-id',
+				        	        	hidden:(file_item_id)?false:true,
+				        	        			label: 'Item ID',
+				        	        			readOnly: true,
+				        	        			value:file_item_id
+				        	        },
+				        	        {
+				        	        	xtype: 'textareafield',
+				        	        	id: 'dmt-file-meta-desc',
+				        	        	hidden:(file_desc)?false:true,
+				        	        			label: 'Description',
+				        	        			readOnly: true,
+				        	        			value:file_desc
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileUrl',
+				        	        	name: 'document_url',
+				        	        	value:record_data.f_attachment
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileFolder',
+				        	        	name: 'document_folder',
+				        	        	value:record_data.f_folder
+				        	        },
+				        	        {
+				        	        	xtype: 'hiddenfield',
+				        	        	id: 'dmtFileFolder_id',
+				        	        	name: 'document_folder_id',
+				        	        	value:record_data.f_id
+				        	        }
+				        	        ]
+				        },
+				        {
+				        	xtype: 'container',
+				        	id: 'dmt-details-panel-btn-container',
+				        	minHeight: 60,
+				        	layout: {
+				        		align: 'center',
+				        		pack: 'center',
+				        		type: 'vbox'
+				        	},
+				        	items: [
+				        	        {
+				        	        	xtype: 'button',
+				        	        	cls: 'dmt-details-panel-download-button',
+				        	        	id: 'dmt-file-action-button',
+				        	        	action:buttonAction,
+				        	        	ui: 'confirm',
+				        	        	width: 150,
+				        	        	height:40,
+				        	        	iconAlign: 'right',
+				        	        	iconCls: 'download',
+				        	        	iconMask: true,
+				        	        	text: buttonText
+				        	        }
+				        	        ]
+				        }
+				        ]
+		};
+
+		if(file_exists)
+		{
+			panel_content.items[2].items.push({
+				xtype:'button',
+				text:"Delete File",
+				margin: '30 0 0 0',
+				cls:'dmt-details-panel-download-button',
+				ui:'round',
+				iconCls:'delete',
+				iconMask:true,
+				iconAlign:'right',
+				width:150,
+				height:40,
+				action:"dmtDetailsPanelDeleteButton"
+			});
+		}	
+
+
+		break;
+		//END NEW CHANGES	
+	case 'folder':
+
+		panel_content = {
+			xtype: 'formpanel',
+			id: 'dmt-details-view-card',
+			layout: {
+				align: 'center',
+				pack: 'center',
+				type: 'vbox'
+			},
+			styleHtmlContent: false,
+			scrollable: {
+				direction: 'vertical',
+				directionLock: true,
+				momentumEasing: {
+					momentum: {
+						acceleration: 30,
+						friction: 0.5
+					},
+					bounce: {
+						acceleration: 0.0001,
+						springTension: 0.9999,
+
+					},
+					minVelocity: 5
+				},
+				outOfBoundRestrictFactor: 0
+			},
+			items: [
+			        {
+			        	xtype: 'image',
+			        	height: 96,
+			        	width: 96,
+			        	src:'resources/images/folder_icons/'+ file_ext.toLowerCase() + '.png',
+			        	id:'dmt-file-icon',
+			        	margin:'0 0 30 0'
+			        },
+			        {
+			        	xtype: 'fieldset',
+			        	id: 'details-panel-fieldset',
+			        	width: '90%',
+			        	defaults: {
+			        		labelAlign: 'left'
+			        	},
+			        	instructions: '&copy; Intellidocs.net',
+			        	items: [
+			        	        {
+			        	        	xtype: 'textfield',
+			        	        	id: 'dmt-file-meta-name',
+			        	        	hidden:(file_name)?false:true,
+			        	        			label: 'Name',
+			        	        			readOnly: true,
+			        	        			value:file_name
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolderId',
+			        	        	name:'document_folder_id',
+			        	        	value:record_data.f_id
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolderPath',
+			        	        	name:'document_folder_path',
+			        	        	value:record_data.f_folder
+			        	        },
+			        	        {
+			        	        	xtype: 'hiddenfield',
+			        	        	id: 'dmtFileFolder_count',
+			        	        	name:'document_folder_count',
+			        	        	value:record_data.f_file_count
+			        	        }
+			        	        ]
+			        },
+			        {
+			        	xtype: 'container',
+			        	id: 'dmt-details-panel-btn-container',
+			        	minHeight: 60,
+			        	width:'90%',
+			        	layout: {
+			        		align: 'center',
+			        		pack: 'center',
+			        		type: 'vbox'
+			        	},
+			        	items: [
+			        	        {
+			        	        	html : '<p></p>',
+			        	        	width:'100%',
+			        	        	height: 30,
+			        	        	cls: 'dmt-folder-metadata-cls',
+			        	        	id : 'dmt-folder-metadata' 
+			        	        }
+			        	        ]
+			        }
+			        ]
+	};
+
+		var dir_count = record_data.f_sub_fld_count;
+
+		if(record_data.f_file_count > 0)
+		{
+			panel_content.items[2].items.push({ 
+				xtype:'button',
+				text:'Update Folder',
+				cls:'dmt-details-panel-folder-download-button',
+				margin:'20 0 0 0',
+				ui:'confirm round',
+				iconCls:'download',
+				iconMask:true,
+				iconAlign:'right',
+				width:250,
+				height:32,
+				action:'dmtDetailsPanelFolderDownloadButton',
+			});
+		}
+		
+		if(record_data.f_file_count > 0)
+		{
+			panel_content.items.push({ 
+				xtype:'button',
+				text:'Delete Files In Folder',
+				cls:'dmt-details-panel-folder-download-button',
+				margin:'20 0 0 0',
+				ui:'round',
+				iconCls:'delete',
+				iconMask:true,
+				iconAlign:'right',
+				width:250,
+				height:32,
+				action:'dmtDetailsPanelFolderDeleteFilesButton',
+			});
+		}
+
+		break;
+	default:
+		panel_content = null;
+		break;
+	}
+
+	
+	if(Ext.getCmp('dmt-details-view-card'))
+			Ext.getCmp('dmt-details-view-card').destroy();
+	
+	if(panel_content)
+	{		
+		//var new_details_panel = Ext.create('Ext.Panel',panel_content);
+		var new_details_panel = Ext.create('Ext.form.Panel',panel_content);
+		
+		var details_container_title = (record_data.f_name)?record_data.f_name+' details':'Details Panel';
+			
+		details_container_titlebar.setTitle(details_container_title);
+		details_container.add([new_details_panel]).show();
+		
+        IntelliDocs.getFolderMeta(record_data.f_folder,record_data.f_file_count);
+	}
+	else
+	{
+		details_container_titlebar.setTitle('Details Panel');
+	}
+
+};
  
 
 IntelliDocs.intellidocs_session_timeout = function(controller)
@@ -571,7 +1757,9 @@ IntelliDocs.download_queued_file = function(file)
                                     //all files downloaded. reset globals here
                                     console.log('All files downloaded');
                                     //Ext.getCmp('dmt-download-progress-folder').destroy();
-                                    Ext.getCmp('file-download-mask').destroy();
+                                    if(Ext.getCmp('file-download-mask'))
+                                    	Ext.getCmp('file-download-mask').destroy();
+                                    
                                     if(global_download_file_count == 0)
                                     {
                                     	Ext.Msg.alert('', 'All files have already been downloaded', Ext.emptyFn);	
@@ -585,7 +1773,9 @@ IntelliDocs.download_queued_file = function(file)
                                     global_queued_file_download_complete_count = 0;
                                     global_current_download_folder_id = 0;
                                     global_download_file_count = 0;
-                                    IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value, Ext.getCmp('dmtFileFolder_count')._value);                                            
+                                    
+                                    if(Ext.getCmp('dmtFileFolderPath'))
+                                    	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value, Ext.getCmp('dmtFileFolder_count')._value);                                            
                                  }
                                 else{             
                                     IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
@@ -616,8 +1806,10 @@ IntelliDocs.download_queued_file = function(file)
 												
 												if(res.status == 1)
 												{
-													Ext.getCmp('file-download-mask').destroy();
-													 console.log("File Downloaded");
+													if(Ext.getCmp('file-download-mask'))
+				                                    	Ext.getCmp('file-download-mask').destroy();
+				                                    
+													console.log("File Downloaded");
 													 global_queued_file_download_complete_count++;
 													 global_download_file_count++;
 	                                                 if(global_queued_file_download_complete_count == global_queued_file_urls.length)
@@ -643,16 +1835,19 @@ IntelliDocs.download_queued_file = function(file)
 	                                                 else{             
 	                                                    IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]); 
 	                                                }
-	                                                 
-	                                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
+	
+	                                                if(Ext.getCmp('dmtFileFolderPath'))
+	                                                	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
 												}
 									     	},
 									     	function(error) {
 									     			console.log("Download failed:");
 	                                               
 	                                                //Ext.getCmp('dmt-download-progress-folder').destroy();
-									     	   		Ext.getCmp('file-download-mask').destroy();
-	                                                if(global_download_file_count > 0)
+									     			if(Ext.getCmp('file-download-mask'))
+				                                    	Ext.getCmp('file-download-mask').destroy();
+				                                    
+									     			if(global_download_file_count > 0)
 	                                                {
 	                                                    var files = global_download_file_count == 1 ? global_download_file_count + ' file' : global_download_file_count + ' files';
 	                                                    Ext.Msg.alert('', files + ' successfully downloaded', Ext.emptyFn);
@@ -665,7 +1860,9 @@ IntelliDocs.download_queued_file = function(file)
 	                                                global_queued_file_download_complete_count = 0;
 	                                                global_current_download_folder_id = 0; 
 	                                                global_download_file_count = 0;
-	                                                IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
+	                                                
+	                                                if(Ext.getCmp('dmtFileFolderPath'))
+	                                                	IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value); 
 									     	}
 										);
                                 });
@@ -694,7 +1891,7 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
                     for(var i=0; i < obj.length; i++)
                     {
                         var data = obj[i];
-                        if(data['f_id'] == category_id   && data['f_type'] == 'folder')
+                        if((data['f_id'] == category_id   && data['f_type'] == 'folder'))
                         {
                             //match found. now get all leaf nodes from items array
                             console.log(data['f_name'] + ' Found the folder element');
@@ -718,6 +1915,59 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
         }
     }
 }	
+
+/**
+ * loop through dir_list.js and find all the files to be downloaded
+ * _json_obj = initially dir_list.js
+ * category_id = objec to search for
+ * function
+ */
+IntelliDocs.loop_root_json = function(_json_obj)
+{
+    for(var key in _json_obj)
+    {
+        if(_json_obj.hasOwnProperty(key))
+        {                        
+            if(key == 'items')
+            {
+                var obj = _json_obj[key];
+                if(obj.length > 0)
+                {
+                    for(var i=0; i < obj.length; i++)
+                    {
+                        var data = obj[i];
+                        if(data['f_type'] == 'folder')
+                        {
+                            //set global folder ID
+                            global_current_download_folder_id = data['f_id'];
+                            
+                            //get all file urls
+                            IntelliDocs.dmtCreateDirectories(data['f_folder']);
+                         
+                            IntelliDocs.recursive_looping(data['items']);
+                        }
+                    }	
+                }
+            }	
+        }
+    }
+    
+    if(global_queued_file_urls.length > 0)
+    {
+        console.log('Files count' + global_queued_file_urls.length);
+        //trigger the bulk file download 
+        IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+    }
+    else{
+        //we are not triggering file download. reset globals
+        //Ext.getCmp('dmt-download-progress-folder').destroy();
+    	//Ext.getCmp('file-download-mask').destroy();
+        global_queued_file_urls = [];
+        global_queued_file_download_complete_count = 0;
+        global_current_download_folder_id = 0;
+    }
+    
+}
 
 IntelliDocs.recursive_looping = function(obj)
 {
@@ -752,7 +2002,7 @@ IntelliDocs.get_all_leaf_elements = function(obj,subfolder_check)
 	}
 	else
 	{
-    for(var i=0; i < obj.length; i++)
+		for(var i=0; i < obj.length; i++)
         {
             var data = obj[i];
            

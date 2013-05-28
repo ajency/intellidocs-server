@@ -117,6 +117,7 @@
         <property name="args.path" location="."/>
         <property name="args.destination" location="${workspace.build.dir}"/>
         <property name="args.environment" value="production"/>
+        <property name="args.environment" value="testing"/>
         <x-app-build/>
     </target>
     <target name="-after-page"/>
@@ -164,6 +165,7 @@
     <target name="-after-build">
 	<copy todir="../intellidocsR2/assets/www">
         <fileset dir="${workspace.build.dir}/production"/>
+        <fileset dir="${workspace.build.dir}/testing"/>
     </copy>
 	</target>
     <target name="build"

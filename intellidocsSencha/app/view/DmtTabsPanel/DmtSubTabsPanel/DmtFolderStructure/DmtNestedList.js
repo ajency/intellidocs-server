@@ -1,12 +1,13 @@
 Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList", {
-    extend: 'Ext.dataview.NestedList',
+    extend: 'Ext.dataview.List',
 	xtype:'dmtnestedfolderlist',
     config: {
-		title:'Files',
+    	title:'Files',
 		id:'dmt-nested-list',
+		ui : 'dark',
 		cls:'dmtNestedList',
-		displayField:'f_name',
-		toolbar:
+		//displayField:'f_name',
+		/*toolbar:
 		{
 			ui:'dark',
 			cls:'dmtNestedListToolBar',
@@ -22,7 +23,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 						action:'dmtNestedListRefreshButton'
 					}
 			]
-		},
+		},*/
 		masked: 
 		{
     			xtype: 'loadmask',
@@ -50,29 +51,26 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 	        },
 			variableHeights:true,
 		},
+		itemTpl: '<table class="dmtNestedListItem">' + 
+	           '<tbody>'+
+	           '<tr>'+
+	           '<td style="width:17%" align="center">{[values.fld_item_id != null ? values.fld_item_id : values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
+	           '<td style="width:70%">'+
+	           '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
+	           '<span class="dmt-list-item-fname">{f_name}</span>'+
+	           '<div class="dmtMessagesDate">'+
+	           '{[values.f_description.length > 130 ? values.f_description.substring(0,127)+\'.....\' : values.f_description]}'+  
+	           '</div>'+
+	           '</td>'+
+	           '<td class="dmtNestedListItemType">'+
+	           '<span class="dmtMetaData">{f_ext}</span>'+
+	           '</td></tr></tbody></table>',
 		layout: {
 					animation: {
 						type: 'fade',
 						duration: 100
 					},
-					type: 'card'
+					type: 'fit'
 				},
-    },
-    getItemTextTpl: function(node){
-        var tplConstructor = '<table class="dmtNestedListItem">' + 
-           '<tbody>'+
-           '<tr>'+
-           '<td style="width:17%" align="center">{[values.fld_item_id != null ? values.fld_item_id : values.f_item_id != null ? values.f_item_id : \'\']} </td>'+
-           '<td style="width:70%">'+
-           '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
-           '<span class="dmt-list-item-fname">{f_name}</span>'+
-           '<div class="dmtMessagesDate">'+
-           '{[values.f_description.length > 130 ? values.f_description.substring(0,127)+\'.....\' : values.f_description]}'+  
-           '</div>'+
-           '</td>'+
-           '<td class="dmtNestedListItemType">'+
-           '<span class="dmtMetaData">{f_ext}</span>'+
-           '</td></tr></tbody></table>';
-           return tplConstructor;
-    },
+    }
 });
