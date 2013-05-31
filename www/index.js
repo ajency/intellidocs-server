@@ -39,20 +39,7 @@ document.addEventListener('deviceready',function(){
                                                    IntelliDocs.fileSystemSuccessCallbck,
                                                    IntelliDocs.fileSystemFailCallbck);  
                           
-                          /*
-                           * check deleted folders on resume
-                           *
-                          document.addEventListener('resume',function(){
-                                                if(navigator.onLine)
-                                                {
-                                                    if(IntelliDocs.dmtGetUsernameFromCache() != '')
-                                                    {
-                                                        IntelliDocs.write_json(true,IntelliDocs.dmtGetUsernameFromCache(),true);
-                                                        Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});                                     
-                                                    }                                          
-                                                }   
-                                            });
-                          */
+                          
                           },false);
 
 
