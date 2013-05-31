@@ -17,6 +17,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
             dmtNestedList:
 			{
 				itemtap		:'dmtNestedListItemTap',
+				itemtaphold : 'dmtListItemTapHold',
 				//leafitemtap	:'dmtNestedListLeafItemTap',
 				//back		:'dmtNestedListBackTap',
 				initialize	:'dmtNestedListInitialize',
@@ -131,9 +132,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         //list.un('itemtaphold',this.dmtListItemTapHold);
         //list.on('itemtaphold',this.dmtListItemTapHold);
     },
-    dmtListItemTapHold:function(current_list,index,target,record)
+    dmtListItemTapHold:function(list, index, target, record, e, eOpts)
     {
-        if(record.getData().f_type == 'file')
+    	if(record.getData().f_type === 'file')
         {
         	global_long_press = true;
         	var file_name_url = record.getData().f_attachment;

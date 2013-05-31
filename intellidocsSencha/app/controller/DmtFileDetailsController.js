@@ -157,42 +157,15 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
-           
-          // if(global_current_download_folder_id == 0)
-          // {
-               
-                Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
+           Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
-                        	   	//Show loader here
-                        	   
-                                var request = new XMLHttpRequest();
-                                request.open("GET", "file://"+ root_file_path + "/dir_list.js", true);
-                                request.onreadystatechange = function(){
-                                    if (request.readyState == 4) {
-                                    	if (request.status == 200 || request.status == 0) {
-                                    		
-                                    			IntelliDocs.loop_json(eval(request.responseText),folder_id, false);
-                                    		
-                                        }
-                                    }
-                                }
-                                request.send();            
+                        	   IntelliDocs.updateFolder(folder_id);
                            }
-                           
                            else
                            {}
-                           });
-          /* }
-           else if(global_current_download_folder_id = folder_id)
-           {
-               Ext.Msg.alert('Please Wait','Currently downloading files from this folder');
-           }
-           else{
-               Ext.Msg.alert('Please Wait','Until current download ends');
-           }*/
-           
+                   });
         }
         else
         {
