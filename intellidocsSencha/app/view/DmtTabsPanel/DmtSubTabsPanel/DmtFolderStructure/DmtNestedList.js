@@ -6,24 +6,6 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 		id:'dmt-nested-list',
 		ui : 'dark',
 		cls:'dmtNestedList',
-		//displayField:'f_name',
-		/*toolbar:
-		{
-			ui:'dark',
-			cls:'dmtNestedListToolBar',
-			id:'dmt-nested-list-toolbar',
-			items:[
-					{
-						xtype:'button',
-						align:'right',
-						iconCls:'refresh',
-						iconMask:true,
-						id:'dmt-nested-list-refresh-button',
-						ui:'plain',
-						action:'dmtNestedListRefreshButton'
-					}
-			]
-		},*/
 		masked: 
 		{
     			xtype: 'loadmask',

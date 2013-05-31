@@ -4,7 +4,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
     config: {
 		id:'dmt-nested-list-title-bar',
 		docked:'top',
-		title: 'Navigation',
+		title: 'Files',
 		cls:'dmtNestedListTitleBar',
 		layout: {
 			type:'hbox',
