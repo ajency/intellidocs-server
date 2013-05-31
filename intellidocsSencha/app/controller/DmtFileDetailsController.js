@@ -43,39 +43,16 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     	if(Ext.device.Connection.isOnline())
         {
            var folder_id = 0;
-           
-          /* if(global_current_download_folder_id == 0)
-           {*/
-               
-                Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
+           Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
-                                  var request = new XMLHttpRequest();
-                                request.open("GET", "file://"+ root_file_path + "/dir_list.js", true);
-                                request.onreadystatechange = function(){
-                                    if (request.readyState == 4) {
-                                        if (request.status == 200 || request.status == 0) {
-                                            IntelliDocs.loop_root_json( eval(request.responseText));
-                                        }
-                                    }
-                                }
-                                request.send();            
+                        	   IntelliDocs.updateAllFolders();          
                            }
                            else
                            {}
                            });
-           
-           /*}
-           
-           else if(global_current_download_folder_id = folder_id)
-           {
-               Ext.Msg.alert('Please Wait','Currently downloading files from this directory');
-           }
-           else{
-               Ext.Msg.alert('Please Wait','Until current download ends');
-           }*/
-           
+         
         }
         else
         {

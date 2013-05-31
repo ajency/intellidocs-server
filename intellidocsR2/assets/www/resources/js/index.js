@@ -56,7 +56,7 @@ document.addEventListener('deviceready',function(){
    		tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
    			
 	}, function(){
-   	 	IntelliDocs.refillSQLData(loop_data);
+   	 	//IntelliDocs.refillSQLData(loop_data);
     }, function(){});
 	
 	//IntelliDocs.refillSQLData(loop_data);
@@ -97,7 +97,11 @@ document.addEventListener('deviceready',function(){
      */
      document.addEventListener("backbutton", function(e){
     	e.preventDefault();
-    	if(global_root_view || global_goto_node.parentNode == null || global_goto_node.parentNode == 'undefined')
+    	
+    	//get back button object
+    	var backbutton = Ext.getCmp('dmt-nested-list-back-button');
+    	
+    	if(backbutton.isHidden())
     	{
     		Ext.Msg.confirm('','Are you sure you want to exit?',
                     function(buttonId){
@@ -109,14 +113,7 @@ document.addEventListener('deviceready',function(){
     	else
     	{
     		 // move the app one folder back
-    		 //Ext.getCmp('dmt-nested-list').goToNode(global_goto_node.parentNode);
-    		 
-    		 IntelliDocs.dmtDetailsPanelChange(global_goto_node.parentNode,null,false);
-    		 
-    		 Ext.getCmp('dmt-details-container-titlebar').setTitle("");   
-    		 
-    		 global_goto_node = global_goto_node.parentNode;
-    	
+    		backbutton.fireEvent("tap",backbutton);
     	}
      },false);
     
@@ -193,7 +190,7 @@ IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
 
 	switch (record_data.f_type)
 	{
-	case 'file':
+		case 'file':
 
 		console.log(file_ext.toLowerCase());
 
@@ -929,9 +926,9 @@ IntelliDocs.updateFolder = function(category_id)
 	
 	db.transaction(function (tx) {
 		
-		tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id='"+ category_id +"'", [], function(tx,results){
+		tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id='"+ category_id +"'", [], function(tx,res){
    			
-			//IntelliDocs.dmtCreateDirectories(results.rows.item(0).f_folder); 
+			IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder); 
 			tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent='"+ category_id +"'", [], function(tx,results){
 	   			
 				var len = results.rows.length;
@@ -955,16 +952,70 @@ IntelliDocs.updateFolder = function(category_id)
 		   	    }
 			},
 	   		function(err){
-					console.log("Error processing SQL: "+err.code);
+				console.log( "Error processing SQL: " + err.code );
 	   		});
 		},
    		function(err){
-				console.log("Error processing SQL: "+err.code);
+			console.log( "Error processing SQL: " + err.code );
    		});
 
-	}, function(){
-   	 	
-    }, function(){});
+	}, 
+	function(){},
+	function(){});
+}
+
+/**
+ * loop through dir_list.js and find all the files to be downloaded
+ * _json_obj = initially dir_list.js
+ * category_id = objec to search for
+ * function
+ */
+IntelliDocs.updateAllFolders = function()
+{
+	
+	db.transaction(function (tx) {
+		
+		tx.executeSql("SELECT DISTINCT(f_folder) FROM intellidocs_folders", [], function(tx,res){
+   			
+			var len = res.rows.length;
+			for (var i=0; i<len; i++)
+			{
+				IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
+			}
+			
+			tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type='file'", [], function(tx,results){
+	   			
+				var len = results.rows.length;
+	   		  
+	   		    for (var i=0; i<len; i++)
+	   		    {
+	   		    	global_queued_file_urls.push({
+	                	   url : results.rows.item(i).f_attachment,
+	                	   path: results.rows.item(i).f_folder});
+	   		    }
+	   		    
+		   		if(global_queued_file_urls.length > 0)
+		   	    {
+		   	        //trigger the bulk file download 
+		   	        IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+		   	    }
+		   	    else{
+		   	        global_queued_file_urls = [];
+		   	        global_queued_file_download_complete_count = 0;
+		   	        global_current_download_folder_id = 0;
+		   	    }
+			},
+	   		function(err){
+				console.log("Error processing SQL: "+err.code);
+	   		});
+		},
+   		function(err){
+			console.log("Error processing SQL: "+err.code);
+   		});
+
+	}, 
+	function(){},
+	function(){});
 }
 
 /**

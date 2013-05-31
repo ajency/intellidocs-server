@@ -535,7 +535,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		if(Ext.getCmp('dmt-nested-list-back-button'))	
         	Ext.getCmp('dmt-nested-list-back-button').hide();
 		
-		
+		Ext.getCmp('dmt-nested-list').mask();
 		var str = Ext.getStore('DmtFolderStructureStore');
 		list.setStore(str);
       
@@ -577,12 +577,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
   		   				}, 
  	        		   function(err){
  	        			   console.log("Error fetching data");
+ 	        			   Ext.getCmp('dmt-nested-list').unmask();
  	        		   });
   	    });
 		console.log('List Store loaded');
 		//Ext.getStore('DmtFolderStructureStore').load();
-		Ext.getCmp('dmt-nested-list').unmask();
-		Ext.Viewport.unmask();
+	
 		//Add the user_name param to the polling function
 		var base_params ={
 							user_name: this.dmtGetUsernameFromCache(),
