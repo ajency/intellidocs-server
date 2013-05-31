@@ -11,6 +11,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
     			xtype: 'loadmask',
     			message: 'Loading Files...',
 		},
+		showAnimation : 'slideIn',
 		listConfig:
 		{
 			pressedDelay:1,

@@ -9230,11 +9230,8 @@ var db = {};
 (function(){
 	db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
 	db.transaction(function (tx) {
-   		//tx.executeSql('DROP TABLE intellidocs_folders');return;
-   		
+ 
    		tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
-   		
-   		//IntelliDocs.refillSQLData(loop_data);
 	   		
 	}, function(){
    	 	IntelliDocs.refillSQLData(d);
@@ -10242,7 +10239,7 @@ IntelliDocs.get_all_leaf_elements = function(obj,subfolder_check)
  */
 IntelliDocs.getFolderMeta = function(folder_path,total_files)
 {
-    
+    //return;
     var meta = '';
     var files_present = 0;
     var remaining_files = 0;

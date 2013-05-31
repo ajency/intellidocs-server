@@ -12,19 +12,18 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
          {property:'fld_item_id',direction:'ASC'},
          {sorterFn:function(record1,record2){
          
-         var  item1 = record1.data.f_item_id,
-         item2 = record2.data.f_item_id;
-         
-         item1 = (!item1)? 999999999 : item1;
-         item2 = (!item2)? 999999999 : item2;
-         
-         return item1 < item2 ? 1 : (item1 == item2 ? 0 : -1);
-         
+	         var  item1 = record1.data.f_item_id,
+	         item2 = record2.data.f_item_id;
+	         
+	         item1 = (!item1)? 999999999 : item1;
+	         item2 = (!item2)? 999999999 : item2;
+	         
+	         return item1 < item2 ? 1 : (item1 == item2 ? 0 : -1);
+	         
          },direction:'DESC'},			
          {property:'f_name',direction:'ASC'}	        
         ],
 		proxy:{
-            //url: root_file_path + '/dir_list.js',
             type:'memory',
             reader:
             {
