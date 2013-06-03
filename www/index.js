@@ -10230,7 +10230,7 @@ IntelliDocs.downloadFile = function(record)
         var structure = record.getData().f_folder;
         
         
-        IntelliDocs.dmtCreateDirectories(structure); 
+        IntelliDocs.dmtCreateDirectories(structure);
         
         //trigger the file download plugin
         window.plugins.Download.start(file_url,

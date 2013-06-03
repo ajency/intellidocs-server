@@ -16,6 +16,7 @@
 // Initializers
 -(id)initWithPathAndDelegate:(NSString *)inUrl path:(NSString *)inPath delegate:(id<FileDownloadDelegate>)inDelegate
 {
+       
     if (self = [super init])
     {
         progress.status = idle;
@@ -23,10 +24,13 @@
         _url = [NSURL URLWithString:inUrl];
         delegate = inDelegate; 
         _outPath = [inPath retain];
+       
         if (_outPath == nil) {
             _outPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         }
         [_outPath retain];
+        
+        
         [self updateFileName];
         [self startDownload];
     }
@@ -59,7 +63,7 @@
 -(void) startDownload
 {
     NSLog(@"downloading %@", _fileName);
-
+    
     _request = [ASIHTTPRequest requestWithURL:_url];
     [_request setAllowResumeForFileDownloads:YES];
     [_request setDownloadDestinationPath:_filePath];

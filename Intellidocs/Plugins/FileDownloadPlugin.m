@@ -30,7 +30,7 @@
     NSString* url = [arguments objectAtIndex:3];
     
     NSString* outPath = nil;
-    
+   
     if(argc > 4) {
 		outPath = [arguments objectAtIndex:4];	
 	}
@@ -41,7 +41,8 @@
 	delegate.failCallback = failCallback;
 	delegate.progressCallback = progressCallback;
     
-    [[FileDownload alloc]initWithDelegate:url delegate:delegate];
+    //[[FileDownload alloc]initWithDelegate:url delegate:delegate];
+    [[FileDownload alloc]initWithPath:url path:outPath];
 }
 
 @end

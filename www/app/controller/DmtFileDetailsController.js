@@ -298,9 +298,9 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                 var structure = Ext.getCmp('dmtFileFolder')._value;
                 
                 
-                IntelliDocs.dmtCreateDirectories(structure); 
+                IntelliDocs.dmtCreateDirectories(structure);
                 
-                        
+                
                  //trigger the file download plugin
                 window.plugins.Download.start(file_url,
                                             function(){
