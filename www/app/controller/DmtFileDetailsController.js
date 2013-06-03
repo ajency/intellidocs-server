@@ -12,18 +12,17 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
            dmtDetailsPanelFolderDeleteFilesButton : 'button[action=dmtDetailsPanelFolderDeleteFilesButton]'           
         },
         control: {
-			dmtDetailsPanelDownloadButton:
-			{
+           dmtDetailsPanelDownloadButton:
+           {
 				tap:'dmtDetailsPanelDownloadButtonTap'
            },
            dmtDetailsPanelOpenButton:
            {
                 tap:'dmtDetailsPanelOpenButtonTap'
            },
-           //Add folder download tap event.
            dmtDetailsPanelFolderDownloadButton:
            {
-           tap:'dmtDetailsPanelFolderDownloadButtonTap'
+                tap:'dmtDetailsPanelFolderDownloadButtonTap'
            },
            dmtDetailsPanelDeleteButton:
        	   {
@@ -41,78 +40,58 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelSubFolderDownloadButtonTap:function(button)
     {
-        if(navigator.onLine)
+        if(Ext.device.Connection.isOnline())
         {
            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
-           if(global_current_download_folder_id == 0)
-           {
-           
-                Ext.Msg.confirm('','Download all files in sub folder also? This action might take long time.',
+           Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
                            var progress_bar_panel_config_folder = 
                            {
-                           id:'dmt-download-progress-folder',   
-                           minHeight:300,
-                           minWidth: 200,
-                           hideOnMaskTap:false,
-                           modal:true,
-                           centered:true,
-                           layout:
-                           {
-                           type:'vbox',
-                           pack:'center',
-                           align:'center',
-                           },
-                           items:
-                           [{
-                            xtype:'titlebar',
-                            docked:'top',
-                            title:'Downloading File'
+                            id:'dmt-download-progress-folder',   
+                            minHeight:300,
+                            minWidth: 200,
+                            hideOnMaskTap:false,
+                            modal:true,
+                            centered:true,
+                            layout:
+                            {
+                                type:'vbox',
+                                pack:'center',
+                                align:'center',
+                            },
+                            items:
+                            [{
+                                xtype:'titlebar',
+                                docked:'top',
+                                title:'Downloading File'
                             },
                             {
-                            xtype:'panel',
-                            html:"Folder",
-                            id:'dmt-dolder-file-name' 
+                                xtype:'panel',
+                                html:"Folder",
+                                id:'dmt-dolder-file-name'
                             },
                             {
-                            xtype:'panel',
-                            html:'<div id="loading-container">'+
-                            '<div id="loading-box">'+
-                            '<div id="loading-bar">'+
-                            '<div id="dmt-folder-file-percentage"></div>'+
-                            '</div>'+
-                            '</div>'+
-                            '</div>',										
+                                xtype:'panel',
+                                html:'<div id="loading-container">'+
+                                    '<div id="loading-box">'+
+                                    '<div id="loading-bar">'+
+                                    '<div id="dmt-folder-file-percentage"></div>'+
+                                    '</div>'+
+                                    '</div>'+
+                                    '</div>',										
                             }]
                            } 
                            
                            Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config_folder)).show({type:'pop',duration:250,easing:'ease-out'});	
+                           IntelliDocs.updateAllFolders(); 
                            
-                           var request = new XMLHttpRequest();
-                           request.open("GET", "file://"+ root_file_path.substr(0,root_file_path.length - 11) + "dir_list.js", true);
-                           request.onreadystatechange = function(){
-                           if (request.readyState == 4) {
-                           if (request.status == 200 || request.status == 0) {
-                           IntelliDocs.loop_json( eval(request.responseText) , folder_id , true);
-                           }
-                           }
-                           }
-                           request.send();            
                            }
                            else
                            {}
-                           });
-                }
-                else if(global_current_download_folder_id = folder_id)
-                {
-                    Ext.Msg.alert('Please Wait','Currently downloading files from this directory');
-                }
-                else{
-                    Ext.Msg.alert('Please Wait','Until current download ends');
-                }
+                        });
            }
            else
            {
@@ -187,12 +166,9 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     {
         if(navigator.onLine)
         {
-           var folder_id = Ext.getCmp('dmtFileFolderId')._value;
+            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
-           if(global_current_download_folder_id == 0)
-           {
-               
-                Ext.Msg.confirm('','Download all files in current folder?',
+            Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
@@ -235,29 +211,9 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 
                                 Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config_folder)).show({type:'pop',duration:250,easing:'ease-out'});	
                                 
-                                var request = new XMLHttpRequest();
-                                request.open("GET", "file://"+ root_file_path.substr(0,root_file_path.length - 11) + "dir_list.js", true);
-                                request.onreadystatechange = function(){
-                                    if (request.readyState == 4) {
-                                        if (request.status == 200 || request.status == 0) {
-                                            IntelliDocs.loop_json(eval(request.responseText),folder_id);
-                                        }
-                                    }
-                                }
-                                request.send();            
+                                IntelliDocs.updateFolder(folder_id);
                            }
-                           else
-                           {}
-                           });
-           }
-           else if(global_current_download_folder_id = folder_id)
-           {
-               Ext.Msg.alert('Please Wait','Currently downloading files from this directory');
-           }
-           else{
-               Ext.Msg.alert('Please Wait','Until current download ends');
-           }
-           
+                });
         }
         else
         {

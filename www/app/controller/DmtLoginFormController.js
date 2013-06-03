@@ -55,7 +55,6 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		               
 		                var createDelay = Ext.create('Ext.util.DelayedTask', function() {
 		                                        
-		                                        console.log('Delayed task execution.!!!');
 		                                        
 		                                        if(Ext.getCmp('dmt-tabs-panel'))
 		                                        Ext.getCmp('dmt-tabs-panel').destroy();
@@ -83,8 +82,7 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 	    	}
 	   		else
 	    	{
-	    		console.log("Online");
-	            Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
+	    		Ext.Viewport.setMasked({xtype: 'loadmask',message: 'Logging In..'});
 	           
 	            Ext.Ajax.request({
 	                            url: global_https + '/wp-content/plugins/aj-file-manager-system/includes/ajax_user_authenticate.php',

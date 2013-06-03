@@ -3,8 +3,7 @@ Ext.define('DMTApp.model.DmtFolderStructureModel', {
            
            config: {
            
-           fields: [
-                    {name: 'items', type: 'auto'},
+           fields: [{name: 'items', type: 'auto'},
                     {name:'f_name', type:'string'},
                     {name:'f_type', type:'string'},
                     {name:'f_ext', type:'auto'},
@@ -16,10 +15,10 @@ Ext.define('DMTApp.model.DmtFolderStructureModel', {
                     {name:'f_solicitor', type:'auto'},
                     {name:'f_item_id', type:'int'},
                     {name:'f_file_count',type :'int'},
-                    {name:'fld_item_id',type: 'auto'},
-                    {name:'f_sub_fld_count',type: 'int'},
-                    {name:'f_folders',type:'auto'}
-                    ],
+                    {name:'fld_item_id',type :'int'},
+                    {name:'f_sub_fld_count',type:'int'},
+                    {name:'f_folders',type:'auto'},
+                    {name:'f_parent',type:'auto'}]
            
            }
 });

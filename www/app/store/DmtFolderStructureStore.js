@@ -1,6 +1,6 @@
 Ext.define("DMTApp.store.DmtFolderStructureStore", {
-	extend: "Ext.data.TreeStore",
-	requires:['Ext.data.proxy.JsonP'],
+	extend: "Ext.data.Store",
+	requires:['Ext.data.proxy.Memory'],
     name: 'nisheed',
     config: {
 		autoLoad:false,
@@ -24,15 +24,13 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
          
 				        
         ],
-		proxy:{
-            url: root_file_path.substr(0,root_file_path.length - 12) + '/dir_list.js',
-            type:'ajax',
-            reader:
-            {
+        proxy:{
+           type:'memory',
+           reader:
+           {
                 type:'json',
                 rootProperty:'items'
-            },			
-				
+           },
         },
 		listeners:
 		{
