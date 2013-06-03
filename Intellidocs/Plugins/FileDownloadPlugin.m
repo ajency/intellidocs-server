@@ -42,7 +42,8 @@
 	delegate.progressCallback = progressCallback;
     
     //[[FileDownload alloc]initWithDelegate:url delegate:delegate];
-    [[FileDownload alloc]initWithPath:url path:outPath];
+    //[[FileDownload alloc]initWithPath:url path:outPath];
+    [[FileDownload alloc]initWithPathAndDelegate:url path:outPath delegate:delegate];
 }
 
 @end

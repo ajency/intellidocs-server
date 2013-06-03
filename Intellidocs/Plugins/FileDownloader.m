@@ -96,6 +96,7 @@
 -(void) updateProgress
 {
     if (delegate) {
+       
         dispatch_async(dispatch_get_main_queue(), ^{
             [delegate updateProgress:progress];
         });

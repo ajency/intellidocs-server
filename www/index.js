@@ -10263,6 +10263,7 @@ IntelliDocs.downloadFile = function(record)
                                       },
                                       function(info){
                                         var percent = Math.round(info.progress * 100);
+                                        console.log(percent);
                                         document.getElementById('percentage').innerHTML = percent + '%';
                                       },
                                       root_file_path + '/' + structure);

@@ -40,9 +40,8 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     },
     dmtDetailsPanelSubFolderDownloadButtonTap:function(button)
     {
-        if(Ext.device.Connection.isOnline())
+        if(navigator.onLine)
         {
-           var folder_id = Ext.getCmp('dmtFileFolderId')._value;
            
            Ext.Msg.confirm('','Download all documents from your IntelliDocs server? This action might take long time.',
                            function(buttonId){
