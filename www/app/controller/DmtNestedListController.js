@@ -50,7 +50,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            //we have all data in db. trigger db here
            db.transaction(function(tx){
                           
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id='"+button.current_f_id.f_parent+"'",[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id="+button.current_f_id.f_parent,[],
                                         function(tx,results){
                                         if(results.rows.length == 0)
                                         {
@@ -89,7 +89,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         });	
                           
                           
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+f_id+"'",[], 
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id,[], 
                                         function(tx, results){
                                         var len = results.rows.length;
                                         var f_data = [];
@@ -364,8 +364,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	//When the nested list is initialized add sorter panel
 	dmtNestedListInitialize:function(list)
 	{
-           
-           
            var _this = this;
            //list.setStore('DmtFolderStructureStore');
            //Add the sorting panel to the nested list
@@ -375,51 +373,30 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            if(Ext.getCmp('dmt-nested-list-back-button'))
            Ext.getCmp('dmt-nested-list-back-button').hide();
            
-           Ext.getCmp('dmt-nested-list').mask();
+           //Ext.getCmp('dmt-nested-list').mask();
            var str = Ext.getStore('DmtFolderStructureStore');
            list.setStore(str);
+           
+           db.transaction(function(tx){
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+                                        function(tx, results){
+                                        if(results.rows.length > 0)
+                                        {
+                                            console.log("Load Previous");
+                                            sqlLoadComplete();
+                                        }
+                                        else
+                                        {
+                                            console.log("Load New Data");
+                                            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+                                        }
+                                        },function(err){});
+                          });
            
            //Reload the store to enable re-initialization
            //Ext.getStore('DmtFolderStructureStore').load();
            //we have all data in db. trigger db here
-           db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='0'",[],
-                                        function(tx, results){
-                                        var len = results.rows.length;
-                                        var f_data = [];
-                                        for (var i=0; i<len; i++)
-                                        {
-                                        f_data.push({
-                                                    items	: [],
-                                                    f_id   	: results.rows.item(i).f_id,
-                                                    f_name 	: results.rows.item(i).f_name,
-                                                    f_type	: results.rows.item(i).f_type,
-                                                    f_ext	: results.rows.item(i).f_ext,
-                                                    f_attachment	: results.rows.item(i).f_attachment,
-                                                    f_modified		: results.rows.item(i).f_modified,
-                                                    f_folder		: results.rows.item(i).f_folder,
-                                                    f_description 	: results.rows.item(i).f_description,
-                                                    f_solicitor		: results.rows.item(i).f_solicitor,
-                                                    f_item_id		: '',
-                                                    f_file_count	: results.rows.item(i).f_file_count,
-                                                    f_parent		: results.rows.item(i).f_parent,
-                                                    fld_item_id		: results.rows.item(i).f_fld_item_id,
-                                                    f_sub_fld_count	: results.rows.item(i).f_folder_count,
-                                                    f_folders		: []
-                                                    
-                                                    });
-                                        }
-                                        //Ext.getStore('DmtFolderStructureStore').setData(f_data);
-                                        str.setData({'items' : f_data});
-                                        //store.setProxy({data:{'items' : f_data}});
-                                        //
-                                        Ext.getCmp('dmt-nested-list').unmask();
-                                        }, 
-                                        function(err){
-                                            console.log("Error fetching data");
-                                            Ext.getCmp('dmt-nested-list').unmask();
-                                        });
-                          });
+           
           
 		//Add the user_name param to the polling function
 		var base_params ={
@@ -476,14 +453,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         if(record.getData().f_type === 'folder')
         {
            
-           //this.getDmtDetailsPanel().mask({xtype:'loadmask',message:'Loading...'});
-          
+           console.log(record.getData().f_id);
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+record.getData().f_id+"'",[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id,[],
                                         function(tx, results){
-                                        
-                                        
-                                        
+
                                         var len = results.rows.length;
                                         var f_data = [];
                                         for (var i=0; i<len; i++)
