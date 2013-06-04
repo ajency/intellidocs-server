@@ -28,8 +28,8 @@ var global_init_launch = true;
 var global_app_version = 'Version: 1.2.5';
    
 //global https
-var global_https = "https://www.intellidocs.net";
-//var global_https = "https://www.press-port.com";
+//var global_https = "https://www.intellidocs.net";
+var global_https = "https://www.press-port.com";
 
 var db = {};
 
@@ -50,14 +50,19 @@ var db = {};
 document.addEventListener('deviceready',function(){
     
 	//instantiate the DB
-	db = window.openDatabase('intellidocs1', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
-	db.transaction(function (tx) {
-   		
-   		tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
-   			
-	}, function(){
-   	 	IntelliDocs.refillSQLData(loop_data);
-    }, function(){});
+	//instantiate the DB
+    db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+    db.transaction(function (tx) {
+                   //tx.executeSql('DROP TABLE intellidocs_folders');
+                   
+                   tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
+                   
+                   tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_files_parent( id , u_id, f_parent_id)');
+                   
+                   
+                   }, function(){
+                      
+                   }, function(){});
 	
 	//IntelliDocs.refillSQLData(loop_data);
 	
@@ -122,44 +127,109 @@ document.addEventListener('deviceready',function(){
 var random = 100;
 IntelliDocs.refillSQLData = function(loop)
 {
-	db.transaction(function (tx) {
-	//make all entries
-		for(var key in loop)
-	    {
-	        if(loop.hasOwnProperty(key))
-	        {                        
-	            if(key == 'items')
-	            {
-	                var obj = loop[key];
-	                if(obj.length > 0)
-	                {
-	                    for(var i=0; i < obj.length; i++)
-	                    {
-	                        var d = obj[i];
-	                        
-	                        if(d['f_type'] == 'folder' && d['items'].length > 0)
-	                        {
-	                            
-	                            	tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-	                                                                            [random, d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none',          d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0,       d['f_parent']]);
-	                                                        
-	                            	random++;
-	                            	IntelliDocs.refillSQLData(d);
-	                        }
-	                        else if(d['leaf'] === true)
-	                        {
-	                            	tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
-	                                                                                [random, d['f_id'], 'none',         d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0,            0,              1,       d['f_parent']]);
-	                            	random++;
-	                        }
-	                    }	
-	                }
-		        }	
-		    }
-		}
-	}, function(){
-		random = 100;
-   }, function(){});
+	db.transaction(function(tx) {
+                   //make all entries
+                   for (var key in loop) {
+                   if (loop.hasOwnProperty(key)) {
+                   if (key == 'items') {
+                        var obj = loop[key];
+                        if (obj.length > 0) {
+                            for (var i = 0; i < obj.length; i++) {
+                                var d = obj[i];
+                   
+                                if (d['f_type'] == 'folder')
+                                {
+                                    tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                                    [d['u_id'], d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none', d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0, d['f_parent']],
+                                                  function(){
+                                 
+                                                  },
+                                                  function(err){
+                                                        console.log("error");
+                                                  });
+                                random++;
+                                IntelliDocs.refillSQLData(d);
+                        }
+                        else if (d['leaf'] === true)
+                        {
+                            random++;    
+                            tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [d['u_id'], d['f_id'], 0,              d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
+                                 function(){
+                                 
+                                 },
+                                 function(err){
+                                          console.log("error");
+                                 });
+                   
+                            fr(d,tx);
+                        }
+                    }
+                }
+            }
+            else if (key == 'session') 
+            {
+                //done.
+                random = 100;
+                Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
+                sqlLoadComplete();
+            }
+            
+        }
+        }
+    }, function() {
+        
+    }, function() {});
+}
+
+function fr(f,tx)
+{
+    for (var p = 0; p < f['f_parent'].length; p++) {
+        tx.executeSql('INSERT INTO intellidocs_files_parent (id, u_id, f_parent_id) VALUES (?,?,?)', [random++, f['u_id'], f['f_parent'][p]]);
+    }
+}
+
+
+function sqlLoadComplete()
+{
+   
+    var str = Ext.getStore('DmtFolderStructureStore');
+    db.transaction(function(tx){
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+                                 function(tx, results){
+                                 var len = results.rows.length;
+                                 
+                                 var f_data = [];
+                                 for (var i=0; i<len; i++)
+                                 {
+                                    f_data.push({
+                                             items	: [],
+                                             f_id   	: results.rows.item(i).f_id,
+                                             f_name 	: results.rows.item(i).f_name,
+                                             f_type	: results.rows.item(i).f_type,
+                                             f_ext	: results.rows.item(i).f_ext,
+                                             f_attachment	: results.rows.item(i).f_attachment,
+                                             f_modified		: results.rows.item(i).f_modified,
+                                             f_folder		: results.rows.item(i).f_folder,
+                                             f_description 	: results.rows.item(i).f_description,
+                                             f_solicitor		: results.rows.item(i).f_solicitor,
+                                             f_item_id		: '',
+                                             f_file_count	: results.rows.item(i).f_file_count,
+                                             f_parent		: results.rows.item(i).f_parent,
+                                             fld_item_id		: results.rows.item(i).f_fld_item_id,
+                                             f_sub_fld_count	: results.rows.item(i).f_folder_count,
+                                             f_folders		: []
+                                             
+                                             });
+                                 }
+                                 str.setData({'items' : f_data});
+                                 Ext.getCmp('dmt-nested-list').unmask();
+                            },
+                            function(err){
+                                    console.log("Error fetching data");
+                                    Ext.getCmp('dmt-nested-list').unmask();
+                            });
+                   });
 }
 	
 
@@ -613,19 +683,22 @@ IntelliDocs.fileSystemSuccessCallbck = function(fileSystem){
  * is_not_offline = check to remove masking
  * user_name      = the username to get directory structure for 
  */
-IntelliDocs.write_json = function(is_not_offline,user_name){
+IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
+    
     var ajax = new XMLHttpRequest();
-    ajax.open("GET", global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_request.php?user_name="+user_name,true);
-    ajax.send();
     
     ajax.onreadystatechange = function()
     {
-    	if(ajax.readyState == 4)
-        {
+        if(ajax.readyState == 4)
+        {    
+            
             if(ajax.status == 200)
             {
+                
                 var data_to_write = ajax.responseText;
                 var session_data = eval(data_to_write);
+                
+                
                 //check for session here. If vaLID WRITE. else redirect to login
                 if(!session_data.session)
                 {
@@ -633,40 +706,31 @@ IntelliDocs.write_json = function(is_not_offline,user_name){
                 }
                 else
                 {
-		            //got the file data. get the dir_list.js file. 
-		            fileSystemRoot.getFile(	root_file_path+"/dir_list.js", 
-           							{create: true},
-           							function(fileEntry) {
-                                   		// Create a FileWriter object for our FileEntry.
-                                   		fileEntry.createWriter(function(fileWriter) {
-                                               	fileWriter.onwrite = function(e) {
-                                        	   	console.log('JS file Write completed.');
-                                            	//set global app launch to false
-                                                DMTApp.launched = false;
-                                            	
-                                            	if(global_init_launch)
-                                            		global_init_launch = false;
-                                            	
-                                                if(is_not_offline)
-                                                {
-     		                                    	Ext.getStore('DmtFolderStructureStore').load();
-                                                    Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
-                                                    Ext.getCmp('dmt-nested-list').unmask(); 
-                                                 }               
-                                           };                              
-                                           fileWriter.write(data_to_write);
-                                    	},
-                                    	function(e){console.log('Error' + e.code);});
-                                   },function(e){console.log('Error' + e.code);});
+                    //clear previous table data
+                    db.transaction(function (tx) {
+                                   
+                                    tx.executeSql('DELETE FROM intellidocs_folders');
+                                   
+                                    tx.executeSql('DELETE FROM intellidocs_files_parent');
+                                   
+                                   },
+                                   function(){},
+                                   function(){});
+                    Ext.getCmp('dmt-nested-list').unmask();
+                    IntelliDocs.refillSQLData(session_data);
                 }
-            } 
+            }
             else
             {
                 Ext.getCmp('dmt-nested-list').unmask();
                 Ext.Msg.alert('','Failed to read data from server. Please try again');
             }
-        };              
-    }
+        }
+    };
+    
+    ajax.open("GET",global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_request.php?user_name="+user_name,true);
+    ajax.send();
+    
 }
 
 
@@ -921,47 +985,42 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
  * category_id = objec to search for
  * function
  */
-IntelliDocs.updateFolder = function(category_id)
+IntelliDocs.updateFolder = function(category_name)
 {
-	
+    
 	db.transaction(function (tx) {
-		
-		tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id='"+ category_id +"'", [], function(tx,res){
-   			
-			IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder); 
-			tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent='"+ category_id +"'", [], function(tx,results){
-	   			
-				var len = results.rows.length;
-	   		  
-	   		    for (var i=0; i<len; i++)
-	   		    {
-	   		    	global_queued_file_urls.push({
-	                	   url : results.rows.item(i).f_attachment,
-	                	   path: results.rows.item(i).f_folder});
-	   		    }
-	   		    
-		   		if(global_queued_file_urls.length > 0)
-		   	    {
-		   	        //trigger the bulk file download 
-		   	        IntelliDocs.download_queued_file(global_queued_file_urls[0]);
-		   	    }
-		   	    else{
-		   	        global_queued_file_urls = [];
-		   	        global_queued_file_download_complete_count = 0;
-		   	        global_current_download_folder_id = 0;
-		   	    }
-			},
-	   		function(err){
-				console.log( "Error processing SQL: " + err.code );
-	   		});
-		},
-   		function(err){
-			console.log( "Error processing SQL: " + err.code );
-   		});
 
-	}, 
-	function(){},
-	function(){});
+                   IntelliDocs.dmtCreateDirectories(category_name);
+                   
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'", [], function(tx,results){
+                                               
+                                               var len = results.rows.length;
+                                               
+                                               for (var i=0; i<len; i++)
+                                               {
+                                                    global_queued_file_urls.push({
+                                                                            url : results.rows.item(i).f_attachment,
+                                                                            path: results.rows.item(i).f_folder});
+                                                }
+                                               
+                                               if(global_queued_file_urls.length > 0)
+                                               {
+                                                    //trigger the bulk file download
+                                                    IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+                                               }
+                                               else{
+                                                    global_queued_file_urls = [];
+                                                    global_queued_file_download_complete_count = 0;
+                                                    global_current_download_folder_id = 0;
+                                               }
+                                               },
+                                               function(err){
+                                                    console.log( "Error processing SQL: " + err.code );
+                                               });
+                                 },
+                                 function(err){
+                                    console.log( "Error processing SQL: " + err.code );
+                                 });
 }
 
 /**
@@ -972,50 +1031,50 @@ IntelliDocs.updateFolder = function(category_id)
  */
 IntelliDocs.updateAllFolders = function()
 {
-	
+    
 	db.transaction(function (tx) {
-		
-		tx.executeSql("SELECT DISTINCT(f_folder) FROM intellidocs_folders", [], function(tx,res){
-   			
-			var len = res.rows.length;
-			for (var i=0; i<len; i++)
-			{
-				IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
-			}
-			
-			tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type='file'", [], function(tx,results){
-	   			
-				var len = results.rows.length;
-	   		  
-	   		    for (var i=0; i<len; i++)
-	   		    {
-	   		    	global_queued_file_urls.push({
-	                	   url : results.rows.item(i).f_attachment,
-	                	   path: results.rows.item(i).f_folder});
-	   		    }
-	   		    
-		   		if(global_queued_file_urls.length > 0)
-		   	    {
-		   	        //trigger the bulk file download 
-		   	        IntelliDocs.download_queued_file(global_queued_file_urls[0]);
-		   	    }
-		   	    else{
-		   	        global_queued_file_urls = [];
-		   	        global_queued_file_download_complete_count = 0;
-		   	        global_current_download_folder_id = 0;
-		   	    }
-			},
-	   		function(err){
-				console.log("Error processing SQL: "+err.code);
-	   		});
-		},
-   		function(err){
-			console.log("Error processing SQL: "+err.code);
-   		});
-
-	}, 
-	function(){},
-	function(){});
+                   
+                   tx.executeSql("SELECT DISTINCT(f_folder) FROM intellidocs_folders", [], function(tx,res){
+                                 
+                                 var len = res.rows.length;
+                                 for (var i=0; i<len; i++)
+                                 {
+                                    IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
+                                 }
+                                 
+                                 tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type='file'", [], function(tx,results){
+                                               
+                                               var len = results.rows.length;
+                                               
+                                               for (var i=0; i<len; i++)
+                                               {
+                                               global_queued_file_urls.push({
+                                                                            url : results.rows.item(i).f_attachment,
+                                                                            path: results.rows.item(i).f_folder});
+                                               }
+                                               
+                                               if(global_queued_file_urls.length > 0)
+                                               {
+                                               //trigger the bulk file download 
+                                               IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+                                               }
+                                               else{
+                                               global_queued_file_urls = [];
+                                               global_queued_file_download_complete_count = 0;
+                                               global_current_download_folder_id = 0;
+                                               }
+                                               },
+                                               function(err){
+                                               console.log("Error processing SQL: "+err.code);
+                                               });
+                                 },
+                                 function(err){
+                                 console.log("Error processing SQL: "+err.code);
+                                 });
+                   
+                   }, 
+                   function(){},
+                   function(){});
 }
 
 /**

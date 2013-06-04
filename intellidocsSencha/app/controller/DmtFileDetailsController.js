@@ -133,12 +133,12 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     {
         if(Ext.device.Connection.isOnline())
         {
-           var folder_id = Ext.getCmp('dmtFileFolderId')._value;
-           Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
+        	var folder_name = Ext.getCmp('dmtFileFolderPath')._value;
+        	Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
                            {
-                        	   IntelliDocs.updateFolder(folder_id);
+                        	   IntelliDocs.updateFolder(folder_name);
                            }
                            else
                            {}

@@ -34,97 +34,118 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         }
     },
     dmtBackButtonAction:function(button){
-    	
-    	var _this = this;
-    	var f_id = button.current_f_id.f_parent;
-    	
-   
-    	if(f_id == 0) Ext.getCmp('dmt-nested-list-back-button').hide();
-    	
-		if(Ext.getCmp('dmt-details-view-card'))
-			Ext.getCmp('dmt-details-view-card').destroy();
-		
-		
-
-    	//Reload the store to enable re-initialization
-    	var str = button.getParent().getParent().getParent().getStore();
-    	
-    	//we have all data in db. trigger db here
-		db.transaction(function(tx){
-			
-			tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id='"+button.current_f_id.f_parent+"'",[],
-					function(tx,results){
-						if(results.rows.length == 0)
-						{
-							Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
-							return;
-						}	
-						var i = 0; 
-						var record = Ext.create('DMTApp.model.DmtFolderStructureModel',{
-			        		items	: [],
-			        		f_id   	: results.rows.item(i).f_id,
-			        		f_name 	: results.rows.item(i).f_name,
-			        		f_type	: results.rows.item(i).f_type,
-			        		f_ext	: results.rows.item(i).f_ext,
-			        		f_attachment	: results.rows.item(i).f_attachment,
-			        		f_modified		: results.rows.item(i).f_modified,
-			        		f_folder		: results.rows.item(i).f_folder,
-			        		f_description 	: results.rows.item(i).f_description,
-			        		f_solicitor		: results.rows.item(i).f_solicitor,
-			        		f_item_id		: '',
-			        		f_file_count	: results.rows.item(i).f_file_count,
-			        		f_parent		: results.rows.item(i).f_parent,
-			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
-			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
-			        		f_folders		: []
-					})
-					
-					_this.dmtDetailsPanelChange(record,null);
-   				
-						
-					if(f_id > 0) 
-						Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
-					else
-						Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
-					
-					Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {f_id : record.getData().f_id, f_parent : record.getData().f_parent};
-				});	
-			
-			
-  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+f_id+"'",[], 
-  				   function(tx, results){
-  			   				var len = results.rows.length;
-  			   				var f_data = [];
-  			   				for (var i=0; i<len; i++)
-  			   				{
- 	        			        f_data.push({
- 	        			        		items	: [],
- 	        			        		f_id   	: results.rows.item(i).f_id,
- 	        			        		f_name 	: results.rows.item(i).f_name,
- 	        			        		f_type	: results.rows.item(i).f_type,
- 	        			        		f_ext	: results.rows.item(i).f_ext,
- 	        			        		f_attachment	: results.rows.item(i).f_attachment,
- 	        			        		f_modified		: results.rows.item(i).f_modified,
- 	        			        		f_folder		: results.rows.item(i).f_folder,
- 	        			        		f_description 	: results.rows.item(i).f_description,
- 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
- 	        			        		f_item_id		: '',
- 	        			        		f_file_count	: results.rows.item(i).f_file_count,
- 	        			        		f_parent		: results.rows.item(i).f_parent,
- 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
- 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
- 	        			        		f_folders		: []
- 	        			        	
- 	        			        });
- 	        			    }
-  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
-  			   				str.setData({'items' : f_data});
-
-  		   				}, 
- 	        		   function(err){
- 	        			   console.log("Error fetching data");
- 	        		   });
-  	    });
+        
+        var _this = this;
+        var f_id = button.current_f_id.f_parent;
+        var f_folder = button.current_f_id.f_folder;
+        
+        if(f_id == 0) Ext.getCmp('dmt-nested-list-back-button').hide();
+        
+        if(Ext.getCmp('dmt-details-view-card'))
+         Ext.getCmp('dmt-details-view-card').destroy();
+        
+         //Reload the store to enable re-initialization
+        var str = button.getParent().getParent().getParent().getStore();
+        
+        var record = {};
+        //we have all data in db. trigger db here
+        db.transaction(function(tx){
+                       tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id="+button.current_f_id.f_parent,[],
+                                     function(tx,results){
+                                     if(results.rows.length == 0)
+                                     {
+                                         Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
+                                         return;
+                                     }
+                                     
+                                    
+                                     var i = 0;
+                                     record = Ext.create('DMTApp.model.DmtFolderStructureModel',{
+                                                             items	: [],
+                                                             f_id   	: results.rows.item(i).f_id,
+                                                             f_name 	: results.rows.item(i).f_name,
+                                                             f_type	: results.rows.item(i).f_type,
+                                                             f_ext	: results.rows.item(i).f_ext,
+                                                             f_attachment	: results.rows.item(i).f_attachment,
+                                                             f_modified		: results.rows.item(i).f_modified,
+                                                             f_folder		: results.rows.item(i).f_folder,
+                                                             f_description 	: results.rows.item(i).f_description,
+                                                             f_solicitor		: results.rows.item(i).f_solicitor,
+                                                             f_item_id		: '',
+                                                             f_file_count	: results.rows.item(i).f_file_count,
+                                                             f_parent		: results.rows.item(i).f_parent,
+                                                             fld_item_id		: results.rows.item(i).f_fld_item_id,
+                                                             f_sub_fld_count	: results.rows.item(i).f_folder_count,
+                                                             f_folders		: []
+                                                             })
+                                     
+                                     _this.dmtDetailsPanelChange(record,null);
+                                     
+                                     
+                                     if(f_id > 0)
+                                         Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
+                                     else
+                                         Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
+                                     
+                                     if(record.getData().f_parent != 0)
+                                     {
+                                         tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                                   function(tx,results)
+                                                   {
+                                                   Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
+                                                     f_id : record.getData().f_id,
+                                                     f_parent : record.getData().f_parent,
+                                                     f_folder : results.rows.item(0).f_folder
+                                                   };
+                                             });
+                                     }
+                                     else
+                                     {
+                                             Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
+                                                     f_id : record.getData().f_id,
+                                                     f_parent : record.getData().f_parent,
+                                                     f_folder : ''
+                                                 }
+                                     }
+                                     
+                                 });
+                       
+                       var sql = (f_id === 0 ) ? "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent=0)" :
+                                                 "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_folder+"' AND f_type != 'folder')";
+                       tx.executeSql(sql,[],
+                                     function(tx, results){
+                                     var len = results.rows.length;
+                                     var f_data = [];
+                                     for (var i=0; i<len; i++)
+                                     {
+                                         f_data.push({
+                                                 items	: [],
+                                                 f_id   	: results.rows.item(i).f_id,
+                                                 f_name 	: results.rows.item(i).f_name,
+                                                 f_type	: results.rows.item(i).f_type,
+                                                 f_ext	: results.rows.item(i).f_ext,
+                                                 f_attachment	: results.rows.item(i).f_attachment,
+                                                 f_modified		: results.rows.item(i).f_modified,
+                                                 f_folder		: results.rows.item(i).f_folder,
+                                                 f_description 	: results.rows.item(i).f_description,
+                                                 f_solicitor		: results.rows.item(i).f_solicitor,
+                                                 f_item_id		: '',
+                                                 f_file_count	: results.rows.item(i).f_file_count,
+                                                 f_parent		: results.rows.item(i).f_parent,
+                                                 fld_item_id		: results.rows.item(i).f_fld_item_id,
+                                                 f_sub_fld_count	: results.rows.item(i).f_folder_count,
+                                                 f_folders		: []
+                                                 });
+                                     }
+                                     //Ext.getStore('DmtFolderStructureStore').setData(f_data);
+                                     str.setData({'items' : f_data});
+                                     
+                                     },
+                                     function(err){
+                                     console.log("Error fetching data");
+                                     });
+                       
+                       });
     },
     dmtNestedListChange:function( _this,list,eOpts )
     {
@@ -542,45 +563,23 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		//Reload the store to enable re-initialization
 		//Ext.getStore('DmtFolderStructureStore').load();
 		//we have all data in db. trigger db here
+
 		db.transaction(function(tx){
-  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='0'",[], 
-  				   function(tx, results){
-  			   				var len = results.rows.length;
-  			   				var f_data = [];
-  			   				for (var i=0; i<len; i++)
-  			   				{
- 	        			        f_data.push({
- 	        			        		items	: [],
- 	        			        		f_id   	: results.rows.item(i).f_id,
- 	        			        		f_name 	: results.rows.item(i).f_name,
- 	        			        		f_type	: results.rows.item(i).f_type,
- 	        			        		f_ext	: results.rows.item(i).f_ext,
- 	        			        		f_attachment	: results.rows.item(i).f_attachment,
- 	        			        		f_modified		: results.rows.item(i).f_modified,
- 	        			        		f_folder		: results.rows.item(i).f_folder,
- 	        			        		f_description 	: results.rows.item(i).f_description,
- 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
- 	        			        		f_item_id		: '',
- 	        			        		f_file_count	: results.rows.item(i).f_file_count,
- 	        			        		f_parent		: results.rows.item(i).f_parent,
- 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
- 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
- 	        			        		f_folders		: []
- 	        			        	
- 	        			        });
- 	        			    }
-  			   				//Ext.getStore('DmtFolderStructureStore').setData(f_data);
-  			   				str.setData({'items' : f_data});
-  			   				//store.setProxy({data:{'items' : f_data}});
-      			   			//
-                            Ext.getCmp('dmt-nested-list').unmask();
-  		   				}, 
- 	        		   function(err){
- 	        			   console.log("Error fetching data");
- 	        			   Ext.getCmp('dmt-nested-list').unmask();
- 	        		   });
-  	    });
-		console.log('List Store loaded');
+            tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+                          function(tx, results){
+                          if(results.rows.length > 0)
+                          {
+                              console.log("Load Previous");
+                              sqlLoadComplete();
+                          }
+                          else
+                          {
+                              console.log("Load New Data");
+                              Ext.getCmp('dmt-nested-list-refresh-button').fireAction('tap');
+                              //IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+                          	}
+                          },function(err){});
+            });
 		//Ext.getStore('DmtFolderStructureStore').load();
 	
 		//Add the user_name param to the polling function
@@ -631,95 +630,116 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.direct.Manager.addProvider(dmt_polling);        
     },
 	//When a  node is tapped on the nested list
-	dmtNestedListItemTap:function(list, index, target, record, e, eOpts)
-	{
-		 var _this = this;
-		/** check if record is leaf record */
-		if(record.getData().f_type === 'folder')
-		{
-			
-			this.getDmtDetailsPanel().mask({xtype:'loadmask',message:'Loading...'});
-			
-			db.transaction(function(tx){
-	  		   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+record.getData().f_id+"'",[], 
-	  				   function(tx, results){
-	  			   			console.log(record.getData().f_id);
-	  			   			
-  			   				var len = results.rows.length;
-  			   				var f_data = [];
-  			   				for (var i=0; i<len; i++)
-  			   				{
- 	        			        f_data.push({
- 	        			        		items	: [],
- 	        			        		f_id   	: results.rows.item(i).f_id,
- 	        			        		f_name 	: results.rows.item(i).f_name,
- 	        			        		f_type	: results.rows.item(i).f_type,
- 	        			        		f_ext	: results.rows.item(i).f_ext,
- 	        			        		f_attachment	: results.rows.item(i).f_attachment,
- 	        			        		f_modified		: results.rows.item(i).f_modified,
- 	        			        		f_folder		: results.rows.item(i).f_folder,
- 	        			        		f_description 	: results.rows.item(i).f_description,
- 	        			        		f_solicitor		: results.rows.item(i).f_solicitor,
- 	        			        		f_item_id		: '',
- 	        			        		f_file_count	: results.rows.item(i).f_file_count,
- 	        			        		f_parent		: results.rows.item(i).f_parent,
- 	        			        		fld_item_id		: results.rows.item(i).f_fld_item_id,
- 	        			        		f_sub_fld_count	: results.rows.item(i).f_folder_count,
- 	        			        		f_folders		: []
- 	        			        	
- 	        			        });
- 	        			    }
-  			   				
-  			   				Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
-  			   				Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {f_id : record.getData().f_id,f_parent : record.getData().f_parent};
-  			   				
-  			   				if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
-  			   				
-  			   				list.getStore().setData({'items' : f_data});
-  			   				_this.dmtDetailsPanelChange(record,null,false);
-	  		   });
-			});
-	   }
-	   else
-	   {
-	   	  var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
-		   
-	           if(record.getData().f_type == 'file')
-	           {
-	        	   _this.dmtDetailsPanelChange(record,null,true);
-	        	   //return;
-	        	   //check if file exists
-		           var file_name_url = record.getData().f_attachment;   
-		           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-		           var folder_path = record.getData().f_folder;
-		           
-		           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
-		                   {},
-		                   function(fileEntry){
-		                	   window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
-		                       _this.dmtDetailsPanelChange(record,null,true);
-		                   },
-		                   function(err){
-		                       Ext.Msg.confirm('','Download file?',
-		                                   function(buttonId){
-		                                       if(buttonId == 'yes')
-		                                       {
-		                                           IntelliDocs.downloadFile(record);
-		                                       }
-		                                   });
-		                       _this.dmtDetailsPanelChange(record,null,false);
-		             });
-	           }
-	           else
-	           {
-	               current_f_id = record.getData().f_id;
-	               _this.dmtDetailsPanelChange(record,null,false);
-	           }
-		  });
-		  
-		  createDetailsPanelDelayed.delay(100);
-	   }
-		
+    dmtNestedListItemTap:function(list, index, target, record, e, eOpts)
+    {
+        var _this = this;
+       
+        /** check if record is leaf record */
+        if(record.getData().f_type === 'folder')
+        {
+           
+           db.transaction(function(tx){
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+record.getData().f_id+") OR (f_folder='"+record.getData().f_folder+"' AND f_type != 'folder')",[],
+                                        function(tx, results){
+
+                                        var len = results.rows.length;
+                                        var f_data = [];
+                                        for (var i=0; i<len; i++)
+                                        {
+                                            f_data.push({
+                                                    items	: [],
+                                                    f_id   	: results.rows.item(i).f_id,
+                                                    f_name 	: results.rows.item(i).f_name,
+                                                    f_type	: results.rows.item(i).f_type,
+                                                    f_ext	: results.rows.item(i).f_ext,
+                                                    f_attachment	: results.rows.item(i).f_attachment,
+                                                    f_modified		: results.rows.item(i).f_modified,
+                                                    f_folder		: results.rows.item(i).f_folder,
+                                                    f_description 	: results.rows.item(i).f_description,
+                                                    f_solicitor		: results.rows.item(i).f_solicitor,
+                                                    f_item_id		: '',
+                                                    f_file_count	: results.rows.item(i).f_file_count,
+                                                    f_parent		: record.getData().f_id,
+                                                    fld_item_id		: results.rows.item(i).f_fld_item_id,
+                                                    f_sub_fld_count	: results.rows.item(i).f_folder_count,
+                                                    f_folders		: []
+                                                    
+                                                });
+                                        }
+                                        
+                                        Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
+                                        
+                                        if(record.getData().f_parent != 0)
+                                        {
+                                            tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                                      function(tx,results)
+                                                      {
+                                                        Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
+                                                                                                        f_id : record.getData().f_id,
+                                                                                                        f_parent : record.getData().f_parent,
+                                                                                                        f_folder : results.rows.item(0).f_folder
+                                                                                                  };
+                                                      });
+                                        }
+                                        else
+                                        {
+                                            Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
+                                                f_id : record.getData().f_id,
+                                                f_parent : record.getData().f_parent,
+                                                f_folder : ''
+                                            }
+                                        }
+                                        if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
+                                        
+                                        list.getStore().setData({'items' : f_data});
+                                        _this.dmtDetailsPanelChange(record,null,false);
+                                        },
+                                        function(err){
+                                            console.log("errr" + err.code);
+                                        });
+                 
+                          });
+           }
+           else
+           {
+                var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
+                                                      
+                                                      if(record.getData().f_type == 'file')
+                                                      {
+                                                      _this.dmtDetailsPanelChange(record,null,true);
+                                                      //return;
+                                                      //check if file exists
+                                                      var file_name_url = record.getData().f_attachment;   
+                                                      var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
+                                                      var folder_path = record.getData().f_folder;
+                                                      
+                                                      fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                                                                             {},
+                                                                             function(fileEntry){
+                                                                             window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
+                                                                             _this.dmtDetailsPanelChange(record,null,true);
+                                                                             },
+                                                                             function(err){
+                                                                             Ext.Msg.confirm('','Download file?',
+                                                                                             function(buttonId){
+                                                                                             if(buttonId == 'yes')
+                                                                                             {
+                                                                                             IntelliDocs.downloadFile(record);
+                                                                                             }
+                                                                                             });
+                                                                             _this.dmtDetailsPanelChange(record,null,false);
+                                                                             });
+                                                      }
+                                                      else
+                                                      {
+                                                      current_f_id = record.getData().f_id;
+                                                      _this.dmtDetailsPanelChange(record,null,false);
+                                                      }
+                                                      });
+           
+           createDetailsPanelDelayed.delay(100);
+        }
+           
     },
     //Checks if file exists or not
     dmtCheckFileExists: function(filename,record){
@@ -764,8 +784,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	{
         if(Ext.device.Connection.isOnline())
         {
+        	Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
-           Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
            var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
            nested_list_store.setSorters([
                                          {property:'fld_item_id',direction:'ASC'},
