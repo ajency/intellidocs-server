@@ -6,29 +6,26 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     config: {
         refs: {
 			 //Referencing the nested list by its xtype
-            dmtNestedList			  :'.dmtnestedfolderlist',
+            dmtNestedList               : '.dmtnestedfolderlist',
 			 //Used the button action to prevent conflict on reinitialization.
-			dmtNestedListRefreshButton:'button[action=dmtNestedListRefreshButton]',
-            dmtnestedlistbackbutton : 'button[action=dmtNestedListBackButton]'
+			dmtNestedListRefreshButton  : 'button[action=dmtNestedListRefreshButton]',
+            dmtnestedlistbackbutton     : 'button[action=dmtNestedListBackButton]'
         },
         control: {
             dmtNestedList:
 			{
-                itemtap		:'dmtNestedListItemTap',
+                itemtap		: 'dmtNestedListItemTap',
                 itemtaphold : 'dmtListItemTapHold',
-                //leafitemtap	:'dmtNestedListLeafItemTap',
-                //back		:'dmtNestedListBackTap',
-                initialize	:'dmtNestedListInitialize',
-                //load 		:'dmtNestedListLoad',
-                //listchange  :'dmtNestedListChange'
+                initialize	: 'dmtNestedListInitialize'
             },
 			dmtNestedListRefreshButton:
 			{
-				tap			:'dmtNestedListRefreshButton',		
+				tap			: 'dmtNestedListRefreshButton',
 			},
-           dmtnestedlistbackbutton : {
+            dmtnestedlistbackbutton :
+            {
                 tap 		: 'dmtBackButtonAction'
-           }
+            }
         }
     },
     dmtBackButtonAction:function(button){
@@ -89,7 +86,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         });	
                           
                           
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id,[], 
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id+" OR f_id IN (SELECT DISTINCT(f_id) FROM intellidocs_files_parent WHERE f_parent_id="+f_id+")",[], 
                                         function(tx, results){
                                         var len = results.rows.length;
                                         var f_data = [];
@@ -453,9 +450,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         if(record.getData().f_type === 'folder')
         {
            
-           console.log(record.getData().f_id);
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id,[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id+" OR f_id IN (SELECT DISTINCT(f_id) FROM intellidocs_files_parent WHERE f_parent_id="+record.getData().f_id+")",[],
                                         function(tx, results){
 
                                         var len = results.rows.length;

@@ -42,12 +42,12 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 	           if(index != -1)
 	           {
 		           //some record exists.
-		           var record = login_info_store.getAt(index);
-		           var stored_data = record.getData();
+		           var record       = login_info_store.getAt(index);
+		           var stored_data  = record.getData();
 		           var stored_uname = stored_data.user_name;
 		           var stored_pass  = stored_data.user_pass;
-		           var input_uname	 = field_values.dmt_username;
-		           var input_pass	 = MD5(field_values.dmt_password);
+		           var input_uname	= field_values.dmt_username;
+		           var input_pass   = MD5(field_values.dmt_password);
 		           var _currentScope = this;
 		           
 		           if((stored_uname == input_uname) && (stored_pass == input_pass))
@@ -64,7 +64,8 @@ Ext.define('DMTApp.controller.DmtLoginFormController', {
 		                                        var tabs_panel = Ext.create('DMTApp.view.DmtTabsPanel');
 		                                        main_container.add(tabs_panel).show();
 		                                        
-		                                        });
+		                                   });
+           
 		                createDelay.delay(1000);
 		           }
 		           else

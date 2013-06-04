@@ -29,16 +29,16 @@ Ext.application({
 				'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListSortPanel',
                 'DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList.DmtNestedListTitleBar',
                 'DmtTabsPanel.DmtSubTabsPanel.DmtMessagesPanel'
-			],
+    ],
 
     icon: {
-        '57': 'resources/icons/Icon.png',
-        '72': 'resources/icons/Icon~ipad.png',
-        '114': 'resources/icons/Icon@2x.png',
-        '144': 'resources/icons/Icon~ipad@2x.png'
+        '57'    : 'resources/icons/Icon.png',
+        '72'    : 'resources/icons/Icon~ipad.png',
+        '114'   : 'resources/icons/Icon@2x.png',
+        '144'   : 'resources/icons/Icon~ipad@2x.png'
     },
 
-    isIconPrecomposed: true,
+    isIconPrecomposed : true,
 
     startupImage: {
         '320x460'   : 'resources/startup/320x460.jpg',
@@ -53,12 +53,13 @@ Ext.application({
         this.launched = true;
         this.mainlaunch();
     },
+    
     mainlaunch: function() {
                 
-        //if(!device || !this.launched)
-        //{
-         //   return;
-       // }
+        if(!device || !this.launched)
+        {
+            return;
+        }
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
 
