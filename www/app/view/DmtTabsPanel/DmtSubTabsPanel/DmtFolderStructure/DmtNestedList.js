@@ -2,6 +2,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
            extend: 'Ext.dataview.List',
            xtype:'dmtnestedfolderlist',
            config: {
+           
            title:'Files',
            id:'dmt-nested-list',
            ui : 'dark',
@@ -14,20 +15,20 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
            showAnimation : 'slideIn',
            listConfig:
            {
-           pressedDelay:1,
-           scrollable:{
-           direction: 'vertical',
-           directionLock: true,
-           momentumEasing: {
-           momentum: {
-           acceleration: 30,
-           friction: 0.5
-           },
-           bounce: {
-           acceleration: 0.0001,
-           springTension: 0.9999,
+            pressedDelay:1,
+            scrollable:{
+                direction: 'vertical',
+                directionLock: true,
+                momentumEasing: {
+                momentum: {
+                    acceleration: 30,
+                    friction: 0.5
+                },
+                bounce: {
+                    acceleration: 0.0001,
+                    springTension: 0.9999,
            
-           },
+                },
            minVelocity: 5
            },
            outOfBoundRestrictFactor: 0
@@ -49,11 +50,11 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
            '<span class="dmtMetaData">{f_ext}</span>'+
            '</td></tr></tbody></table>',
            layout: {
-           animation: {
-           type: 'fade',
-           duration: 100
-           },
-           type: 'fit'
-           },
-           }
+                animation: {
+                    type: 'fade',
+                    duration: 100
+                },
+                //type: 'fit'
+            },
+        }
 });

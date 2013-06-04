@@ -51,8 +51,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         function(tx,results){
                                         if(results.rows.length == 0)
                                         {
-                                        Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
-                                        return;
+                                            Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
+                                            return;
                                         }
                                         var i = 0;
                                         var record = Ext.create('DMTApp.model.DmtFolderStructureModel',{
@@ -78,47 +78,48 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         
                                         
                                         if(f_id > 0)
-                                        Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
+                                            Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
                                         else
-                                        Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
+                                            Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
                                         
                                         Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {f_id : record.getData().f_id, f_parent : record.getData().f_parent};
-                                        });	
-                          
-                          
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id+" OR f_id IN (SELECT DISTINCT(f_id) FROM intellidocs_files_parent WHERE f_parent_id="+f_id+")",[], 
-                                        function(tx, results){
-                                        var len = results.rows.length;
-                                        var f_data = [];
-                                        for (var i=0; i<len; i++)
-                                        {
-                                        f_data.push({
-                                                    items	: [],
-                                                    f_id   	: results.rows.item(i).f_id,
-                                                    f_name 	: results.rows.item(i).f_name,
-                                                    f_type	: results.rows.item(i).f_type,
-                                                    f_ext	: results.rows.item(i).f_ext,
-                                                    f_attachment	: results.rows.item(i).f_attachment,
-                                                    f_modified		: results.rows.item(i).f_modified,
-                                                    f_folder		: results.rows.item(i).f_folder,
-                                                    f_description 	: results.rows.item(i).f_description,
-                                                    f_solicitor		: results.rows.item(i).f_solicitor,
-                                                    f_item_id		: '',
-                                                    f_file_count	: results.rows.item(i).f_file_count,
-                                                    f_parent		: results.rows.item(i).f_parent,
-                                                    fld_item_id		: results.rows.item(i).f_fld_item_id,
-                                                    f_sub_fld_count	: results.rows.item(i).f_folder_count,
-                                                    f_folders		: []
-                                                    
-                                                    });
-                                        }
-                                        //Ext.getStore('DmtFolderStructureStore').setData(f_data);
-                                        str.setData({'items' : f_data});
                                         
-                                        }, 
-                                        function(err){
-                                        console.log("Error fetching data");
-                                        });
+                                        tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+record.getData().f_folder+"' AND f_type != 'folder')",[],
+                                                      function(tx, results){
+                                                      var len = results.rows.length;
+                                                      var f_data = [];
+                                                      for (var i=0; i<len; i++)
+                                                      {
+                                                      f_data.push({
+                                                                  items	: [],
+                                                                  f_id   	: results.rows.item(i).f_id,
+                                                                  f_name 	: results.rows.item(i).f_name,
+                                                                  f_type	: results.rows.item(i).f_type,
+                                                                  f_ext	: results.rows.item(i).f_ext,
+                                                                  f_attachment	: results.rows.item(i).f_attachment,
+                                                                  f_modified		: results.rows.item(i).f_modified,
+                                                                  f_folder		: results.rows.item(i).f_folder,
+                                                                  f_description 	: results.rows.item(i).f_description,
+                                                                  f_solicitor		: results.rows.item(i).f_solicitor,
+                                                                  f_item_id		: '',
+                                                                  f_file_count	: results.rows.item(i).f_file_count,
+                                                                  f_parent		: results.rows.item(i).f_parent,
+                                                                  fld_item_id		: results.rows.item(i).f_fld_item_id,
+                                                                  f_sub_fld_count	: results.rows.item(i).f_folder_count,
+                                                                  f_folders		: []
+                                                                  });
+                                                      }
+                                                      //Ext.getStore('DmtFolderStructureStore').setData(f_data);
+                                                      str.setData({'items' : f_data});
+                                                      
+                                                      },
+                                                      function(err){
+                                                      console.log("Error fetching data");
+                                                      });
+                                    });	
+                          
+                          
+                                    
                           });
     },
     dmtNestedListChange:function( _this,list,eOpts )
@@ -451,7 +452,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id+" OR f_id IN (SELECT DISTINCT(f_id) FROM intellidocs_files_parent WHERE f_parent_id="+record.getData().f_id+")",[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+record.getData().f_id+") OR (f_folder='"+record.getData().f_folder+"' AND f_type != 'folder')",[],
                                         function(tx, results){
 
                                         var len = results.rows.length;
@@ -471,12 +472,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                     f_solicitor		: results.rows.item(i).f_solicitor,
                                                     f_item_id		: '',
                                                     f_file_count	: results.rows.item(i).f_file_count,
-                                                    f_parent		: results.rows.item(i).f_parent,
+                                                    f_parent		: record.getData().f_id,
                                                     fld_item_id		: results.rows.item(i).f_fld_item_id,
                                                     f_sub_fld_count	: results.rows.item(i).f_folder_count,
                                                     f_folders		: []
                                                     
-                                                    });
+                                                });
                                         }
                                         
                                         Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);

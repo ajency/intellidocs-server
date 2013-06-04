@@ -165,8 +165,8 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
     {
         if(navigator.onLine)
         {
-            var folder_id = Ext.getCmp('dmtFileFolderId')._value;
-           
+            var folder_name = Ext.getCmp('dmtFileFolderPath')._value;
+           console.log(folder_name);
             Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')
@@ -210,7 +210,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
                                 
                                 Ext.Viewport.add(Ext.create('Ext.Panel',progress_bar_panel_config_folder)).show({type:'pop',duration:250,easing:'ease-out'});	
                                 
-                                IntelliDocs.updateFolder(folder_id);
+                                IntelliDocs.updateFolder(folder_name);
                            }
                 });
         }

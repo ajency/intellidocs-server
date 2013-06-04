@@ -37,13 +37,13 @@ var db = null;
 document.addEventListener('deviceready',function(){
                           
                           //instantiate the DB
-                          db = window.openDatabase('intellidocs1', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+                          db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
                           db.transaction(function (tx) {
                                          //tx.executeSql('DROP TABLE intellidocs_folders');
                                          
-                                         tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
+                                         tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
                                          
-                                         tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_files_parent( id , f_id, f_parent_id)');
+                                         tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_files_parent( id , u_id, f_parent_id)');
                                          
                                          
                                          }, function(){
@@ -76,30 +76,30 @@ IntelliDocs.refillSQLData = function(loop)
                    
                                 if (d['f_type'] == 'folder')
                                 {
-                   
-                                    tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                                    [random, d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none', d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0, d['f_parent'][0]],
+                                    tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                                    [d['u_id'], d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none', d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0, d['f_parent']],
                                                   function(){
                                  
                                                   },
                                                   function(err){
-                                                    console.log("error");
+                                                        console.log("error");
                                                   });
                                 random++;
                                 IntelliDocs.refillSQLData(d);
-                            }
+                        }
                         else if (d['leaf'] === true)
                         {
-                                tx.executeSql('INSERT INTO intellidocs_folders (id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                 [random, d['f_id'], 0,              d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent'][0]],
+                            random++;    
+                            tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [d['u_id'], d['f_id'], 0,              d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
                                  function(){
                                  
                                  },
-                                 function(){
-                                    console.log("error");
+                                 function(err){
+                                          console.log("error");
                                  });
-                        fr(d,tx,random);
                    
+                            fr(d,tx);
                         }
                     }
                 }
@@ -119,13 +119,11 @@ IntelliDocs.refillSQLData = function(loop)
     }, function() {});
 }
 
-function fr(f,tx,random)
+function fr(f,tx)
 {
     for (var p = 0; p < f['f_parent'].length; p++) {
-        random++;
-        tx.executeSql('INSERT INTO intellidocs_files_parent (id, f_id, f_parent_id) VALUES (?,?,?)', [random, f['f_id'], f['f_parent'][p]]);
+        tx.executeSql('INSERT INTO intellidocs_files_parent (id, u_id, f_parent_id) VALUES (?,?,?)', [random++, f['u_id'], f['f_parent'][p]]);
     }
-    random++;
 }
 
 
@@ -812,15 +810,14 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
  * category_id = objec to search for
  * function
  */
-IntelliDocs.updateFolder = function(category_id)
+IntelliDocs.updateFolder = function(category_name)
 {
     
 	db.transaction(function (tx) {
+
+                   IntelliDocs.dmtCreateDirectories(category_name);
                    
-                   tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+ category_id, [], function(tx,res){
-                                 
-                                 IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
-                                 tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent="+ category_id, [], function(tx,results){
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'", [], function(tx,results){
                                                
                                                var len = results.rows.length;
                                                
@@ -849,10 +846,6 @@ IntelliDocs.updateFolder = function(category_id)
                                  function(err){
                                     console.log( "Error processing SQL: " + err.code );
                                  });
-                   
-                   },
-                   function(){},
-                   function(){});
 }
 
 /**
@@ -980,19 +973,20 @@ IntelliDocs.getFolderMeta = function(folder_path,total_files)
                                 {},
                                 function(directory)
                                 {
-                                var reader = directory.createReader();
-                                reader.readEntries(function(entries){
+                                    var reader = directory.createReader();
+                                    reader.readEntries(function(entries){
                                                    for(var i = 0;i<entries.length; i++)
                                                    {
-                                                   if(entries[i].isFile && entries[i].name != '.DS_Store')
-                                                   {
-                                                   files_present++;
-                                                   }
+                                                       if(entries[i].isFile && entries[i].name != '.DS_Store')
+                                                       {
+                                                            files_present++;
+                                                       }
                                                    }
                                                    
                                                    remaining_files = (total_files == files_present) ? 0 : (total_files - files_present);
                                                    meta = "Total Files: " + total_files +"/ Downloaded Files: " + files_present + "/ Remaining Files: " + remaining_files;
-                                                   Ext.getCmp('dmt-folder-metadata').setHtml(meta);                                                               },
+                                                   Ext.getCmp('dmt-folder-metadata').setHtml(meta);
+                                                       },
                                                    function(err){
                                                    
                                                    });
