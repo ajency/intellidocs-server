@@ -166,7 +166,6 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         if(navigator.onLine)
         {
             var folder_name = Ext.getCmp('dmtFileFolderPath')._value;
-           console.log(folder_name);
             Ext.Msg.confirm('','Update the current folder with the latest documents from your server?',
                            function(buttonId){
                            if(buttonId == 'yes')

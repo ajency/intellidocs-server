@@ -50,7 +50,6 @@ document.addEventListener('deviceready',function(){
                                             
                                          }, function(){});
                           
-                          console.log(db);
                           //request a file system
                           window.requestFileSystem(LocalFileSystem.PERSISTENT,
                                                    0,
@@ -108,6 +107,7 @@ IntelliDocs.refillSQLData = function(loop)
             {
                 //done.
                 random = 100;
+                IntelliDocs.checkFolderDeletion();
                 Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
                 sqlLoadComplete();
             }
@@ -129,12 +129,25 @@ function fr(f,tx)
 
 function sqlLoadComplete()
 {
-   
+    //get current folder info
+    var button = Ext.getCmp('dmt-nested-list-back-button');
+    var f_id = 0,f_cfolder = '';
+    if(!button.isHidden())
+    {
+        f_id     = button.current_f_id.f_id;
+        f_cfolder = button.current_f_id.f_cfolder;
+    }
+    
     var str = Ext.getStore('DmtFolderStructureStore');
     db.transaction(function(tx){
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_cfolder+"' AND f_type != 'folder')",[],
                                  function(tx, results){
+                                 
+                                 //console.log("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_cfolder+"' AND f_type != 'folder')");
+                                 
                                  var len = results.rows.length;
+                                 
+                                 //console.log("Lenght: " + len);
                                  
                                  var f_data = [];
                                  for (var i=0; i<len; i++)
@@ -159,6 +172,7 @@ function sqlLoadComplete()
                                              
                                              });
                                  }
+                                 
                                  str.setData({'items' : f_data});
                                  Ext.getCmp('dmt-nested-list').unmask();
                             },

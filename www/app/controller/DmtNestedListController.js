@@ -90,7 +90,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                       Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
                                                         f_id : record.getData().f_id,
                                                         f_parent : record.getData().f_parent,
-                                                        f_folder : results.rows.item(0).f_folder
+                                                        f_folder : results.rows.item(0).f_folder,
+                                                        f_cfolder : record.getData().f_folder
                                                       };
                                                 });
                                         }
@@ -99,7 +100,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                 Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
                                                         f_id : record.getData().f_id,
                                                         f_parent : record.getData().f_parent,
-                                                        f_folder : ''
+                                                        f_folder : '',
+                                                        f_cfolder : record.getData().f_folder
                                                     }
                                         }
                                         
@@ -423,7 +425,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 						 };
 		//Build the config for the notification polling				 
 		var dmt_polling = { 
-           interval: 15 * 60 * 1000,
+           interval: 1000 * 60 * 10,
            type:'polling',
            url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_polling.php?',
            baseParams:base_params,
@@ -511,7 +513,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                         Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
                                                                                                         f_id : record.getData().f_id,
                                                                                                         f_parent : record.getData().f_parent,
-                                                                                                        f_folder : results.rows.item(0).f_folder
+                                                                                                        f_folder : results.rows.item(0).f_folder,
+                                                                                                        f_cfolder : record.getData().f_folder
                                                                                                   };
                                                       });
                                         }
@@ -520,7 +523,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                             Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
                                                 f_id : record.getData().f_id,
                                                 f_parent : record.getData().f_parent,
-                                                f_folder : ''
+                                                f_folder : '',
+                                                f_cfolder : record.getData().f_folder
                                             }
                                         }
                                         if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
@@ -615,7 +619,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
         button.removeCls('dmtRefreshToRemoveNotifications');
-		this.dmtDetailsPanelChange(null,{f_type:''},null);
+		//this.dmtDetailsPanelChange(null,{f_type:''},null);
         }
         else
         {
