@@ -107,8 +107,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         
                                     });
                           
-                          var sql = (f_id === 0 ) ? "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent=0)" :
-                                                    "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_folder+"' AND f_type != 'folder')";
+                          var sql = (f_id === 0 ) ? "SELECT * FROM intellidocs_folders WHERE f_parent=0" :
+                                                    "SELECT * FROM intellidocs_folders WHERE f_parent="+f_id;
                           tx.executeSql(sql,[],
                                         function(tx, results){
                                         var len = results.rows.length;
@@ -319,8 +319,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
             {
                 html : '<p></p>',
                 id : 'dmt-folder-metadata' 
-            },
-            
+            }
             ]
            }
            if(record_data.f_file_count > 0)
@@ -475,7 +474,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+record.getData().f_id+") OR (f_folder='"+record.getData().f_folder+"' AND f_type != 'folder')",[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id,[],
                                         function(tx, results){
 
                                         var len = results.rows.length;

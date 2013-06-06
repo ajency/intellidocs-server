@@ -138,12 +138,14 @@ function sqlLoadComplete()
         f_cfolder = button.current_f_id.f_cfolder;
     }
     
+    
+    
     var str = Ext.getStore('DmtFolderStructureStore');
     db.transaction(function(tx){
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_cfolder+"' AND f_type != 'folder')",[],
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id,[],
                                  function(tx, results){
                                  
-                                 //console.log("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_cfolder+"' AND f_type != 'folder')");
+                                 console.log("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id);
                                  
                                  var len = results.rows.length;
                                  
@@ -174,6 +176,7 @@ function sqlLoadComplete()
                                  }
                                  
                                  str.setData({'items' : f_data});
+                                 str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                  Ext.getCmp('dmt-nested-list').unmask();
                             },
                             function(err){
@@ -562,7 +565,13 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                     //clear previous table data
                     db.transaction(function (tx) {
                                    
-                                    tx.executeSql('DELETE FROM intellidocs_folders');
+                                    tx.executeSql('DELETE FROM intellidocs_folders',[],
+                                                  function(){
+                                                    IntelliDocs.refillSQLData(session_data);
+                                                  },
+                                                  function(err){
+                                                  
+                                                  });
                                    
                                     tx.executeSql('DELETE FROM intellidocs_files_parent');
                                    
@@ -570,7 +579,7 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                                    function(){},
                                    function(){});
                     Ext.getCmp('dmt-nested-list').unmask();
-                    IntelliDocs.refillSQLData(session_data);
+                    
                 }
             }
             else
