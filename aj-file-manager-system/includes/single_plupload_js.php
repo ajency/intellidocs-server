@@ -109,5 +109,4 @@ function plupload_get_folders_selected() {
  	console.log(allVals);
 	return allVals;
   }	
-</script>
-			
+</script>	
