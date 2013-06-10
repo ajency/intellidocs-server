@@ -356,12 +356,12 @@ function file_download_option($actions, $post)
 					 $upload_dir = wp_upload_dir(); 
 					//$id = get_post_thumbnail_id($filename);
 					 $filenamepath=  $upload_dir['basedir']."/".$filename;
-					//$display_name = html_entity_decode(str_replace("&#8217","",get_the_title($file_id))); 
-					//$display_name =  (str_replace(";","",$display_name)); 
+					$display_name = html_entity_decode(str_replace("&#8217","",get_the_title($file_id))); 
+					$display_name =  (str_replace(";","",$display_name)); 
 				 	$file_extension =  dmt_get_file_extension( $filename );
 					$ctype          =  dmt_get_file_ctype( $file_extension );
 					header("Content-Type: " . $ctype . "");
-					header("Content-Disposition: attachment; filename=".$filename);
+					header("Content-Disposition: attachment; filename=".$display_name);
 					//header("Content-Type: application/octet-stream");
 					//header("Content-Disposition: attachment; filename=".$filename);
 					 $str = readfile(trim($filenamepath));
