@@ -542,8 +542,9 @@ function intellidocs_folder_html($cat)
 		
 		$sub_folder_count_html 	= '&nbsp;<span class="sub-folder-count" title="Sub folder count"><i class="icon-folder-close-alt"></i>'.intellidocs_get_subfolder_count($cat->term_id).'</span>';
 		  $args = array('post_type'=> 'document_files','dmtNoTaxChild' => true,'dmtTax' => 'document_folders','dmtTaxSlug' => $cat->slug); 
-		$file_count_html		= '&nbsp;<span class="file-count" title="File count"><i class="icon-file-alt"></i>'.intellidocs_get_folder_file_count($cat->term_id).'</span><span class="edit-folder" title="Edit folder" rel="'.admin_url().esc_url ( add_query_arg( $args, 'edit.php' ) ).'">(view files)</span>';
+		$file_count_html		= '&nbsp;<span class="file-count" title="File count"><i class="icon-file-alt"></i>'.intellidocs_get_folder_file_count($cat->term_id).'</span>';
 		
+		$files_view				= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '<span class="edit-folder" title="Edit folder" rel="'.admin_url().esc_url ( add_query_arg( $args, 'edit.php' ) ).'">(view files)</span>':'';
 		$folder_publish_html	= intellidocs_folder_published($cat->term_id);
 		
 		$folder_active_html		= intellidocs_folder_activated($cat->term_id);
@@ -551,7 +552,7 @@ function intellidocs_folder_html($cat)
 		$html .= '<li class="directory collapsed" data-catid="'.$cat->term_id.'">
 					<a href="#" rel="">'.$cat->name.'</a>
 					<span class="folder-options">
-						'.$folder_item_id.$sub_folder_count_html.$file_count_html.$folder_publish_html.$folder_active_html.$folder_edit_html.'
+						'.$folder_item_id.$sub_folder_count_html.$file_count_html.$files_view.$folder_publish_html.$folder_active_html.$folder_edit_html.'
 					</span>
 				 </li>';
 		return	 	$html;	  
