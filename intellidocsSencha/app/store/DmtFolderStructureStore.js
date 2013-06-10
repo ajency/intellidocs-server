@@ -5,7 +5,6 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
     config: {
 		autoLoad:false,
         model: 'DMTApp.model.DmtFolderStructureModel',
-        data : [],
         sorters:
         [
          {property:'f_type',direction:'DESC'},
@@ -30,16 +29,7 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
                 type:'json',
                 rootProperty:'items'
             },			
-        },
-		listeners:
-		{
-           beforeload:function(store)
-           {
-        	   var _this = this;
-        	  // _this.dmtRemoveNotificationsFromServer();
-        	   
-            }
-		}
+        }
 	},
 	//Run the ajax request to delete items from the server
 	dmtRemoveNotificationsFromServer:function()

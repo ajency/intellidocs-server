@@ -33,33 +33,16 @@ var global_https = "https://www.press-port.com";
 
 var db = {};
 
-/*
-(function(){
-	db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
-	db.transaction(function (tx) {
- 
-   		tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
-	   		
-	}, function(){
-   	 	IntelliDocs.refillSQLData(d);
-    }, function(){});
-})();*/
-
-
-
 document.addEventListener('deviceready',function(){
     
 	//instantiate the DB
 	//instantiate the DB
-    db = window.openDatabase('intellidocs', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+    db = window.openDatabase('intellidocs_demo', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
     db.transaction(function (tx) {
-                   //tx.executeSql('DROP TABLE intellidocs_folders');
+                  // tx.executeSql('DROP TABLE intellidocs_folders');return;
+                   tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id,f_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
                    
-                   tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
-                   
-                   tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_files_parent( id , u_id, f_parent_id)');
-                   
-                   
+                    
                    }, function(){
                       
                    }, function(){});
@@ -124,13 +107,13 @@ document.addEventListener('deviceready',function(){
     
 },false);
 
-var random = 100;
+
 IntelliDocs.refillSQLData = function(loop)
 {
 	db.transaction(function(tx) {
                    //make all entries
-                   for (var key in loop) {
-                   if (loop.hasOwnProperty(key)) {
+             for (var key in loop) {
+                if (loop.hasOwnProperty(key)) {
                    if (key == 'items') {
                         var obj = loop[key];
                         if (obj.length > 0) {
@@ -139,30 +122,29 @@ IntelliDocs.refillSQLData = function(loop)
                    
                                 if (d['f_type'] == 'folder')
                                 {
-                                    tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,    f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                                    [d['u_id'], d['f_id'], d['fld_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none', d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0, d['f_parent']],
+                                    tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id, f_item_id,   f_folder,      f_name,      f_type,      f_ext,      f_solicitor,     f_attachment,      f_modified,      f_description,      f_file_count,      f_folder_count,   is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                                    [d['u_id'], d['f_id'], d['fld_item_id'], 0, d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], 'none', d['f_attachment'], d['f_modified'], d['f_description'], d['f_file_count'], d['f_sub_fld_count'], 0, d['f_parent']],
                                                   function(){
-                                 
+                                    				
                                                   },
                                                   function(err){
                                                         console.log("error");
                                                   });
-                                random++;
+                               
                                 IntelliDocs.refillSQLData(d);
                         }
                         else if (d['leaf'] === true)
                         {
-                            random++;    
-                            tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                 [d['u_id'], d['f_id'], 0,              d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
+                           
+                            tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id, f_item_id,  f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                 [d['u_id'], d['f_id'], 0,  d['f_item_id'],   d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
                                  function(){
-                                 
+                                 	
                                  },
                                  function(err){
                                           console.log("error");
                                  });
                    
-                            fr(d,tx);
                         }
                     }
                 }
@@ -170,7 +152,7 @@ IntelliDocs.refillSQLData = function(loop)
             else if (key == 'session') 
             {
                 //done.
-                random = 100;
+            	IntelliDocs.checkFolderDeletion();
                 Ext.getStore('DmtFolderStructureStore').dmtRemoveNotificationsFromServer();
                 sqlLoadComplete();
             }
@@ -182,21 +164,24 @@ IntelliDocs.refillSQLData = function(loop)
     }, function() {});
 }
 
-function fr(f,tx)
-{
-    for (var p = 0; p < f['f_parent'].length; p++) {
-        tx.executeSql('INSERT INTO intellidocs_files_parent (id, u_id, f_parent_id) VALUES (?,?,?)', [random++, f['u_id'], f['f_parent'][p]]);
-    }
-}
-
 
 function sqlLoadComplete()
 {
-   
-    var str = Ext.getStore('DmtFolderStructureStore');
-    db.transaction(function(tx){
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+	var button = Ext.getCmp('dmt-nested-list-back-button');
+    var f_id = 0,f_cfolder = '';
+    if(!button.isHidden())
+    {
+        f_id     = button.current_f_id.f_id;
+        f_cfolder = button.current_f_id.f_cfolder;
+    }
+    
+    setTimeout(function(){
+    	var str = Ext.getStore('DmtFolderStructureStore');
+    	db.transaction(function(tx){
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+f_id+"'",[],
                                  function(tx, results){
+                	   			
+                	   			
                                  var len = results.rows.length;
                                  
                                  var f_data = [];
@@ -223,6 +208,8 @@ function sqlLoadComplete()
                                              });
                                  }
                                  str.setData({'items' : f_data});
+                                 str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                 
                                  Ext.getCmp('dmt-nested-list').unmask();
                             },
                             function(err){
@@ -230,6 +217,7 @@ function sqlLoadComplete()
                                     Ext.getCmp('dmt-nested-list').unmask();
                             });
                    });
+    },500);
 }
 	
 
@@ -709,15 +697,18 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                     //clear previous table data
                     db.transaction(function (tx) {
                                    
-                                    tx.executeSql('DELETE FROM intellidocs_folders');
-                                   
-                                    tx.executeSql('DELETE FROM intellidocs_files_parent');
-                                   
+                                    tx.executeSql('DELETE FROM intellidocs_folders',[],
+                                    		function(t,r){
+                                    			IntelliDocs.refillSQLData(session_data);
+                                    		},
+                                    		function(err){
+                                    			
+                                    		});  
                                    },
                                    function(){},
                                    function(){});
                     Ext.getCmp('dmt-nested-list').unmask();
-                    IntelliDocs.refillSQLData(session_data);
+                    
                 }
             }
             else

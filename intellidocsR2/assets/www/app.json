@@ -1,1 +1,1 @@
-{"id":"7431f7de-fa07-4a79-a426-ae3e0629ec45","js":[{"path":"app.js","bundle":true,"update":"full","type":"js","version":"ea5a2d2fcaa07723fd2198332028bba7fdd5965d"}],"css":[{"path":"resources/css/android.css","update":"delta","type":"css","version":"cce47208ce416b9ee2f4231e2711d63816ecf6f9"}]}
+{"id":"7431f7de-fa07-4a79-a426-ae3e0629ec45","js":[{"path":"touch/sencha-touch-all.js","type":"js"},{"path":"app.js","bundle":true,"update":"full","type":"js"}],"css":[{"path":"resources/css/android.css","update":"delta","type":"css"}]}

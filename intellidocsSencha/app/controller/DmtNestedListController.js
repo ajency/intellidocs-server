@@ -18,11 +18,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 			{
 				itemtap		:'dmtNestedListItemTap',
 				itemtaphold : 'dmtListItemTapHold',
-				//leafitemtap	:'dmtNestedListLeafItemTap',
-				//back		:'dmtNestedListBackTap',
 				initialize	:'dmtNestedListInitialize',
-				//load 		:'dmtNestedListLoad',
-				//listchange  :'dmtNestedListChange'
 			},
 			dmtNestedListRefreshButton:
 			{
@@ -50,9 +46,10 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         var record = {};
         //we have all data in db. trigger db here
         db.transaction(function(tx){
-                       tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id="+button.current_f_id.f_parent,[],
+                       tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id='"+button.current_f_id.f_parent+"'",[],
                                      function(tx,results){
-                                     if(results.rows.length == 0)
+                                     
+                    	   			if(results.rows.length == 0)
                                      {
                                          Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
                                          return;
@@ -89,7 +86,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      
                                      if(record.getData().f_parent != 0)
                                      {
-                                         tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                         tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id='"+record.getData().f_parent+"'",[],
                                                    function(tx,results)
                                                    {
                                                    Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
@@ -110,8 +107,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      
                                  });
                        
-                       var sql = (f_id === 0 ) ? "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent=0)" :
-                                                 "SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+f_id+") OR (f_folder='"+f_folder+"' AND f_type != 'folder')";
+                       var sql = (f_id === 0 ) ? "SELECT * FROM intellidocs_folders WHERE f_parent='0')" :
+                                                 "SELECT * FROM intellidocs_folders WHERE f_parent='"+f_id+"'";
                        tx.executeSql(sql,[],
                                      function(tx, results){
                                      var len = results.rows.length;
@@ -139,11 +136,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      }
                                      //Ext.getStore('DmtFolderStructureStore').setData(f_data);
                                      str.setData({'items' : f_data});
+                                     str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                      
-                                     },
-                                     function(err){
+                                   },
+                                   function(err){
                                      console.log("Error fetching data");
-                                     });
+                                   });
                        
                        });
     },
@@ -547,8 +545,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	dmtNestedListInitialize:function(list)
 	{
         var _this = this;
-        //list.setStore('DmtFolderStructureStore');
-        console.log('List Initialized')
         //Add the sorting panel to the nested list
         list.insert(0,{xtype: 'dmtnestedlisttitlebar'});
 		list.insert(1,{xtype: 'dmtnestedlistsortpanel'});	
@@ -557,15 +553,13 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         	Ext.getCmp('dmt-nested-list-back-button').hide();
 		
 		Ext.getCmp('dmt-nested-list').mask();
+		
 		var str = Ext.getStore('DmtFolderStructureStore');
 		list.setStore(str);
       
-		//Reload the store to enable re-initialization
-		//Ext.getStore('DmtFolderStructureStore').load();
-		//we have all data in db. trigger db here
-
+			
 		db.transaction(function(tx){
-            tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+            tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='0'",[],
                           function(tx, results){
                           if(results.rows.length > 0)
                           {
@@ -575,20 +569,20 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                           else
                           {
                               console.log("Load New Data");
-                              Ext.getCmp('dmt-nested-list-refresh-button').fireAction('tap');
-                              //IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
+                              IntelliDocs.write_json(true,_this.dmtGetUsernameFromCache(),false);
                           	}
                           },function(err){});
             });
-		//Ext.getStore('DmtFolderStructureStore').load();
-	
+		
+		Ext.Viewport.unmask();
+		
 		//Add the user_name param to the polling function
 		var base_params ={
 							user_name: this.dmtGetUsernameFromCache(),
 						 };
 		//Build the config for the notification polling				 
 		var dmt_polling = { 
-           interval:(15*60*1000),
+           interval:(10*60*1000),
            type:'polling',
            url: global_https+'/wp-content/plugins/aj-file-manager-system/includes/ajax_polling.php?',
            baseParams:base_params,
@@ -613,9 +607,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 						notifications_tab.getStore().load();
 						
 						notifications_tab.tab.setBadgeText(notification_count);
-						console.log(notification_count);
+					
 					}
-					break
+					break;
 
 				}
 			},
@@ -639,7 +633,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE (f_type='folder' AND f_parent="+record.getData().f_id+") OR (f_folder='"+record.getData().f_folder+"' AND f_type != 'folder')",[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+record.getData().f_id+"'",[],
                                         function(tx, results){
 
                                         var len = results.rows.length;
@@ -671,7 +665,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         
                                         if(record.getData().f_parent != 0)
                                         {
-                                            tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                            tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id='"+record.getData().f_parent+"'",[],
                                                       function(tx,results)
                                                       {
                                                         Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
@@ -692,6 +686,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
                                         
                                         list.getStore().setData({'items' : f_data});
+                                        list.getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                        
                                         _this.dmtDetailsPanelChange(record,null,false);
                                         },
                                         function(err){
@@ -784,7 +780,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	{
         if(Ext.device.Connection.isOnline())
         {
-        	Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
+           Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
            var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
            nested_list_store.setSorters([
@@ -807,8 +803,11 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
-		button.removeCls('dmtRefreshToRemoveNotifications');
-		this.dmtDetailsPanelChange(null,{f_type:''},null);
+       
+        if(button.hasOwnProperty('removeCls'))
+			button.removeCls('dmtRefreshToRemoveNotifications');
+		
+		//this.dmtDetailsPanelChange(null,{f_type:''},null);
        }
        else
        {
@@ -873,7 +872,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	},
 	dmtGetUsernameFromCache:function()
 	{
-		return;
 		var login_info_store = Ext.getStore('DmtLocalStorageCookie');
 		login_info_store.load();
 		var index = login_info_store.find('key','dmtScLgInfo');
