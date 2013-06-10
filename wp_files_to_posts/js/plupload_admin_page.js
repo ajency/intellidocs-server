@@ -44,13 +44,13 @@ jQuery(document).ready(function() {
 function pp_get_folders_selected() {   
  	     
      var allVals = [];
-	 jQuery('label.selectit').each(function()
+	 jQuery('.folder-root').each(function()
 	 {
 		 
 		jQuery(this).find('input[type=checkbox]').each(function()
 		{  
 			if(jQuery(this).is(':checked'))
-			{
+			{ 
 				 allVals.push(jQuery(this).val());
 				 console.log(jQuery(this).val());
 			}
@@ -63,7 +63,7 @@ function pp_get_folders_selected() {
 //Function to disable all the checkboxes. 
 function pp_disable_folders_selected() {   
  	     
-	 jQuery('label.selectit').each(function()
+	 jQuery('.folder-root').each(function()
 	 {
 		jQuery(this).find('input[type=checkbox]').each(function()
 		{  
@@ -74,7 +74,7 @@ function pp_disable_folders_selected() {
 //Function to enable all the checkboxes. 
 function pp_enable_folders_selected() {   
 	     
-	 jQuery('label.selectit').each(function()
+	 jQuery('.folder-root').each(function()
 	 {
 		jQuery(this).find('input[type=checkbox]').each(function()
 		{  
