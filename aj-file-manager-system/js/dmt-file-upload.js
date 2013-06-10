@@ -121,7 +121,11 @@ function dmt_delete_file(post_id,file_id,all_files_url){
 	
 jQuery(document).ready(function()
 {
-	jQuery('#post-body-content div#titlediv').hide();
+	if(jQuery('#post_type').val() !="dmt_messages")
+		{
+			jQuery('#post-body-content div#titlediv').hide();
+		}
+	
 	window.onbeforeunload = function(e) {};
 }
 );
