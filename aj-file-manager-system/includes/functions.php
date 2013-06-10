@@ -38,11 +38,11 @@
 					//$id = get_post_thumbnail_id($filename);
 					 $filenamepath=  $upload_dir['basedir']."/".$filename;
 					
-					$display_name = html_entity_decode(str_replace("&#8217","",get_the_title($file_id))); 
-					$display_name =  (str_replace(";","",$display_name)); 
+					//commented by diana for testing $display_name = html_entity_decode(str_replace("&#8217","",get_the_title($file_id))); 
+					//commented by diana for testing $display_name =  (str_replace(";","",$display_name)); 
 				 
 					header("Content-Type: application/octet-stream");
-					header("Content-Disposition: attachment; filename=".$display_name);
+					header("Content-Disposition: attachment; filename=".$filename);
 					$str = readfile($filenamepath);
 					 
 					exit();
