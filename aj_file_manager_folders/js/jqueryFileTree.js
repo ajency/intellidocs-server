@@ -49,11 +49,11 @@ if(jQuery) (function($){
 			
 			$(this).each( function() {
 				
-				function showTree(c, t) {
+				function showTree(c, t) { 
 					$(c).addClass('wait');
-					$(".jqueryFileTree.start").remove();
+					//$(".jqueryFileTree.start").remove(); commented and added after one line below to display loading img
 					$.post(o.script, { dir: t ,action:'intellidocs_fetch_tree',catid:$(c).attr('data-catid')}, function(data) {
-						
+						$(".jqueryFileTree.start").remove();
 						$(c).find('.start').html('');
 						$(c).removeClass('wait').append(data);
 						if( o.root == t ) $(c).find('UL:hidden').show(); else $(c).find('UL:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
