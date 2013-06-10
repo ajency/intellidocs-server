@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json');
 
+global $random;
+
+$random = 100;
 $path = $_SERVER['DOCUMENT_ROOT'];
 $mypath = '';
 $path = $path.$mypath;
@@ -9,12 +12,6 @@ include_once $path . '/wp-load.php';
 include_once $path . '/wp-includes/wp-db.php';
 include_once $path . '/wp-includes/pluggable.php';
 
-ob_start();
-//var_dump($_REQUEST);
-$h = ob_get_clean();
-
-add_filter('wp_mail_content_type',create_function('', 'return "text/html";'));
-//wp_mail('suraj@ajency.in','Var',$h);
 
 class DMT_FolderStructure
 {
@@ -46,6 +43,7 @@ class DMT_FolderStructure
 
 	public function get_cat_hierchy_n_files($child_of,$parent,$args,$folder){
 		
+		global $random;
 
 		$args = array_merge($args,array('parent'=> $parent,'child_of' => $child_of));
 		
@@ -79,20 +77,23 @@ class DMT_FolderStructure
 					$folder_details = get_term_by( 'id', $id , 'document_folders');
 					$folder_parent_id = $folder_details->parent;
 					$files_array[] = array( 
-							'f_id'				=>	$id,
-							'fld_item_id'		=> 	dmt_get_document_folder_meta($id,'document_folders_item_id'),
+							'u_id'				=> (int)$random,
+							'f_id'				=>	(int)$id,
+							'fld_item_id'		=> 	(int)dmt_get_document_folder_meta($id,'document_folders_item_id'),
 							'f_name'			=>	$cat->name,
 							'f_type'			=> 	'folder',
 							'f_ext' 			=> 	'folder',
 							'f_attachment'		=> 	'',
 							'f_modified' 		=> 	'-', 
 							'f_folder'	 		=> 	$folder ,
-							'f_parent'	 		=> 	$folder_parent_id ,
+							'f_parent'	 		=> 	intval($folder_parent_id) ,
 							'f_description' 	=> 	$cat->description,
 							'f_file_count'  	=> 	count($this->get_files_in_category($id)),
 							'f_sub_fld_count'	=>  $this->get_sub_folder_count($id,'document_folders'),
 							'items'				=> 	$this->get_cat_hierchy_n_files($child_of,$cat->cat_ID,$args,$folder),
 					   );
+
+					$random++;
 				}		  
 			}
 		}
@@ -121,6 +122,7 @@ class DMT_FolderStructure
 	}
 	public function get_files_in_category($cat_id)
 	{
+		global $random;
 		$files_in_folder = array();
 		$files_args = array(
 				'numberposts'     => -1,
@@ -158,25 +160,30 @@ class DMT_FolderStructure
 			$attachments = get_posts($attachment_args);
 			
 			$file_attchment =  wp_get_attachment_url($attachments[0]->ID);
-			$file_parent_id = wp_get_post_terms($file->ID, 'document_folders'  );
+			
+			
 			$files_in_folder[]= array(
-					'f_id' 				=> $file->ID, 
+					'u_id'				=> (int)$random,
+					'f_id' 				=> (int)$file->ID, 
 					'f_name'			=> $file->post_title,
 					'f_type'			=> 'file',
 					'f_ext' 			=> ($this->get_file_extention($file_attchment))? $this->get_file_extention($file_attchment):'no-file',
 					'f_attachment' 		=> ($file_attchment)?$file_attchment:'no-file',
 					'f_modified'		=> $file->post_date,
 					'f_folder'			=> $folder,
-					'f_parent'			=> $file_parent_id[0]->term_id,
+					'f_parent'			=> $this->get_file_parent_cat_ids($file->ID,$folder),
 					'f_description' 	=> $file->post_excerpt,
 					'f_solicitor'		=> get_post_meta($file->ID,'dmt_file_solicitor',true),
-					'f_item_id'			=> get_post_meta($file->ID,'dmt_file_item_number',true),
+					'f_item_id'			=> (int)get_post_meta($file->ID,'dmt_file_item_number',true),
 					'f_folders'			=> $this->get_folders_containing_file($file->ID,'document_folders'),
 					'items'				=> array(),
 					'leaf'				=> true,
 					);
-			}
-			return $files_in_folder;	
+			
+			$random++;
+
+		}
+		return $files_in_folder;	
 	}
 	
 	public function get_file_extention($file_attchment){
@@ -189,6 +196,37 @@ class DMT_FolderStructure
 			return  $extension;
 		
 	}
+
+	public function get_file_parent_cat_ids($id,$folder)
+	{
+		if(strpos($folder,'/') !== false)
+		{
+			$folder = explode('/',$folder);
+			$folder = $folder[count($folder) - 1];
+
+		}
+	
+		//
+		$file_parent_id = wp_get_post_terms($id, 'document_folders'  );
+		
+		$id = 0;
+
+		if(is_array($file_parent_id))
+		{
+			foreach ($file_parent_id as $value) 
+			{
+				if($value->name === $folder)
+				{
+
+					$id = (int)$value->term_id;
+					break;
+				}
+			}
+		}
+
+		return $id;
+	}
+
 	public function dmt_recurse_find_parent($cat_id,$folder_path = '')
 	{
 		$term = get_term_by( 'id', $cat_id , 'document_folders');
@@ -213,6 +251,7 @@ class DMT_FolderStructure
 		return $cat_folder;
 	}
 }
+
 $args = array(
 					'type'                     => 'post',
 					'child_of'				   => 0,
@@ -262,20 +301,22 @@ foreach($access_cats as $access_cat)
 		if(!empty($folder_details->term_id))
 			  
 			$files_folders[] = array(
-							'f_id'				=> $folder_details->term_id,
-							'fld_item_id'		=> dmt_get_document_folder_meta($folder_details->term_id,'document_folders_item_id'),
+							'u_id'				=> (int)$random,
+							'f_id'				=> (int)$folder_details->term_id,
+							'fld_item_id'		=> (int)dmt_get_document_folder_meta($folder_details->term_id,'document_folders_item_id'),
 							'f_name'			=> $folder_details->name,
 							'f_type'			=> 'folder',
 							'f_ext' 			=> 'folder',
 							'f_attachment'		=> '',
 							'f_modified' 		=> '-', 
 							'f_folder'	 		=> $folder,
-							'f_parent'			=> $folder_details->parent,
+							'f_parent'			=> intval($folder_details->parent),
 							'f_description' 	=> $folder_details->description,
 							'f_file_count'  	=> count($new_object->get_files_in_category($folder_details->term_id)), 
 							'f_sub_fld_count'	=>  $new_object->get_sub_folder_count($folder_details->term_id,'document_folders'),
 							'items' 			=> 	$new_object->get_cat_hierchy_n_files(0,$access_cat->category_id,$args,'')
 							);
+			$random++;
 	}						
 }
 //echo $callback.'('.json_encode(array('items' => $new_object->get_cat_hierchy_n_files(0,0,$args,''))).')';
