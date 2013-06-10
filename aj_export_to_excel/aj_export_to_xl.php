@@ -180,7 +180,10 @@ add_action('dmtFolderMetaActions','aj_xl_file_download_action');
  
 function aj_intellidocs_etc_action($admin_url,$cat_term_id)
 {
-	return '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.plugins_url('/aj_export_to_excel/xl_export.php/?ID='.$cat_term_id.'&taxonomy=document_folders').'"><i class="icon-download"></i>Download</span>';
+	if(current_user_can('manage_options'))
+	{
+		return '&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.plugins_url('/aj_export_to_excel/xl_export.php/?ID='.$cat_term_id.'&taxonomy=document_folders').'"><i class="icon-download"></i>Download</span>';
+	}
 }
 add_filter('intellidocs_etc_action','aj_intellidocs_etc_action',10,2); 
 ////////////////////////////////////ADMIN INCLUDES//////////////////////////////////////
