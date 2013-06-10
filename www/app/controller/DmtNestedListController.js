@@ -413,9 +413,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         },function(err){});
                           });
            
-           //Reload the store to enable re-initialization
-           //Ext.getStore('DmtFolderStructureStore').load();
-           //we have all data in db. trigger db here
            
           
 		//Add the user_name param to the polling function
@@ -433,7 +430,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            {
 			data:function(provider,event_data)
 			{
-				switch(event_data._name)
+                console.log("Polled");
+                switch(event_data._name)
 				{
 					//IF THE EVENT NEW FILE ADDED IS SENT
 					case 'new_file_added':
@@ -450,8 +448,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 						
 						notifications_tab.tab.setBadgeText(notification_count);
 					}
-					break
-
+                    break;
 				}
 			},
 				exception:function(e)
@@ -524,7 +521,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                 f_parent : record.getData().f_parent,
                                                 f_folder : '',
                                                 f_cfolder : record.getData().f_folder
-                                            }
+                                            };
                                         }
                                         if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
                                         
@@ -657,15 +654,16 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     //Added this function to traverse to root node
     dmtTreverseNodes:function(record,parents)
     {		
-           if(record.parentNode)
-           {	
+        if(record.parentNode)
+        {	
            parents.push(record.parentNode.id);	
            this.dmtTreverseNodes(record.parentNode,parents);
-           }
-           return parents;	
-           },
-           //Added this function to find if parent had the required id.
-           findInParentNode:function(record)
+        }
+        
+           return parents;
+    },
+    //Added this function to find if parent had the required id.
+    findInParentNode:function(record)
            {
            if(record.getData().f_id == current_f_id)
            return record;
@@ -696,70 +694,3 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 	}
 
 });
-
-/*
- dmtCheckFileExistsLoopTapaction:function(folder_path,file_name,record)
- {
- //get reference to the 'this' object.
- var _this = this;
- fileSystemRoot.getFile(root_file_path+"/"+folder_path+"/"+file_name,
- {},
- function(fileEntry){
- //file found. reset global vars 
- global_check_file_in = [];
- global_looped_folder_count = 0;
- global_file_found_in = folder_path;
- 
- _this.dmtDetailsPanelChange(record,null,true);  
- },
- function(err){
- global_looped_folder_count++;
- 
- if(global_looped_folder_count == global_check_file_in.length)
- {
- //file not present, reset globals
- global_check_file_in = [];
- global_looped_folder_count = 0;
- global_file_found_in = '';
- _this.dmtDetailsPanelChange(record,null,false); 
- }
- else
- {
- _this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);                                    
- }
- });
- },
- 
- /*
- dmtCheckFileExistsLoop:function(folder_path,file_name,record)
- {
- //get reference to the 'this' object.
- var _this = this;
- fileSystemRoot.getFile(root_file_path+"/"+folder_path+"/"+file_name,
- {},
- function(fileEntry){
- //file found. reset global vars 
- global_check_file_in = [];
- global_looped_folder_count = 0;
- global_file_found_in = folder_path;
- 
- _this.dmtDetailsPanelChange(record,null,true);  
- },
- function(err){
- global_looped_folder_count++;
- 
- if(global_looped_folder_count == global_check_file_in.length)
- {
- //file not present, reset globals
- global_check_file_in = [];
- global_looped_folder_count = 0;
- global_file_found_in = '';
- _this.dmtDetailsPanelChange(record,null,false); 
- }
- else
- {
- _this.dmtCheckFileExistsLoop(global_check_file_in[global_looped_folder_count],file_name,record);                                    
- }
- });
- },
- */
