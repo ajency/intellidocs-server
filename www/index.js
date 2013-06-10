@@ -139,17 +139,13 @@ function sqlLoadComplete()
     }
     
     
-    
-    var str = Ext.getStore('DmtFolderStructureStore');
-    db.transaction(function(tx){
+    setTimeout(function(){
+        var str = Ext.getStore('DmtFolderStructureStore');
+        db.transaction(function(tx){
                    tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id,[],
                                  function(tx, results){
                                  
-                                 console.log("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id);
-                                 
                                  var len = results.rows.length;
-                                 
-                                 //console.log("Lenght: " + len);
                                  
                                  var f_data = [];
                                  for (var i=0; i<len; i++)
@@ -184,6 +180,7 @@ function sqlLoadComplete()
                                     Ext.getCmp('dmt-nested-list').unmask();
                             });
                    });
+        },500);
 }
 
 IntelliDocs.dmtDetailsPanelChange = function(record,deafult_panel,file_exists)
