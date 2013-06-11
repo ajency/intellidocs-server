@@ -862,7 +862,7 @@ function dmt_add_folder()
 	
 	$tag_description = $_POST['tag_description'];
 	$error_msg = '';
-	$term = term_exists($tag_name, 'document_folders');
+	$term = term_exists($tag_name, 'document_folders',$parent);
 	if ($term !== 0 && $term !== null) {
 		$error_msg =  "<p  ><font  color='red'>'$tag_name' document folder already exists!</font></p>";
 	}
