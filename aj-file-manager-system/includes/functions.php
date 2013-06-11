@@ -361,7 +361,7 @@ function file_download_option($actions, $post)
 				 	$file_extension =  dmt_get_file_extension( $filename );
 					$ctype          =  dmt_get_file_ctype( $file_extension );
 					header("Content-Type: " . $ctype . "");
-					header("Content-Disposition: attachment; filename=".$display_name);
+					header("Content-Disposition: attachment; filename=".$filename);
 					//header("Content-Type: application/octet-stream");
 					//header("Content-Disposition: attachment; filename=".$filename);
 					 $str = readfile(trim($filenamepath));
