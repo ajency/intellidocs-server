@@ -40,7 +40,7 @@ function file_download_option($actions, $post)
 	 */
 	function dmt_get_file_name_wo_ext( $str ) {
 		$parts = explode( '.', $str );
-		 return str_replace(".".$parts, "",$str);
+		 return str_replace(".".end( $parts ), "",$str);
 	}
 	
 	/**
