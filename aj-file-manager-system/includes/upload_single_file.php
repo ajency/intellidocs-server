@@ -128,7 +128,7 @@ if (!$chunks || $chunk == $chunks - 1) {
   $attachment = array(
      'guid' 			=> $file_url, 
      'post_mime_type' 	=> $wp_filetype['type'],
-     'post_title' 		=> preg_replace('/\.[^.]+$/', '', basename($fileName)),
+     'post_title' 		=> basename($fileName),//preg_replace('/\.[^.]+$/', '', basename($fileName)),
      'post_content' 	=> '',
      'post_status' 		=> 'inherit'
   );
