@@ -59,9 +59,9 @@
  
 	     <tr>  
          <td colspan="2"  height="20">  
-           
+             <div id="available_document-folderr" class="available_document-folder"  style="display: inline">
 				<input id="add-document-folder" type="button" value="Add New Document Folder" class="button button-primary add-document-folder-button">
-		 	 
+		 	 </div> 
 		</td> 
             	  
      </tr>
