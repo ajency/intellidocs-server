@@ -232,6 +232,7 @@ jQuery(document).ready(function(){
 	
 	
 	jQuery('#add-document-folder').live('click',function(){
+	 
 		 var tag_name = jQuery('#tag-name').val();
 		 var parent = jQuery('#parent').val();
 		 var tag_description = jQuery('#tag-description').val();
