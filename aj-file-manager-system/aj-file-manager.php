@@ -71,7 +71,7 @@ License: GPL3
 			'update_item'       => __( 'Update Document Folder', 'dmt-files-revs' ),
 			'add_new_item'      => __( 'Add New Document Folder', 'dmt-files-revs' ),
 			'new_item_name'     => __( 'New Document Folder Name', 'dmt-files-revs' ),
-			'menu_name'         => __( 'Add Document Folder', 'dmt-files-revs' ),
+			'menu_name'         => __( '', 'dmt-files-revs' ),
 		);
 
 		register_taxonomy( 'document_folders','document_files',  array(

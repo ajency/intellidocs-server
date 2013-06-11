@@ -226,6 +226,51 @@ jQuery(document).ready(function(){
 						 setTimeout(window.location = jQuery('#page-redirect').val(), 5000);
 					});
 	});	
+	
+	
+	///add docuemnt folder
+	
+	
+	jQuery('#add-document-folder').live('click',function(){
+		 var tag_name = jQuery('#tag-name').val();
+		 var parent = jQuery('#parent').val();
+		 var tag_description = jQuery('#tag-description').val();
+		 
+		  
+			 if (tag_name == "")
+			 {
+				 alert("Please Document Folder Name!")
+				 jQuery('#tag-name').focus();
+				 return false;
+			} 
+			 jQuery('#message').html('');
+			 jQuery('#message').hide(); 
+			  
+			jQuery.post(ajaxurl,{
+							action : 'dmt_add_folder',
+							tag_name :  tag_name, 
+							parent :  parent, 
+							tag_description :  tag_description
+						  },
+							function(response){ 
+							 if(response.error_msg!="")
+								 {
+
+								 jQuery('#message').html(response.error_msg);
+								 jQuery('#message').show(); 
+								 }
+							 else
+								 {
+								 jQuery('#parent').html(response.parent);
+								 jQuery('#tag-name').val('');
+								 jQuery('#tag-name').val('');
+								 jQuery('#message').html(response.msg);
+								 jQuery('#message').show();   
+								 
+								 }
+							
+						}); 
+		});	
 		 
 });
 

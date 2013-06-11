@@ -554,12 +554,28 @@ function dmt_menu_page_subscriber() {
 	include_once 'manage-groups.php';
 }
 
+/**
+ * Add a menu page to backend
+ */
+
+
+function dmt_show_menu_page_add_document_folders()
+{
+	$user_role = dmt_get_current_user_role();
+	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator"))  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
+
+	include_once 'add-document-folders.php';
+}
+
 function dmt_add_manage_group_page()
 {    
 	$user_role = dmt_get_current_user_role();
 	if ($user_role  == "dmt_site_admin" || $user_role  =="administrator")
 	{
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
+		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
 	}
 	
 }
@@ -830,3 +846,40 @@ function dmt_change_password_dashboard()
 	die();	
 }
 add_action('wp_ajax_dmt_change_password','dmt_change_password_dashboard'); 
+
+
+function dmt_add_folder()
+{
+ 
+
+	$tag_name = $_POST['tag_name'];
+	
+	$parent = $_POST['parent'];
+	
+	$tag_description = $_POST['tag_description'];
+	$error_msg = '';
+	$term = term_exists($tag_name, 'document_folders');
+	if ($term !== 0 && $term !== null) {
+		$error_msg =  "<p  ><font  color='red'>'$tag_name' document folder already exists!</font></p>";
+	}
+	else
+	{
+		$term_data = wp_insert_term( $tag_name, 'document_folders',  array(
+				'description'=> $tag_description,
+				'slug' => '',
+				'parent'=> $parent
+		) );
+		
+		$msg =  "<p>Document Folder Added Successfully.</p>";
+		$parent = wp_dropdown_categories(array('hide_empty' => 0, 'hide_if_empty' => false, 'taxonomy' => 'document_folders', 'name' => 'parent', 'orderby' => 'name', 'hierarchical' => true, 'echo' => 0, 'show_option_none' => __('None')));
+		$parent =strip_tags($parent, '<option>');
+	}
+	
+
+	$response = json_encode( array( 'msg' =>  $msg ,'parent'=> $parent,'error_msg'=>$error_msg) );
+	header( "Content-Type: application/json" );
+	echo $response;
+
+	die();
+}
+add_action('wp_ajax_dmt_add_folder','dmt_add_folder');
