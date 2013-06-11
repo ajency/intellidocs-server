@@ -245,8 +245,9 @@ jQuery(document).ready(function(){
 			} 
 			 jQuery('#message').html('');
 			 jQuery('#message').hide(); 
-			  
-			jQuery.post(ajaxurl,{
+			 button_content = jQuery('.available_document-folder').html();
+			jQuery('.available_document-folder').html(jQuery('#processing-img').html());
+			 jQuery.post(ajaxurl,{
 							action : 'dmt_add_folder',
 							tag_name :  tag_name, 
 							parent :  parent, 
@@ -258,6 +259,7 @@ jQuery(document).ready(function(){
 
 								 jQuery('#message').html(response.error_msg);
 								 jQuery('#message').show(); 
+								 jQuery('.available_document-folder').html(button_content);
 								 }
 							 else
 								 {
@@ -266,10 +268,11 @@ jQuery(document).ready(function(){
 								 jQuery('#tag-name').val('');
 								 jQuery('#message').html(response.msg);
 								 jQuery('#message').show();   
+								 jQuery('.available_document-folder').html(button_content);
 								 
 								 }
 							
-						}); 
+						});  
 		});	
 		 
 });
