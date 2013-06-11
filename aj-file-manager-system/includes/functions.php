@@ -28,6 +28,20 @@ function file_download_option($actions, $post)
 		return end( $parts );
 	}
 	
+
+	/**
+	 * Get File Extension
+	 *
+	 * Returns the file extension of a filename.
+	 *
+	 * @access      public
+	 * @since       1.0
+	 * @return      string
+	 */
+	function dmt_get_file_name_wo_ext( $str ) {
+		$parts = explode( '.', $str );
+		 return str_replace(".".$parts, "",$str);
+	}
 	
 	/**
 	 * Get the file content type
@@ -893,7 +907,11 @@ add_action('wp_ajax_dmt_add_folder','dmt_add_folder');
 function modify_post_title( $data , $postarr )
 {
 	if($data['post_type'] == 'document_files') {
-		$data['post_title'] =   ($data['post_title']);
+		
+		$file_name = dmt_get_file_name_wo_ext($data['post_title']);
+		$file_ext = dmt_get_file_extension($data['post_title']);
+		$file_title = sanitize_title_with_dashes($file_name).".".$file_ext;
+		$data['post_title'] =  $file_title;
 	}
 	return $data;
 }
