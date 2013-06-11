@@ -887,3 +887,13 @@ function dmt_add_folder()
 	die();
 }
 add_action('wp_ajax_dmt_add_folder','dmt_add_folder');
+
+
+function modify_post_title( $data , $postarr )
+{
+	if($data['post_type'] == 'document_files') {
+		$data['post_title'] = sanisanitize_title_with_dashes($data['post_title']);
+	}
+	return $data;
+}
+add_filter( 'wp_insert_post_data' , 'modify_post_title' , '99', 2 );
