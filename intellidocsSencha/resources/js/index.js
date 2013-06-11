@@ -36,7 +36,6 @@ var db = {};
 document.addEventListener('deviceready',function(){
     
 	//instantiate the DB
-	//instantiate the DB
     db = window.openDatabase('intellidocs_demo', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
     db.transaction(function (tx) {
                   // tx.executeSql('DROP TABLE intellidocs_folders');return;
@@ -46,8 +45,6 @@ document.addEventListener('deviceready',function(){
                    }, function(){
                       
                    }, function(){});
-	
-	//IntelliDocs.refillSQLData(loop_data);
 	
 	//request a file system
     window.requestFileSystem(LocalFileSystem.PERSISTENT,
@@ -89,7 +86,7 @@ document.addEventListener('deviceready',function(){
     	//get back button object
     	var backbutton = Ext.getCmp('dmt-nested-list-back-button');
     	
-    	if(global_root_view || backbutton.isHidden())
+    	if(backbutton.isHidden())
     	{
     		Ext.Msg.confirm('','Are you sure you want to exit?',
                     function(buttonId){
@@ -101,7 +98,7 @@ document.addEventListener('deviceready',function(){
     	else
     	{
     		 // move the app one folder back
-    		backbutton.fireEvent("tap");
+    		backbutton.fireAction("tap",[backbutton]);
     	}
      },false);
     
@@ -162,6 +159,29 @@ IntelliDocs.refillSQLData = function(loop)
     }, function() {
         
     }, function() {});
+}
+
+/**
+ * function to check folder deletion on resume
+ */
+IntelliDocs.checkFolderDeletion = function()
+{
+    //perform polling here
+    var request = new XMLHttpRequest();
+    request.open("GET", global_https+"/wp-content/plugins/aj-file-manager-system/includes/ajax_folder_deactivated.php?", true);
+    request.onreadystatechange = function()
+    {
+        if (request.readyState == 4 && request.status == 200) 
+        { 
+            var res_data = eval("(" + request.responseText + ")");
+            global_remove_folders = res_data['data'];
+            if(global_remove_folders.length > 0)
+            { 
+                IntelliDocs.remove_directory(global_remove_folders[0].folder); 
+            }
+        }
+    }
+    request.send(); 
 }
 
 
