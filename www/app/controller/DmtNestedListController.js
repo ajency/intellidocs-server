@@ -139,7 +139,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         
                                         },
                                         function(err){
-                                        console.log("Error fetching data");
+                                            //console.log("Error fetching data");
                                         });
                           
                           });
@@ -401,12 +401,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         function(tx, results){
                                         if(results.rows.length > 0)
                                         {
-                                            console.log("Load Previous");
+                                            //console.log("Load Previous");
                                             sqlLoadComplete();
                                         }
                                         else
                                         {
-                                            console.log("Load New Data");
+                                            //console.log("Load New Data");
                                         Ext.getCmp('dmt-nested-list-refresh-button').fireAction('tap');
                                             //IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
                                         }
@@ -430,7 +430,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
            {
 			data:function(provider,event_data)
 			{
-                console.log("Polled");
+           
                 switch(event_data._name)
 				{
 					//IF THE EVENT NEW FILE ADDED IS SENT
@@ -529,7 +529,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         _this.dmtDetailsPanelChange(record,null,false);
                                         },
                                         function(err){
-                                            console.log("errr" + err.code);
+                                            //console.log("errr" + err.code);
                                         });
                  
                           });

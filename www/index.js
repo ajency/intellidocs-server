@@ -705,14 +705,15 @@ IntelliDocs.download_queued_file = function(file)
                                         global_download_file_count = 0;
                                         Ext.getCmp('dmt-download-progress-folder').destroy(); 
                                     }
-                                    else{             
+                                    else
+                                    {
                                         IntelliDocs.download_queued_file(global_queued_file_urls[global_queued_file_download_complete_count]);  
                                     }
                                     IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
                                     Ext.getCmp('dmtFileFolder_count')._value);                                              
                                 },                                           
                                 function(fail){
-                                    //something goes wrong. reset globals
+                                    //something goes wrong. reset global
                                     if(fail.progress == 404)
                                     {
                                         
@@ -751,8 +752,7 @@ IntelliDocs.download_queued_file = function(file)
                                         global_current_download_folder_id = 0; 
                                         global_download_file_count=0;
                                         Ext.getCmp('dmt-download-progress-folder').destroy(); 
-                                        IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,
-                                                                                   Ext.getCmp('dmtFileFolder_count')._value);                                            
+                                        IntelliDocs.getFolderMeta(Ext.getCmp('dmtFileFolderPath')._value,Ext.getCmp('dmtFileFolder_count')._value);                                            
                                     }
                                 },
                                 function(info){
@@ -821,7 +821,9 @@ IntelliDocs.updateFolder = function(category_name)
 
                    IntelliDocs.dmtCreateDirectories(category_name);
                    
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'", [], function(tx,results){
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'",
+                                 [],
+                                 function(tx,results){
                                                
                                                var len = results.rows.length;
                                                
@@ -830,7 +832,7 @@ IntelliDocs.updateFolder = function(category_name)
                                                     global_queued_file_urls.push({
                                                                             url : results.rows.item(i).f_attachment,
                                                                             path: results.rows.item(i).f_folder});
-                                                }
+                                               }
                                                
                                                if(global_queued_file_urls.length > 0)
                                                {
@@ -1117,7 +1119,7 @@ IntelliDocs.downloadFile = function(record)
                                       },
                                       function(info){
                                         var percent = Math.round(info.progress * 100);
-                                        console.log(percent);
+                                        
                                         document.getElementById('percentage').innerHTML = percent + '%';
                                       },
                                       root_file_path + '/' + structure);

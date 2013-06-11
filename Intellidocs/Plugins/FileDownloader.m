@@ -65,6 +65,7 @@
     NSLog(@"downloading %@", _fileName);
     
     _request = [ASIHTTPRequest requestWithURL:_url];
+    _request.shouldAttemptPersistentConnection   = NO;
     [_request setAllowResumeForFileDownloads:YES];
     [_request setDownloadDestinationPath:_filePath];
     [_request setTemporaryFileDownloadPath:[_filePath stringByAppendingString:@".download"]];
@@ -147,12 +148,14 @@
             });
         }
         else {
+             NSLog(@"Download finished");
             progress.progress = 1.0;
             progress.status = finished;
             [self updateProgress];
         }
     }
     else {
+        NSLog(@"Download request Error %@", [request error]);
         progress.progress = 0.0;
         progress.status = error;
         [self updateProgress];
@@ -161,6 +164,7 @@
 }
 -(void) requestFailed:(ASIHTTPRequest *)request
 {
+    NSLog(@"Download request Error1 %@", [request error]);
     progress.status = error;
     [self updateProgress];
 }
