@@ -174,6 +174,10 @@ div.dmtMessagesEmptyText{
 	text-align:center;
 }
 
+table.file_open_class{
+    background-color : #ccc;
+}
+
 /** Splash Screen **/
  body{
         background: url('../images/splash/intellidocs-bg-logo-s.png') no-repeat center center, -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(31%,#0080c1), color-stop(100%,#003164)); /* Chrome,Safari4+ */

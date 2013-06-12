@@ -132,12 +132,12 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                  fld_item_id		: results.rows.item(i).f_fld_item_id,
                                                  f_sub_fld_count	: results.rows.item(i).f_folder_count,
                                                  f_folders		: []
-                                                 });
+                                          });
                                      }
                                      //Ext.getStore('DmtFolderStructureStore').setData(f_data);
-                                     str.setData({'items' : f_data});
-                                     str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
-                                     
+                                     //str.setData({'items' : f_data});
+                                     //str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                     IntelliDocs.checkFileOpened(f_data);
                                    },
                                    function(err){
                                      console.log("Error fetching data");
@@ -685,9 +685,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         }
                                         if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
                                         
-                                        list.getStore().setData({'items' : f_data});
-                                        list.getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
-                                        
+                                        //list.getStore().setData({'items' : f_data});
+                                        //list.getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                        IntelliDocs.checkFileOpened(f_data);
                                         _this.dmtDetailsPanelChange(record,null,false);
                                         },
                                         function(err){
@@ -713,6 +713,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                                              {},
                                                                              function(fileEntry){
                                                                              window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
+                                                                             IntelliDocs.markFileOpened(folder_path +"/"+ file_name);
                                                                              _this.dmtDetailsPanelChange(record,null,true);
                                                                              },
                                                                              function(err){

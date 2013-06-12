@@ -40,6 +40,7 @@ document.addEventListener('deviceready',function(){
     db.transaction(function (tx) {
                   // tx.executeSql('DROP TABLE intellidocs_folders');return;
                    tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id,f_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
+                   tx.executeSql('CREATE TABLE IF NOT EXISTS opened_files(file_path)');
                    
                     
                    }, function(){
@@ -86,7 +87,7 @@ document.addEventListener('deviceready',function(){
     	//get back button object
     	var backbutton = Ext.getCmp('dmt-nested-list-back-button');
     	
-    	if(global_root_view || backbutton.isHidden())
+    	if(backbutton.isHidden())
     	{
     		Ext.Msg.confirm('','Are you sure you want to exit?',
                     function(buttonId){
@@ -227,10 +228,14 @@ function sqlLoadComplete()
                                              
                                              });
                                  }
-                                 str.setData({'items' : f_data});
-                                 str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                 //str.setData({'items' : f_data});
+                                 //str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                 IntelliDocs.checkFileOpened(f_data);
                                  
-                                 Ext.getCmp('dmt-nested-list').unmask();
+                                 Ext.getCmp('dmt-nested-list').mask();
+                                 setTimeout(function(){
+                                	 Ext.getCmp('dmt-nested-list').unmask();
+                                 },100);
                             },
                             function(err){
                                     console.log("Error fetching data");
@@ -238,6 +243,102 @@ function sqlLoadComplete()
                             });
                    });
     },500);
+}
+
+var global_file_open_check = [];
+IntelliDocs.checkFileOpened = function(f_data)
+{
+    if(f_data.length == 0)
+    {
+       Ext.getCmp('dmt-nested-list').getStore().setData({'items' : [] });
+    }
+    else
+    {
+        Ext.getCmp('dmt-nested-list').mask();
+        IntelliDocs.recursiveFileOpenCheck(f_data,0);
+    }
+}
+
+IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
+    
+    
+    if(f_data[index].f_type == 'file')
+    {
+        var file_name_url = f_data[index].f_attachment;
+        var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);
+        var folder_path = f_data[index].f_folder;
+        
+        fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                               {},
+                               function(entry)
+                               {
+                                    var f = folder_path + "/" + file_name;
+                                    db.transaction(function(tx){
+                                              tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+f+"'",
+                                                            [],
+                                                            function(tx,results){
+                                                            
+                                                                if(results.rows.length > 0)
+                                                                {
+                                                                    f_data[index].f_open = 'file_open_class';
+                                                                    
+                                                                }
+                                                                else
+                                                                {
+                                                                    f_data[index].f_open = '';
+                                                                }
+                                                                global_file_open_check.push(f_data[index]);
+                                                                index++;
+                                                                if(index < f_data.length)
+                                                                    IntelliDocs.recursiveFileOpenCheck(f_data,index);
+                                                            
+                                                                if(index == f_data.length)
+                                                                {
+                                                                    Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+                                                                    global_file_open_check = [];
+                                                                    Ext.getCmp('dmt-nested-list').unmask();
+                                                                }
+                                                            
+                                                            },function(err){
+                                                            
+                                                            });
+                                              },
+                                              function(){},
+                                              function(err){});
+                               
+                                
+                               },
+                               function(err){
+                                f_data[index].f_open = '';
+                                global_file_open_check.push(f_data[index]);
+                                index++;
+                                if(index < f_data.length)
+                                    IntelliDocs.recursiveFileOpenCheck(f_data,index);
+                               
+                                if(index == f_data.length)
+                                {
+                                    Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+                                    global_file_open_check = [];
+                                    Ext.getCmp('dmt-nested-list').unmask();
+                                }
+                               });
+    }
+    else
+    {
+        f_data[index].f_open = '';
+        global_file_open_check.push(f_data[index]);
+        index++;
+        if(index < f_data.length)
+            IntelliDocs.recursiveFileOpenCheck(f_data,index);
+        
+        if(index == f_data.length)
+        {
+            Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+            global_file_open_check = [];
+            Ext.getCmp('dmt-nested-list').unmask();
+        }
+    }
+    
 }
 	
 
@@ -727,7 +828,6 @@ IntelliDocs.write_json = function(is_not_offline,user_name,is_on_resume){
                                    },
                                    function(){},
                                    function(){});
-                    Ext.getCmp('dmt-nested-list').unmask();
                     
                 }
             }
@@ -1357,7 +1457,8 @@ IntelliDocs.downloadFile = function(record)
         			console.log("File Downloaded"); 
         			Ext.getCmp('file-download-mask').destroy();
         			Ext.getCmp('dmt-file-action-button').setText('Open');
-        			window.openFile(root_file_path+"/"+structure+"/"+file_name);                                                       
+        			window.openFile(root_file_path+"/"+structure+"/"+file_name); 
+        			IntelliDocs.markFileOpened(structure +"/"+ file_name);
         		}
         	},
         	function(error) {
@@ -1461,4 +1562,26 @@ function read_file_data(file)
         console.log(evt.target.result);
     };
     reader.readAsText(file);
+}
+
+IntelliDocs.markFileOpened = function(filePath)
+{
+    console.log("ENter here");
+    db.transaction(function(tx){
+                    tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+filePath+"'",
+                                  [],
+                                  function(tx,results){
+                                  
+                                    if(results.rows.length == 0)
+                                    {
+                                        tx.executeSql("INSERT INTO opened_files(file_path) VALUES (?)",
+                                                      [filePath]);
+                                    }
+                                  
+                                  },function(err){
+                                  
+                                  });
+                  },
+                  function(){},
+                  function(err){});
 }

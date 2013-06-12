@@ -167,7 +167,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         var structure = Ext.getCmp('dmtFileFolder')._value;
         
         window.openFile( root_file_path + "/" + structure +"/"+ file_name);
-        
+        IntelliDocs.markFileOpened(structure +"/"+ file_name);
         /** iOS file Open code */
         //window.plugins.openfile.viewFile(root_file_path + "/" + structure +"/"+ file_name);
            

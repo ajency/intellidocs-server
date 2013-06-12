@@ -34,7 +34,7 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
 	        },
 			variableHeights:true,
 		},
-		itemTpl: '<table class="dmtNestedListItem">' + 
+		itemTpl: '<table class="dmtNestedListItem {f_open}">' + 
 	           '<tbody>'+
 	           '<tr>'+
 	           '<td style="width:17%" align="center">{[values.fld_item_id != 0 ? values.fld_item_id : (values.f_item_id != 0 ? values.f_item_id : "")]} </td>'+
