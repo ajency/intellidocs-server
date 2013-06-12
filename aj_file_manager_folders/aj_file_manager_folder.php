@@ -413,7 +413,7 @@ function intellidocs_sort_folders($cats)
 		}
 		else
 		{
-			$cats_arr_sort_by_name[] = array('cats'=>$cat,'name'=>$cat->name);
+			$cats_arr_sort_by_name[] = array('cats'=>$cat,'name'=>strtoupper($cat->name));
 		}
 	}
 	
@@ -442,7 +442,7 @@ function intellidocs_sort_files($files)
 		}
 		else
 		{
-			$files_arr_sort_by_name[] = array('files'=>$file,'name'=>$file->post_title);
+			$files_arr_sort_by_name[] = array('files'=>$file,'name'=>strtoupper($file->post_title));
 		}
 	}
 
