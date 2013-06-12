@@ -212,7 +212,7 @@ License: GPL3
            <span style="line-height:31px;" > <input type="checkbox" id="applydelete_recursively" value="yes" style="width:5%; margin-right:-10px" >Apply Recursively</span>
             <!-- Publish Email Settings -->
          	 <div class="dmtAjaxSpinner" id="dmt_folder_delete_spinner" style="display:none;" ></div> 
-            <input type="hidden" name="delete_redirect" id="delete_redirect" value="<?php echo home_url().'/wp-admin/edit.php?post_type=document_files&page=intellidocs-document-files';?>">
+            <input type="hidden" name="delete_redirect" id="delete_redirect" value="<?php echo admin_url( 'edit.php?post_type=document_files&page=intellidocs-document-files', 'http' );?>">
 		</tr>
        
 	<?php 

@@ -206,7 +206,7 @@ jQuery(document).ready(function(){
 		
 		
 		jQuery('.dmtOptionDelete').click(function(){
-
+ 
 			confirmmsg = "Are you sure you want to delete this folder ?"
 
 				recursive = "no"
@@ -216,11 +216,14 @@ jQuery(document).ready(function(){
 							confirmmsg = "Are you sure you want to delete this folder and recursively delete  all the folders under it ?"
 					}
 
-			ret_ans = confirm(confirmmsg)
+				ret_ans = confirm(confirmmsg)
+		 
+				deleteredirect = jQuery('#delete_redirect').val();
+			  
+			
 			if(ret_ans==true)
-			{
-
-
+			{ 
+				 
 				var folder_data = 
 				{
 						action 			: 'dmt_ajax_folder_delete',
@@ -228,21 +231,21 @@ jQuery(document).ready(function(){
 						folder_id 		: jQuery('#dmt_folder_term_id').val() 
 				};
 				jQuery('#dmt_folder_delete_spinner').show();
-				deleteredirect = jQuery('#delete_redirect').val();
+			
 				jQuery.post(ajaxurl, folder_data, function(response) {
 
 					if(response.success == true)
 					{
 						jQuery('#dmt_folder_delete_spinner').hide();
 
-						//window.location.replace(deleteredirect);		
+						window.location.href = deleteredirect;		
 					}
 					else
 					{
 						jQuery('#dmt_folder_delete_spinner').hide();
 						alert('Something seems to have gone wrong with the delete. Try again later.');
 					}
-				});
+				}); 
 
 			}
 			else
