@@ -1,8 +1,8 @@
 Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNestedList", {
            extend: 'Ext.dataview.List',
            xtype:'dmtnestedfolderlist',
-           config: {
            
+           config: {
            title:'Files',
            id:'dmt-nested-list',
            ui : 'dark',
@@ -35,13 +35,13 @@ Ext.define("DMTApp.view.DmtTabsPanel.DmtSubTabsPanel.DmtFolderStructure.DmtNeste
            },
            variableHeights:true,
            },
-           itemTpl: '<table class="dmtNestedListItem">' +
+           itemTpl: '<table class="dmtNestedListItem {f_open}">' +
            '<tbody>'+
            '<tr>'+
            '<td style="width:17%" align="center">{[values.fld_item_id > 0 ? values.fld_item_id : \'\']} </td>'+
-           '<td style="width:70%">'+
+           '<td style="width:70%" >'+
            '<div class="dmt-file-icon-small dmt-file-{[values.f_ext.replace(\'.\',\'\')]}"></div>'+
-           '<span class="dmt-list-item-fname">{f_name}</span>'+
+           '<span class="dmt-list-item-fname">{f_name}</span></span>'+
            '<div class="dmtMessagesDate">'+
            '{[values.f_description.length > 130 ? values.f_description.substring(0,127)+\'.....\' : values.f_description]}'+
            '</div>'+

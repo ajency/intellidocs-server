@@ -138,3 +138,7 @@ div.dmtNestedListSortButtons span
 {
     text-align:left;
 }
+
+table.file_open_class{
+    background-color : #ccc;
+}

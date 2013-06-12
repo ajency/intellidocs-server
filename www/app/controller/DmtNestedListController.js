@@ -15,6 +15,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
             dmtNestedList:
 			{
                 itemtap		: 'dmtNestedListItemTap',
+                painted  : 'dmtNestedListUpdateData',
                 itemtaphold : 'dmtListItemTapHold',
                 initialize	: 'dmtNestedListInitialize'
             },
@@ -27,6 +28,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                 tap 		: 'dmtBackButtonAction'
             }
         }
+    },
+    dmtNestedListUpdateData : function(list, eOpts){
+        
     },
     dmtBackButtonAction:function(button){
            
@@ -132,15 +136,16 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                     fld_item_id		: results.rows.item(i).f_fld_item_id,
                                                     f_sub_fld_count	: results.rows.item(i).f_folder_count,
                                                     f_folders		: []
-                                                    });
+                                                    
+                                            });
                                         }
                                         //Ext.getStore('DmtFolderStructureStore').setData(f_data);
-                                        str.setData({'items' : f_data});
-                                        
-                                        },
-                                        function(err){
+                                        //str.setData({'items' : f_data});
+                                        IntelliDocs.checkFileOpened(f_data);
+                                    },
+                                    function(err){
                                             //console.log("Error fetching data");
-                                        });
+                                    });
                           
                           });
     },
@@ -494,8 +499,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                     f_parent		: record.getData().f_id,
                                                     fld_item_id		: results.rows.item(i).f_fld_item_id,
                                                     f_sub_fld_count	: results.rows.item(i).f_folder_count,
-                                                    f_folders		: []
-                                                    
+                                                    f_folders		: [],
+                                                    f_open          : 'no'
                                                 });
                                         }
                                         
@@ -525,51 +530,58 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         }
                                         if(record.getData().f_parent >= 0) Ext.getCmp('dmt-nested-list-back-button').show();
                                         
-                                        list.getStore().setData({'items' : f_data});
+                                        //list.getStore().setData({'items' : f_data});
+                                        //list.getStore().setData({'items' : f_data});
+                                        
                                         _this.dmtDetailsPanelChange(record,null,false);
-                                        },
-                                        function(err){
-                                            //console.log("errr" + err.code);
-                                        });
+                                        
+                                        IntelliDocs.checkFileOpened(f_data);
+                                        
+                                    },
+                                    function(err){
+                                        //console.log("errr" + err.code);
+                                    });
                  
                           });
            }
            else
            {
+               
                 var createDetailsPanelDelayed = Ext.create('Ext.util.DelayedTask', function() {
                                                       
                                                       if(record.getData().f_type == 'file')
                                                       {
-                                                      _this.dmtDetailsPanelChange(record,null,true);
-                                                      //return;
-                                                      //check if file exists
-                                                      var file_name_url = record.getData().f_attachment;   
-                                                      var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);   
-                                                      var folder_path = record.getData().f_folder;
+                                                           
+                                                           //check if file exists
+                                                           var file_name_url = record.getData().f_attachment;
+                                                           var file_name = file_name_url.substring(file_name_url.lastIndexOf('/')+1);
+                                                           var folder_path = record.getData().f_folder;
                                                       
-                                                      fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
+                                                           fileSystemRoot.getFile(root_file_path + "/" + folder_path + "/" + file_name,
                                                                              {},
                                                                              function(fileEntry){
-                                                                             window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
-                                                                             _this.dmtDetailsPanelChange(record,null,true);
+                                                                                 
+                                                                                 window.plugins.openfile.viewFile(root_file_path + "/" + folder_path +"/"+ file_name);
+                                                                                 IntelliDocs.markFileOpened(folder_path  +"/"+ file_name);
+                                                                                _this.dmtDetailsPanelChange(record,null,true);
                                                                              },
                                                                              function(err){
-                                                                             Ext.Msg.confirm('','Download file?',
+                                                                                Ext.Msg.confirm('','Download file?',
                                                                                              function(buttonId){
                                                                                              if(buttonId == 'yes')
                                                                                              {
                                                                                              IntelliDocs.downloadFile(record);
                                                                                              }
                                                                                              });
-                                                                             _this.dmtDetailsPanelChange(record,null,false);
+                                                                                _this.dmtDetailsPanelChange(record,null,false);
                                                                              });
                                                       }
                                                       else
                                                       {
-                                                      current_f_id = record.getData().f_id;
-                                                      _this.dmtDetailsPanelChange(record,null,false);
+                                                           current_f_id = record.getData().f_id;
+                                                           _this.dmtDetailsPanelChange(record,null,false);
                                                       }
-                                                      });
+                                                    });
            
            createDetailsPanelDelayed.delay(100);
         }
@@ -614,7 +626,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
         Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
-        button.removeCls('dmtRefreshToRemoveNotifications');
+        //button.removeCls('dmtRefreshToRemoveNotifications');
 		//this.dmtDetailsPanelChange(null,{f_type:''},null);
         }
         else

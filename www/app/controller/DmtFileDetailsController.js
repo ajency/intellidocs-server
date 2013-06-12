@@ -231,7 +231,7 @@ Ext.define('DMTApp.controller.DmtFileDetailsController', {
         var structure = Ext.getCmp('dmtFileFolder')._value;
         
         window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
-           
+        IntelliDocs.markFileOpened(structure +"/"+ file_name);
     },
     dmtDetailsPanelDownloadButtonTap:function(button)
 	{

@@ -56,10 +56,7 @@ Ext.application({
     
     mainlaunch: function() {
                 
-        if(!device || !this.launched)
-        {
-            return;
-        }
+        
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
 
