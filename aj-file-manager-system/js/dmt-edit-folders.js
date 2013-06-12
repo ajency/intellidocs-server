@@ -235,7 +235,7 @@ jQuery(document).ready(function(){
 					{
 						jQuery('#dmt_folder_delete_spinner').hide();
 
-						window.location.replace(deleteredirect);		
+						//window.location.replace(deleteredirect);		
 					}
 					else
 					{
