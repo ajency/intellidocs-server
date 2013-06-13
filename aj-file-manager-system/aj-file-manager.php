@@ -502,6 +502,15 @@ License: GPL3
 	function dmt_ajax_folder_delete()
 	{
 		global $wpdb;
+		
+		$folder_dmt_group_folder = $wpdb->prefix . "dmt_group_folder";
+		
+		$folders_dmt_deactvated_folders  = $wpdb->prefix . "dmt_deactvated_folders";
+		
+		$folders_dmt_folder_visibility_status  = $wpdb->prefix . "dmt_folder_visibility_status";
+		
+		$folders_dmt_document_folders_meta  = $wpdb->prefix . "dmt_document_folders_meta";
+		
 		$folder_id 		= $_POST['folder_id']; 
 		$recursive 		= $_POST['recursive']; 
 		if($recursive=="yes")
@@ -510,9 +519,26 @@ License: GPL3
 			foreach ( $termchildren as $child ) 
 			{ 
 				wp_delete_term( $child, 'document_folders' );
+				
+
+				$wpdb->query($wpdb->prepare("DELETE FROM $folder_dmt_group_folder WHERE `folder_id` = %d", $child));
+				
+				$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_deactvated_folders WHERE `folder_id` = %d", $child));
+				
+				$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_folder_visibility_status WHERE `folder_id` = %d", $child));
+				
+				$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_document_folders_meta WHERE `folder_id` = %d", $child));
 			}
 		}
 		wp_delete_term( $folder_id, 'document_folders' );
+		
+		$wpdb->query($wpdb->prepare("DELETE FROM $folder_dmt_group_folder WHERE `folder_id` = %d", $folder_id));
+		
+		$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_deactvated_folders WHERE `folder_id` = %d", $folder_id));
+		
+		$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_folder_visibility_status WHERE `folder_id` = %d", $folder_id));
+		
+		$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_document_folders_meta WHERE `folder_id` = %d", $folder_id));
 		$success =  true;
 		$response = json_encode( array( 'success' => $success,'folder_id' => $folder_id ,'terms'=>$termchildren,'recursive'=>$recursive) );
 		header( "Content-Type: application/json" );
