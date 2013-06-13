@@ -403,17 +403,22 @@ function intellidocs_sort_folders($cats)
 	$cats_arr_sort_by_itemid = array();
 	$cats_arr_sort_by_name = array();
 	$cats_sorted = array();
+	$user_role = dmt_get_current_user_role();
 	foreach($cats as $cat){
-	
-		$document_folders_item_id = dmt_get_document_folder_meta($cat->term_id,'document_folders_item_id');
-	
-		if($document_folders_item_id !="")
+
+		if(dmt_check_folder_status_is_published($cat->term_id) || ($user_role  == "dmt_site_admin" || $user_role  =="administrator"))
 		{
-			$cats_arr_sort_by_itemid[] = array('cats'=>$cat,'term'=>$document_folders_item_id);
-		}
-		else
-		{
-			$cats_arr_sort_by_name[] = array('cats'=>$cat,'name'=>strtoupper($cat->name));
+	
+			$document_folders_item_id = dmt_get_document_folder_meta($cat->term_id,'document_folders_item_id');
+		
+			if($document_folders_item_id !="")
+			{
+				$cats_arr_sort_by_itemid[] = array('cats'=>$cat,'term'=>$document_folders_item_id);
+			}
+			else
+			{
+				$cats_arr_sort_by_name[] = array('cats'=>$cat,'name'=>strtoupper($cat->name));
+			}
 		}
 	}
 	
@@ -483,7 +488,7 @@ function intellidocs_document_folder_structure($catid = null)
 		");	
 		$cats = array();
 		foreach($access_cats as $access_cat)
-		{
+		{ 
 			if(dmt_check_folder_status_is_published($access_cat->category_id))
 			{
 				$cats[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
