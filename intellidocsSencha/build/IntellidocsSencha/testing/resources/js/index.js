@@ -28,8 +28,8 @@ var global_init_launch = true;
 var global_app_version = 'Version: 1.2.5';
    
 //global https
-//var global_https = "https://www.intellidocs.net";
-var global_https = "https://www.press-port.com";
+var global_https = "https://www.intellidocs.net";
+//var global_https = "https://www.press-port.com";
 
 var db = {};
 
