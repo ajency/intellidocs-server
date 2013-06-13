@@ -29,7 +29,7 @@
 		<div id="update-group-name" style="display: inline"><input type="text" name="group_name_update" id="group_name_update" value="">&nbsp;<input id="update-group-button"   type="button" value="Rename" class="button button-primary">&nbsp;&nbsp;<input id="remove-group-button"  type="button" value="x" class="button button-primary"></div>
 		</div>
 		</td> 
-          <td width="250"  >
+          <td width="250"  align="right">
 		 <strong>Group Name: </strong>
 		  <div   style="display: inline">
 			<input type="text" name="group_name"  id="group_name">
@@ -43,9 +43,10 @@
 		</td> 
             	  
      </tr>
-	 
+     </table>
+	 <table border="0" width="100%"title="Manage Groups" class="wp-list-table"  >  
 	 <tr id="row-group-members">  
-         <td width="595"  >
+         <td width="50%" valign="top"  >
 		 <strong><h3>Group Members:</h3></strong><br> 
 		  <div id="available_users_add" style="display: inline" class="available_users_add">
 			<input id="add-user-group-button" type="button" value="Add Group Members" class="button button-primary add-user-group-button">
@@ -60,14 +61,10 @@
 		 </div>
 		</td> 
             	  
-     </tr>
-	     <tr>  
-         <td width="595"  height="20"> <hr>
-		</td> 
-            	  
-     </tr>
-	  <tr id="row-folder-visibility">  
-         <td colspan="2"  >
+   <!-- </tr>
+	    
+	  <tr id="row-folder-visibility">    --> 
+         <td colspan="2"  valign="top">
 		 <strong><h3>Folder Visibility:</h3></strong><br> 
 		  <div id="available_group_folder" class="available_group_folder" style="display: inline">
 			<input id="add-group-folder-button" type="button" value="Add Group Folders" class="button button-primary add-group-folder-button">
