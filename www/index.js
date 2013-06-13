@@ -25,8 +25,8 @@ var global_long_press = false;
 var global_app_version = 'Version : 1.3';
 
 //global http vars. switch server with ease
-//var global_https = "https://www.intellidocs.net";
-var global_https = "https://www.press-port.com";
+var global_https = "https://www.intellidocs.net";
+//var global_https = "https://www.press-port.com";
 
 var db = null;
 /*
@@ -219,7 +219,6 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                function(entry)
                                {
                                     var f = folder_path + "/" + file_name;
-                                    console.log("PAth = " + f);
                                     db.transaction(function(tx){
                                               tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+f+"'",
                                                             [],

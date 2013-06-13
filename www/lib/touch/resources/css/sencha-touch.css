@@ -26,7 +26,7 @@ div.dmt-secure-login-panel-logo {background:url('../images/company_logo/new_logo
 
 /*Nested list item css*/
 .x-list .x-list-item .x-list-item-label{ min-height: 1em;}
-div.dmt-file-icon-small{ width:24px;height:24px; display:inline-block; vertical-align:middle; margin-right:4px;}
+div.dmt-file-icon-small{ width:24px;height:24px; display:inline-block; vertical-align:middle; margin-right:4px;margin-top:6px}
 table.dmtNestedListItem{ width:100%; font-size:12px !important;}
 table.dmtNestedListItem tr td { width: 50%; overflow:hidden;}
 table.dmtNestedListItem tr td.dmtNestedListItemType { text-align:center; color: #999;}
