@@ -69100,7 +69100,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
     },
     dmtNestedListChange:function( _this,list,eOpts )
     {
-    	Ext.Viewport.unmask();
+    	//Ext.Viewport.unmask();
         //list.un('itemtaphold',this.dmtListItemTapHold);
         //list.on('itemtaphold',this.dmtListItemTapHold);
     },
@@ -69505,8 +69505,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
 		if(Ext.getCmp('dmt-nested-list-back-button'))	
         	Ext.getCmp('dmt-nested-list-back-button').hide();
 		
-		Ext.getCmp('dmt-nested-list').mask();
-		
 		var str = Ext.getStore('DmtFolderStructureStore');
 		list.setStore(str);
       
@@ -69527,7 +69525,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                           },function(err){});
             });
 		
-		Ext.Viewport.unmask();
+		
 		
 		//Add the user_name param to the polling function
 		var base_params ={

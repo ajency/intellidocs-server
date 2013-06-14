@@ -68,11 +68,11 @@ Ext.application({
     },
     mainlaunch: function() {
                 
-       /* if(!device || !this.launched)
+        if(!device || !this.launched)
         {
             console.log("Returnning here");
             return;
-        }*/
+        }
     	
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
