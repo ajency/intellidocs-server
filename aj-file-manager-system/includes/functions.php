@@ -372,11 +372,11 @@ function file_download_option($actions, $post)
 					 $filenamepath=  $upload_dir['basedir']."/".$filename;
 					//$display_name = html_entity_decode(str_replace("&#8217","",get_the_title($file_id))); 
 					//$display_name =  (str_replace(";","",$display_name)); 
-					 $display_name = get_the_title($file_id) ;
+					// $display_name = get_the_title($file_id) ;
 				 	$file_extension =  dmt_get_file_extension( $filename );
 					$ctype          =  dmt_get_file_ctype( $file_extension );
 					header("Content-Type: " . $ctype . "");
-					header("Content-Disposition: attachment; filename=".$display_name);
+					header("Content-Disposition: attachment; filename=".$filename);
 					//header("Content-Type: application/octet-stream");
 					//header("Content-Disposition: attachment; filename=".$filename);
 					 $str = readfile(trim($filenamepath));
@@ -904,7 +904,7 @@ function dmt_add_folder()
 add_action('wp_ajax_dmt_add_folder','dmt_add_folder');
 
 
-function modify_post_title( $data , $postarr )
+/*function modify_post_title( $data , $postarr )
 {
 	if($data['post_type'] == 'document_files') {
 		
@@ -915,4 +915,4 @@ function modify_post_title( $data , $postarr )
 	}
 	return $data;
 }
-add_filter( 'wp_insert_post_data' , 'modify_post_title' , '99', 2 );
+add_filter( 'wp_insert_post_data' , 'modify_post_title' , '99', 2 );*/
