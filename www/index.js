@@ -22,7 +22,7 @@ var global_is_user_logged_in = false;
 var global_long_press = false;
 
 //global app version
-var global_app_version = 'Version : 1.3';
+var global_app_version = 'Version : 2.0.0';
 
 //global http vars. switch server with ease
 var global_https = "https://www.intellidocs.net";
@@ -200,7 +200,7 @@ IntelliDocs.checkFileOpened = function(f_data)
     }
     else
     {
-        Ext.getCmp('dmt-nested-list').mask();
+        //Ext.getCmp('dmt-nested-list').mask();
         IntelliDocs.recursiveFileOpenCheck(f_data,0);
     }
 }
@@ -220,8 +220,8 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                {
                                     var f = folder_path + "/" + file_name;
                                     db.transaction(function(tx){
-                                              tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+f+"'",
-                                                            [],
+                                              tx.executeSql("SELECT * FROM opened_files WHERE file_path=?",
+                                                            [f],
                                                             function(tx,results){
                                                             
                                                                 if(results.rows.length > 0)
@@ -241,6 +241,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                                                 if(index == f_data.length)
                                                                 {
                                                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+                                                                    Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                                                     global_file_open_check = [];
                                                                     Ext.getCmp('dmt-nested-list').unmask();
                                                                 }
@@ -264,6 +265,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                 if(index == f_data.length)
                                 {
                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+                                    Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                     global_file_open_check = [];
                                     Ext.getCmp('dmt-nested-list').unmask();
                                 }
@@ -280,6 +282,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
         if(index == f_data.length)
         {
             Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
+            Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
             global_file_open_check = [];
             Ext.getCmp('dmt-nested-list').unmask();
         }
@@ -931,14 +934,14 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
  * category_id = objec to search for
  * function
  */
-IntelliDocs.updateFolder = function(category_name)
+IntelliDocs.updateFolder = function(category_name,category_id)
 {
     
 	db.transaction(function (tx) {
 
                    IntelliDocs.dmtCreateDirectories(category_name);
                    
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'",
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent="+ category_id,
                                  [],
                                  function(tx,results){
                                                
@@ -1252,10 +1255,9 @@ IntelliDocs.downloadFile = function(record)
 
 IntelliDocs.markFileOpened = function(filePath)
 {
-    console.log("ENter here");
     db.transaction(function(tx){
-                    tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+filePath+"'",
-                                  [],
+                    tx.executeSql("SELECT * FROM opened_files WHERE file_path=?",
+                                  [filePath],
                                   function(tx,results){
                                   
                                     if(results.rows.length == 0)

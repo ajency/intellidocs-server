@@ -412,7 +412,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         else
                                         {
                                             //console.log("Load New Data");
-                                        Ext.getCmp('dmt-nested-list-refresh-button').fireAction('tap');
+                                            Ext.getCmp('dmt-nested-list-refresh-button').fireAction('tap');
                                             //IntelliDocs.write_json(true,this.dmtGetUsernameFromCache(),false);
                                         }
                                         },function(err){});
