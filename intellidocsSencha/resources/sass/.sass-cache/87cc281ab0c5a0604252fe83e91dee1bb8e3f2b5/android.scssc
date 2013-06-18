@@ -1,7 +1,7 @@
 3.2.9 (Media Mark)
-fdc88427d5867aa6bb6ba18ea58362051458e654
+06e52fc1df9f0332cc421308f87a97684e7c6018
 o:Sass::Tree::RootNode
-:@template"½ $base-gradient:'null';
+:@template"À $base-gradient:'null';
 $include-border-radius:false;
 $include-highlights:false;
 $list-active-gradient: 'recessed';
@@ -178,7 +178,7 @@ div.dmtMessagesEmptyText{
 }
 
 table.file_open_class{
-    background-color : #ccc;
+    background-color : #A4C4E1;
 }
 
 /** Splash Screen **/
@@ -379,7 +379,7 @@ o;/;"url;{ ;@;0;i©;[o;	;;;"(../images/no_images/no_messages.png;
 table;H0;)" ;i±o;(;["file_open_class;)@ç
 ;i±;)@ç
 ;i±;)@ç
-;i±;T;@;*i ;	[o;+;["background-color;o;;;,;"	#ccc;@;-;.;@;*i ;	[ ;i²;i±o;
+;i±;T;@;*i ;	[o;+;["background-color;o;;;,;"#A4C4E1;@;-;.;@;*i ;	[ ;i²;i±o;
 ;;F;["/** Splash Screen **/;@;	[ ;iµo;;["	body;o; ;![o;";![o;#
 ;$0;%o;&;'{ ;![o;G	;["	body;H0;)" ;i¶;)@;i¶;)@;i¶;T;@;*i ;	[o;+;["background;o;4	;[o;4	;[	o;/;"url;{ ;@;0;i·;[o;	;;;"/../images/splash/intellidocs-bg-logo-s.png;@;i·o;	;;,;"no-repeat;@;i·o;	;;,;"center;@;i·o;	;;,;"center;@;i·;@;i·;5;6o;/;"-webkit-gradient;{ ;@;0;i·;[o;	;;,;"radial;@;i·o;4	;[o;	;;,;"center;@;i·o;	;;,;"center;@;i·;@;i·;5;6o;0;1[ ;2["px;i ;@;3"0px;i·o;4	;[o;	;;,;"center;@;i·o;	;;,;"center;@;i·;@;i·;5;6o;0;1[ ;2["%;ii;@;3"	100%;i·o;/;"color-stop;{ ;@;0;i·;[o;0;1[ ;2["%;i$;@;3"31%;i·o;J	;0;K{	;LiÁ;Mi ;Ni;Oi€;@;i·o;/;"color-stop;{ ;@;0;i·;[o;0;1[ ;2["%;ii;@;3"	100%;i·o;J	;0;K{	;Lii;Mi ;Ni;Oi6;@;i·;@;i·;5:
 comma;-;.;@;*i ;	[ ;i·o;

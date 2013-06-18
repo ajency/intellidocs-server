@@ -46,8 +46,9 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         var record = {};
         //we have all data in db. trigger db here
         db.transaction(function(tx){
-                       tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id="+button.current_f_id.f_parent,[],
-                                     function(tx,results){
+                       tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_id=?",
+                    		   		[button.current_f_id.f_parent],
+                                    function(tx,results){
                                      
                     	   			if(results.rows.length == 0)
                                      {
@@ -78,15 +79,19 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      
                                      _this.dmtDetailsPanelChange(record,null);
                                      
-                                     
-                                     if(f_id > 0)
-                                         Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
-                                     else
+                                    if(f_id > 0)
+                                    {
+                                    	Ext.getCmp('dmt-nested-list-title-bar').setTitle(record.getData().f_name);
+                       				}
+                                    else
+                                    {
                                          Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
-                                     
+                                         Ext.getCmp('dmt-details-container-titlebar').setTitle('Details Panel');	
+                                    }
                                      if(record.getData().f_parent != 0)
                                      {
-                                         tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                         tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id=?",
+                                        		 	[record.getData().f_parent],
                                                    function(tx,results)
                                                    {
                                                    Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
@@ -99,7 +104,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      else
                                      {
                                              Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
-                                                     f_id : record.getData().f_id,
+                                                     f_id 		: record.getData().f_id,
                                                      f_parent : record.getData().f_parent,
                                                      f_folder : ''
                                                  }
@@ -107,8 +112,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                      
                                  });
                        
-                       var sql = "SELECT * FROM intellidocs_folders WHERE f_parent="+f_id;
-                       tx.executeSql(sql,[],
+                       var sql = "SELECT * FROM intellidocs_folders WHERE f_parent=?";
+                       tx.executeSql(sql,[f_id],
                                      function(tx, results){
                                      var len = results.rows.length;
                                      var f_data = [];
@@ -133,9 +138,6 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                  f_folders		: []
                                           });
                                      }
-                                     //Ext.getStore('DmtFolderStructureStore').setData(f_data);
-                                     //str.setData({'items' : f_data});
-                                     //str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                      IntelliDocs.checkFileOpened(f_data);
                                    },
                                    function(err){
@@ -556,7 +558,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
       
 			
 		db.transaction(function(tx){
-            tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=0",[],
+            tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=?",[0],
                           function(tx, results){
                           if(results.rows.length > 0)
                           {
@@ -630,7 +632,8 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            
            db.transaction(function(tx){
-                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+record.getData().f_id,[],
+                          tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=?",
+                        		  		[record.getData().f_id],
                                         function(tx, results){
 
                                         var len = results.rows.length;
@@ -662,7 +665,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                         
                                         if(record.getData().f_parent != 0)
                                         {
-                                            tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id="+record.getData().f_parent,[],
+                                            tx.executeSql("SELECT f_folder FROM intellidocs_folders WHERE f_id=?",[record.getData().f_parent],
                                                       function(tx,results)
                                                       {
                                                         Ext.getCmp('dmt-nested-list-back-button').current_f_id  = {
@@ -713,6 +716,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                                                                              window.openFile(root_file_path + "/" + folder_path +"/"+ file_name);
                                                                              IntelliDocs.markFileOpened(folder_path +"/"+ file_name);
                                                                              _this.dmtDetailsPanelChange(record,null,true);
+                                                                             record.set('f_open','file_open_class');
                                                                              },
                                                                              function(err){
                                                                              Ext.Msg.confirm('','Download file?',

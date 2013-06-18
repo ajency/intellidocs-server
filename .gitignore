@@ -9,3 +9,4 @@ intellidocsR2/.settings/org.eclipse.jdt.core.prefs
 intellidocsR2/lint.xml
 intellidocsR2/project.properties
 intellidocsR2/src/com/intellidocs/Intellidocs.java
+stderr.txt

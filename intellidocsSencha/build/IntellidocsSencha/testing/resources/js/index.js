@@ -28,15 +28,15 @@ var global_init_launch = true;
 var global_app_version = 'Version: 1.2.5';
    
 //global https
-var global_https = "https://www.intellidocs.net";
-//var global_https = "https://www.press-port.com";
+//var global_https = "https://www.intellidocs.net";
+var global_https = "https://www.press-port.com";
 
 var db = {};
 
 document.addEventListener('deviceready',function(){
     
 	//instantiate the DB
-    db = window.openDatabase('intellidocs_demo', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
+    db = window.openDatabase('intellidocs_app', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
     db.transaction(function (tx) {
                   // tx.executeSql('DROP TABLE intellidocs_folders');return;
                    tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id,f_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
@@ -98,7 +98,7 @@ document.addEventListener('deviceready',function(){
     	} 
     	else
     	{
-    		 // move the app one folder back
+    		// move the app one folder back
     		backbutton.fireAction("tap",[backbutton]);
     	}
      },false);
@@ -199,7 +199,8 @@ function sqlLoadComplete()
     setTimeout(function(){
     	var str = Ext.getStore('DmtFolderStructureStore');
     	db.transaction(function(tx){
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent='"+f_id+"'",[],
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=?",
+                		   		[f_id],
                                  function(tx, results){
                 	   			
                 	   			
@@ -228,14 +229,13 @@ function sqlLoadComplete()
                                              
                                              });
                                  }
-                                 //str.setData({'items' : f_data});
-                                 //str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+                                 
                                  IntelliDocs.checkFileOpened(f_data);
                                  
-                                 Ext.getCmp('dmt-nested-list').mask();
-                                 setTimeout(function(){
-                                	 Ext.getCmp('dmt-nested-list').unmask();
-                                 },100);
+                                Ext.getCmp('dmt-nested-list').mask();
+                                setTimeout(function(){
+                              		Ext.getCmp('dmt-nested-list').unmask();
+                              	},1000);
                             },
                             function(err){
                                     console.log("Error fetching data");
@@ -254,7 +254,6 @@ IntelliDocs.checkFileOpened = function(f_data)
     }
     else
     {
-        Ext.getCmp('dmt-nested-list').mask();
         IntelliDocs.recursiveFileOpenCheck(f_data,0);
     }
 }
@@ -274,14 +273,13 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                {
                                     var f = folder_path + "/" + file_name;
                                     db.transaction(function(tx){
-                                              tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+f+"'",
-                                                            [],
+                                              tx.executeSql("SELECT * FROM opened_files WHERE file_path=?",
+                                                            [f],
                                                             function(tx,results){
                                                             
                                                                 if(results.rows.length > 0)
                                                                 {
                                                                     f_data[index].f_open = 'file_open_class';
-                                                                    
                                                                 }
                                                                 else
                                                                 {
@@ -296,7 +294,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                                                 {
                                                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
                                                                     global_file_open_check = [];
-                                                                    Ext.getCmp('dmt-nested-list').unmask();
+                                                                    Ext.getCmp('dmt-nested-list').refresh();
                                                                 }
                                                             
                                                             },function(err){
@@ -319,7 +317,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                 {
                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
                                     global_file_open_check = [];
-                                    Ext.getCmp('dmt-nested-list').unmask();
+                                    Ext.getCmp('dmt-nested-list').refresh();
                                 }
                                });
     }
@@ -335,7 +333,7 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
         {
             Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
             global_file_open_check = [];
-            Ext.getCmp('dmt-nested-list').unmask();
+            Ext.getCmp('dmt-nested-list').refresh();
         }
     }
     
@@ -1096,14 +1094,16 @@ IntelliDocs.loop_json = function(_json_obj, category_id, subfolder_check)
  * category_id = objec to search for
  * function
  */
-IntelliDocs.updateFolder = function(category_name)
-{
+
+IntelliDocs.updateFolder = function(category_name,category_id){
     
 	db.transaction(function (tx) {
 
                    IntelliDocs.dmtCreateDirectories(category_name);
                    
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_folder='"+ category_name +"'", [], function(tx,results){
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent="+category_id,
+                		   		 [],  
+                		   		 function(tx,results){
                                                
                                                var len = results.rows.length;
                                                
@@ -1123,8 +1123,9 @@ IntelliDocs.updateFolder = function(category_name)
                                                     global_queued_file_urls = [];
                                                     global_queued_file_download_complete_count = 0;
                                                     global_current_download_folder_id = 0;
+                                                    Ext.getCmp('dmt-download-progress-folder').destroy();
                                                }
-                                               },
+                                        },
                                                function(err){
                                                     console.log( "Error processing SQL: " + err.code );
                                                });
@@ -1153,7 +1154,9 @@ IntelliDocs.updateAllFolders = function()
                                     IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
                                  }
                                  
-                                 tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type='file'", [], function(tx,results){
+                                 tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type=?", 
+                                		 		['file'], 
+                                		 		function(tx,results){
                                                
                                                var len = results.rows.length;
                                                
@@ -1166,13 +1169,14 @@ IntelliDocs.updateAllFolders = function()
                                                
                                                if(global_queued_file_urls.length > 0)
                                                {
-                                               //trigger the bulk file download 
-                                               IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+                                            	   //trigger the bulk file download 
+                                            	   IntelliDocs.download_queued_file(global_queued_file_urls[0]);
                                                }
                                                else{
                                                global_queued_file_urls = [];
                                                global_queued_file_download_complete_count = 0;
                                                global_current_download_folder_id = 0;
+                                               Ext.getCmp('dmt-download-progress-folder').destroy();
                                                }
                                                },
                                                function(err){
@@ -1280,14 +1284,12 @@ IntelliDocs.get_all_leaf_elements = function(obj,subfolder_check)
            
             if(data['leaf'] && (data['f_type'] == 'file'))
             {
-            	console.log("File found");
-                global_queued_file_urls.push({
+            	global_queued_file_urls.push({
                 	   url : data['f_attachment'],
                 	   path: data['f_folder']});
             }
             else if(data['f_type'] == "folder" && subfolder_check)
             {
-            	console.log("Dir found");
             	IntelliDocs.dmtCreateDirectories(data['f_folder']);
             	IntelliDocs.get_all_leaf_elements(data['items'],true);	
             }
@@ -1346,7 +1348,6 @@ IntelliDocs.getFolderMeta = function(folder_path,total_files)
                                 function(err)
                                 {
 									//if directory doesn't exists
-									console.log('Failed to load files details');
 									meta = "Total Files: " + total_files +"/ Downloaded Files: 0 / Remaining Files: " + total_files;
 									if(Ext.getCmp('dmt-folder-metadata'))
 										Ext.getCmp('dmt-folder-metadata').setHtml(meta);  
@@ -1386,47 +1387,7 @@ IntelliDocs.downloadFile = function(record)
     {
         var file_url = record.getData().f_attachment;
         var file_name = file_url.substring(file_url.lastIndexOf('/')+1);
-      
-      /*  var progress_bar_panel_config =
-            {
-                    id:'dmt-download-progress',
-                    width:300,
-                    height:200,
-                    hideOnMaskTap:false,
-                    modal:true,
-                    centered:true,
-                    layout:
-                    {
-                        type:'vbox',
-                        pack:'center',
-                        align:'center',
-                        },
-                        items:
-                        [
-                         {
-                         xtype:'titlebar',
-                         docked:'top',
-                         title:'Download'
-                         },
-                         {
-                         xtype:'panel',
-                         html:file_name,
-                         },
-                         {
-                         xtype:'panel',
-                         html:'<div id="loading-container">'+
-                         '<div id="loading-box">'+
-                         '<div id="loading-bar">'+
-                         '<div id="percentage"></div>'+
-                         '</div>'+
-                         '</div>'+
-                         '</div>',  
-                         }
-                        ]
-            }
-                       
-        var fileProgressPanel = Ext.create('Ext.Panel',progress_bar_panel_config);
-        Ext.Viewport.add(fileProgressPanel).show();*/
+     
        
         var fileProgressPanel = Ext.create('Ext.LoadMask',{
     		id:'file-download-mask',
@@ -1459,6 +1420,8 @@ IntelliDocs.downloadFile = function(record)
         			Ext.getCmp('dmt-file-action-button').setText('Open');
         			window.openFile(root_file_path+"/"+structure+"/"+file_name); 
         			IntelliDocs.markFileOpened(structure +"/"+ file_name);
+        			
+        			record.set('f_open','file_open_class');
         		}
         	},
         	function(error) {
@@ -1566,10 +1529,9 @@ function read_file_data(file)
 
 IntelliDocs.markFileOpened = function(filePath)
 {
-    console.log("ENter here");
     db.transaction(function(tx){
-                    tx.executeSql("SELECT * FROM opened_files WHERE file_path='"+filePath+"'",
-                                  [],
+                    tx.executeSql("SELECT * FROM opened_files WHERE file_path=?",
+                                  [filePath],
                                   function(tx,results){
                                   
                                     if(results.rows.length == 0)

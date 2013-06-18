@@ -44,12 +44,12 @@ Ext.define('DMTApp.controller.DmtNestedListSortController', {
 		
 		if(button.getIconCls() == 'arrow_up')
 		{
-			list_store.sort([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'ASC'},{property : 'fld_item_id',direction:'ASC'}]);
+			list_store.sort([{property:'f_type',direction:'ASC'},{property:sort_variable,direction:'ASC'},{property : 'fld_item_id',direction:'ASC'}]);
 			button.setIconCls('arrow_down');
 		}
 		else
 		{
-			list_store.sort([{property:'f_type',direction:'DESC'},{property:sort_variable,direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
+			list_store.sort([{property:'f_type',direction:'ASC'},{property:sort_variable,direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
 			button.setIconCls('arrow_up');
 		}
 	},
