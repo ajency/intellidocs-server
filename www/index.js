@@ -29,23 +29,6 @@ var global_https = "https://www.intellidocs.net";
 //var global_https = "https://www.press-port.com";
 
 var db = null;
-/*
-(function(){
- //instantiate the DB
- db = window.openDatabase('intellidocs_app', '1.0', 'Intellidocs DB', 2 * 1024 * 1024);
- db.transaction(function (tx) {
-                //tx.executeSql('DROP TABLE intellidocs_folders');return;
-                
-                tx.executeSql('CREATE TABLE IF NOT EXISTS intellidocs_folders( u_id , f_id, f_fld_item_id, f_item_id, f_folder, f_name, f_type, f_ext, f_solicitor, f_attachment, f_modified, f_description, f_file_count, f_folder_count, is_leaf, f_parent)');
-                
-                tx.executeSql('CREATE TABLE IF NOT EXISTS opened_files(file_path)');
-                
-                
-                }, function(){
-                
-                }, function(){});
- })();
-*/
 
 /**
  * the main device ready event
@@ -107,7 +90,7 @@ IntelliDocs.refillSQLData = function(loop)
                         {
                             random++;    
                             tx.executeSql('INSERT INTO intellidocs_folders (u_id,      f_id,      f_fld_item_id, f_item_id, f_folder,      f_name,      f_type,      f_ext,      f_solicitor,      f_attachment,      f_modified,      f_description,      f_file_count, f_folder_count, is_leaf, f_parent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                                 [d['u_id'], d['f_id'], 0, d['f_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
+                                 [d['u_id'], d['f_id'], d['f_item_id'], d['f_item_id'], d['f_folder'], d['f_name'], d['f_type'], d['f_ext'], d['f_solicitor'], d['f_attachment'], d['f_modified'], d['f_description'], 0, 0, 1, d['f_parent']],
                                  function(){
                                  
                                  },
@@ -149,7 +132,7 @@ function sqlLoadComplete()
     setTimeout(function(){
         var str = Ext.getStore('DmtFolderStructureStore');
         db.transaction(function(tx){
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent="+f_id,[],
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_parent=?",[f_id],
                                  function(tx, results){
                                  
                                  var len = results.rows.length;
@@ -177,14 +160,12 @@ function sqlLoadComplete()
                                         });
                                  }
                                  
-                                 //str.setData({'items' : f_data});
-                                 //str.sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                  IntelliDocs.checkFileOpened(f_data);
                                  Ext.getCmp('dmt-nested-list').unmask();
                             },
                             function(err){
-                                    console.log("Error fetching data");
-                                    Ext.getCmp('dmt-nested-list').unmask();
+                                console.log("Error fetching data");
+                                Ext.getCmp('dmt-nested-list').unmask();
                             });
                    });
         },500);
@@ -227,12 +208,12 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                                                 if(results.rows.length > 0)
                                                                 {
                                                                     f_data[index].f_open = 'file_open_class';
-                                                                    
                                                                 }
                                                                 else
                                                                 {
                                                                     f_data[index].f_open = '';
                                                                 }
+                                                            
                                                                 global_file_open_check.push(f_data[index]);
                                                                 index++;
                                                                 if(index < f_data.length)
@@ -241,7 +222,6 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                                                 if(index == f_data.length)
                                                                 {
                                                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
-                                                                    Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                                                     global_file_open_check = [];
                                                                     Ext.getCmp('dmt-nested-list').unmask();
                                                                 }
@@ -265,7 +245,6 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
                                 if(index == f_data.length)
                                 {
                                     Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
-                                    Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
                                     global_file_open_check = [];
                                     Ext.getCmp('dmt-nested-list').unmask();
                                 }
@@ -282,7 +261,6 @@ IntelliDocs.recursiveFileOpenCheck = function(f_data,index){
         if(index == f_data.length)
         {
             Ext.getCmp('dmt-nested-list').getStore().setData({'items' : global_file_open_check });
-            Ext.getCmp('dmt-nested-list').getStore().sort([{property:'f_type',direction:'DESC'},{property:'f_ext',direction:'DESC'},{property : 'fld_item_id',direction:'DESC'}]);
             global_file_open_check = [];
             Ext.getCmp('dmt-nested-list').unmask();
         }
@@ -941,7 +919,7 @@ IntelliDocs.updateFolder = function(category_name,category_id)
 
                    IntelliDocs.dmtCreateDirectories(category_name);
                    
-                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent="+ category_id,
+                   tx.executeSql("SELECT * FROM intellidocs_folders WHERE f_type='file' AND f_parent="+category_id,
                                  [],
                                  function(tx,results){
                                                
@@ -963,7 +941,8 @@ IntelliDocs.updateFolder = function(category_name,category_id)
                                                     global_queued_file_urls = [];
                                                     global_queued_file_download_complete_count = 0;
                                                     global_current_download_folder_id = 0;
-                                               }
+                                                    Ext.getCmp('dmt-download-progress-folder').destroy();
+                                                }
                                                },
                                                function(err){
                                                     console.log( "Error processing SQL: " + err.code );
@@ -993,12 +972,14 @@ IntelliDocs.updateAllFolders = function()
                                     IntelliDocs.dmtCreateDirectories(res.rows.item(0).f_folder);
                                  }
                                  
-                                 tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type='file'", [], function(tx,results){
+                                 tx.executeSql("SELECT f_attachment,f_folder FROM intellidocs_folders WHERE f_type=?",
+                                               ['file'],
+                                        function(tx,results){
                                                
-                                               var len = results.rows.length;
+                                            var len = results.rows.length;
                                                
-                                               for (var i=0; i<len; i++)
-                                               {
+                                            for (var i=0; i<len; i++)
+                                            {
                                                global_queued_file_urls.push({
                                                                             url : results.rows.item(i).f_attachment,
                                                                             path: results.rows.item(i).f_folder});
@@ -1006,18 +987,19 @@ IntelliDocs.updateAllFolders = function()
                                                
                                                if(global_queued_file_urls.length > 0)
                                                {
-                                               //trigger the bulk file download 
-                                               IntelliDocs.download_queued_file(global_queued_file_urls[0]);
+                                                    //trigger the bulk file download
+                                                    IntelliDocs.download_queued_file(global_queued_file_urls[0]);
                                                }
                                                else{
-                                               global_queued_file_urls = [];
-                                               global_queued_file_download_complete_count = 0;
-                                               global_current_download_folder_id = 0;
+                                                    global_queued_file_urls = [];
+                                                    global_queued_file_download_complete_count = 0;
+                                                    global_current_download_folder_id = 0;
+                                                    Ext.getCmp('dmt-download-progress-folder').destroy();
                                                }
-                                               },
-                                               function(err){
+                                            },
+                                            function(err){
                                                console.log("Error processing SQL: "+err.code);
-                                               });
+                                            });
                                  },
                                  function(err){
                                  console.log("Error processing SQL: "+err.code);
@@ -1156,7 +1138,7 @@ IntelliDocs.dmtCreateDirectories = function(structure)
 }
 
 IntelliDocs.downloadFile = function(record)
-{
+ {
     if(navigator.onLine)
     {
         
@@ -1217,6 +1199,9 @@ IntelliDocs.downloadFile = function(record)
                                         Ext.getCmp('dmt-file-action-button').setText('Open');                                                   
                                         window.plugins.openfile.viewFile("file://" + root_file_path + "/" +  structure +"/"+ file_name);
                                         IntelliDocs.markFileOpened(structure +"/"+ file_name);
+                                      
+                                        //update the view
+                                        record.set('f_open','file_open_class');
                                       },
                                       function(fail){
                                         if(fail.progress == 404)
@@ -1272,4 +1257,6 @@ IntelliDocs.markFileOpened = function(filePath)
                   },
                   function(){},
                   function(err){});
+    
+    
 }

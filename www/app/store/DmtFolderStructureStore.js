@@ -7,8 +7,8 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
         model: 'DMTApp.model.DmtFolderStructureModel',
         sorters:
         [
+         {property:'f_type',direction:'ASC'},
          {property:'fld_item_id',direction:'ASC'},
-         {property:'f_type',direction:'DESC'},
          {sorterFn:function(record1,record2){
          
          var  item1 = record1.data.f_item_id,
@@ -19,10 +19,8 @@ Ext.define("DMTApp.store.DmtFolderStructureStore", {
          
          return item1 < item2 ? 1 : (item1 == item2 ? 0 : -1);
          
-         },direction:'DESC'},			
-         {property:'f_name',direction:'ASC'},
-         
-				        
+         },direction:'ASC'},			
+         {property:'f_name',direction:'ASC'}				        
         ],
         proxy:{
            type:'memory',
