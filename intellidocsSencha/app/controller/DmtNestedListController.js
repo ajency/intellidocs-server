@@ -53,6 +53,7 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
                     	   			if(results.rows.length == 0)
                                      {
                                          Ext.getCmp('dmt-nested-list-title-bar').setTitle('Files');
+                                         Ext.getCmp('dmt-details-container-titlebar').setTitle('Details Panel');
                                          return;
                                      }
                                      
@@ -785,30 +786,10 @@ Ext.define('DMTApp.controller.DmtNestedListController', {
         {
            Ext.getCmp('dmt-nested-list').mask({xtype:'loadmask'});
            IntelliDocs.write_json(true,this.dmtGetUsernameFromCache());
-           var nested_list_store = Ext.getCmp('dmt-nested-list').getStore();
-           nested_list_store.setSorters([
-                                         {property:'fld_item_id',direction:'ASC'},
-                                         {property:'f_type',direction:'DESC'},  
-                                         {sorterFn:function(record1,record2){
-                                         
-                                         var  item1 = record1.data.f_item_id,
-                                         item2 = record2.data.f_item_id;
-                                         
-                                         item1 = (!item1)? 999999999 : item1;
-                                         item2 = (!item2)? 999999999 : item2;
-                                         
-                                         return item1 < item2 ? 1 : (item1 == item2 ? 0 : -1);
-                                         
-                                         },direction:'DESC'},			
-                                         {property:'f_name',direction:'ASC'},
-                                         {property:'fld_item_id',direction:'ASC'},
-                                        ]);
-        Ext.getCmp('dmt-nested-list-sort-by-name').setIconCls('arrow_down');
-        Ext.getCmp('dmt-nested-list-sort-by-type').setIconCls('arrow_down');
-        Ext.getCmp('dmt-nested-list-sort-by-item-id').setIconCls('arrow_down');
+           
        
-        if(button.hasOwnProperty('removeCls'))
-			button.removeCls('dmtRefreshToRemoveNotifications');
+           if(button.hasOwnProperty('removeCls'))
+        	   button.removeCls('dmtRefreshToRemoveNotifications');
 		
 		//this.dmtDetailsPanelChange(null,{f_type:''},null);
        }
