@@ -81,9 +81,8 @@ jQuery(document).ready(function() {
 		if(response.result == 'success')
 		{
 			jQuery('input#title').val(response.post_title);
-			jQuery('#post').submit();
-			alert("test")
 			window.onbeforeunload = function(e) {};
+			jQuery('#post').submit(); 
 		}
 		else
 		{
