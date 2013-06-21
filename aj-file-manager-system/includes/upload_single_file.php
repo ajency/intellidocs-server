@@ -38,6 +38,8 @@ $original_name = $fileName;
 //uniquie file name 
 $fileName = wp_unique_filename( $targetDir, $fileName);
 
+// Clean the fileName for security reasons
+$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
 //file path 
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
 
