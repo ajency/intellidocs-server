@@ -35,11 +35,13 @@ $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 //Get original file name to be put as post title.
 $original_name = $fileName;
 
-//uniquie file name 
-$fileName = wp_unique_filename( $targetDir, $fileName);
 
 // Clean the fileName for security reasons
 $fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
+
+//uniquie file name 
+$fileName = wp_unique_filename( $targetDir, $fileName);
+
 //file path 
 $filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
 
