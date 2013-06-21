@@ -31,13 +31,9 @@ $chunk = isset($_REQUEST["chunk"]) ? intval($_REQUEST["chunk"]) : 0;
 $chunks = isset($_REQUEST["chunks"]) ? intval($_REQUEST["chunks"]) : 0;
 $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 
-
+/** comment to keep th code same as multiple file upload begins here
 //Get original file name to be put as post title.
 $original_name = $fileName;
-
-
-// Clean the fileName for security reasons
-$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
 
 //uniquie file name 
 $fileName = wp_unique_filename( $targetDir, $fileName);
@@ -52,7 +48,39 @@ if(!empty($_REQUEST['folders']))
 	$folders = explode(',',$_REQUEST['folders']);
 else
 	$folders = array();
+comment to keep th code same as multiple file upload ends here*/
 
+/**  code from   multiple file upload begins here**/
+//Get original file name to be put as post title.
+$original_name = $fileName;
+
+//Categories/folders the user selects
+if(!empty($_REQUEST['folders']))
+	$folders = explode(',',$_REQUEST['folders']);
+else
+	$folders = array();
+
+// Clean the fileName for security reasons
+$fileName = preg_replace('/[^\w\._]+/', '_', $fileName);
+
+// Make sure the fileName is unique but only if chunking is disabled
+if ($chunks < 2 && file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName)) {
+	$ext = strrpos($fileName, '.');
+	$fileName_a = substr($fileName, 0, $ext);
+	$fileName_b = substr($fileName, $ext);
+
+	$count = 1;
+	while (file_exists($targetDir . DIRECTORY_SEPARATOR . $fileName_a . '_' . $count . $fileName_b))
+		$count++;
+
+	$fileName = $fileName_a . '_' . $count . $fileName_b;
+}
+
+$filePath = $targetDir . DIRECTORY_SEPARATOR . $fileName;
+
+$file_url = $uploads['baseurl'].'/'.$fileName;
+
+/**  code from   multiple file upload ends here here**/
 //The post id for the new post
 $id = $_REQUEST['post_id'];
 
