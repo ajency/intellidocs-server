@@ -117,6 +117,9 @@ UL.jqueryFileTree A:hover {
 .jqueryFileTree li span.edit-folder{
 	cursor:pointer;
 }
+.jqueryFileTree li span.add-sub-folder{
+	cursor:pointer;
+}
 
 .jqueryFileTree li span.folder-active{
 	color:green;

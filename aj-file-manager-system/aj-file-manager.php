@@ -499,6 +499,32 @@ License: GPL3
 	add_action('wp_ajax_dmt_ajax_folder_deactivate', 'dmt_ajax_folder_deactivate');
 	
 	
+	
+
+	function dmt_ajax_create_sub_folder()
+	{
+		 
+	
+		$folder_name 		= $_POST['folder_name'];
+		$parent_folder 		= $_POST['parent_folder'];
+		$folder_desc 		= $_POST['folder_desc']; 
+		
+		$slug = sanitize_title($folder_name);
+		
+		$term_data = wp_insert_term( $folder_name, 'document_folders',  array(
+				'description'=> $folder_desc,
+				'slug' => $slug,
+				'parent'=> $parent_folder
+		) );
+ $success =  true;
+		$response = json_encode( array( 'success' => $success ) );
+		header( "Content-Type: application/json" );
+		echo $response;
+		exit;
+	}
+	add_action('wp_ajax_dmt_ajax_create_sub_folder', 'dmt_ajax_create_sub_folder');
+	
+	
 	function dmt_ajax_folder_delete()
 	{
 		global $wpdb;
@@ -848,6 +874,11 @@ License: GPL3
 		wp_enqueue_style( 'dmt-plugin-style' );
 		if(!dmt_current_user_is_site_admin())
 		{
+ 
+			wp_register_style( 'dmt-manage-folder-bootstrap',  plugins_url('/css/bootstrap.min.css', __FILE__ ) );
+			wp_enqueue_style( 'dmt-manage-folder-bootstrap' );
+			
+			
 			wp_register_style( 'dmt-manage-folder-treeview',  plugins_url('/css/jquery.treeview.css', __FILE__ ) );
 			wp_enqueue_style( 'dmt-manage-folder-treeview' );
 
@@ -857,8 +888,6 @@ License: GPL3
 			wp_register_style( 'dmt-manage-folder-custom',  plugins_url('/css/dmtFolderManager.css', __FILE__ ) );
 			wp_enqueue_style( 'dmt-manage-folder-custom' );
 			
-			wp_register_style( 'dmt-manage-folder-bootstrap',  plugins_url('/css/bootstrap.min.css', __FILE__ ) );
-			wp_enqueue_style( 'dmt-manage-folder-bootstrap' );
 		}
 		
 	}
