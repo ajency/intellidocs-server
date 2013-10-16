@@ -503,7 +503,7 @@ License: GPL3
 
 	function dmt_ajax_create_sub_folder()
 	{
-		 
+		if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"){ 
 	
 		$folder_name 		= $_POST['folder_name'];
 		$parent_folder 		= $_POST['parent_folder'];
@@ -516,7 +516,13 @@ License: GPL3
 				'slug' => $slug,
 				'parent'=> $parent_folder
 		) );
- $success =  true;
+ 			$success =  true;
+ 		}
+ 		else
+ 		{
+
+ 			$success =  false;
+ 		}
 		$response = json_encode( array( 'success' => $success ) );
 		header( "Content-Type: application/json" );
 		echo $response;

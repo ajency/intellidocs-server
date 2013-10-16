@@ -83,7 +83,7 @@ jQuery('#create-sub-folder').live('click', function(e) {
 		}
 		else
 		{
-
+			jQuery("#msg-folder-div"+parent_folder+"").remove()
 			alert('Something seems to have gone wrong with the create sub folder. Try again later.');
 		}
 	});
