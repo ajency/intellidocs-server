@@ -651,17 +651,27 @@ function get_available_users()
 		$userdata = $wpdb->get_results("SELECT id,display_name FROM {$wpdb->prefix}users   ORDER BY display_name ", ARRAY_A);
 		$str .='<ul class="dmtDocumentFolderStructure">';
 		$sort_users = array();
+		$checked_users = array();
+		$unchecked_users = array();
 		foreach($userdata as $userdatavalues) {
 			
 			if($selected_users):
 			$checked = (in_array($userdatavalues['id'],$selected_users))?'checked="checked"':'notchecked';
 			endif;
 			 
-			$sort_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked);
+			
+			if($checked=='checked="checked"')
+			{
+				$checked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues["display_name"]));
+			}
+			else
+			{
+				$unchecked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues["display_name"])); 
+			} 
 			 
 			
-		}
-		$sort_users = aasort($sort_users,"sort");
+		} 
+		$sort_users = array_merge(aasort($checked_users,"display_name"),aasort($unchecked_users,"display_name"));
 		foreach($sort_users as $userdatavalues) {
 		 
 			if($selected_users):  
@@ -741,20 +751,36 @@ function get_all_folders()
 	//$result = $wpdb->get_results("insert into {$wpdb->prefix}dmt_group (group_name)values ('".$group_name."')");	
 	$selected_folders = array();
 	$sort_category = array();
+	$checked_category = array();
+	$unchecked_category = array();
 	$result_folders =$wpdb->get_results("SELECT folder_id FROM {$wpdb->prefix}dmt_group_folder where group_id = $group_id ", ARRAY_A);
 	foreach ($result_folders as $result_foldersval) 
 	{
 		$selected_folders[] = intval($result_foldersval["folder_id"]);  
 	}
 	$str .='<ul class="dmtDocumentFolderStructure">';
-	 foreach($categories as $category): 
-				if($selected_folders):  
+ 
+	  
+	  foreach($categories as $category) {
+	  		
+	  	if($selected_folders):  
 					  $checked = (in_array($category->cat_ID,$selected_folders))?'checked="checked"':'notchecked';  
 				endif; 
-		 $sort_category[] = array("category_data"=>$category,"sort"=>$checked);
-			 
-	  endforeach ;
-	  $sort_users = aasort($sort_category,"sort");
+	  
+	  		
+	  	if($checked=='checked="checked"')
+	  	{
+	  		$checked_category[] = array("category_data"=>$category,"sort"=>$checked,'cat_name'=>strtolower($category->cat_name));
+	  	}
+	  	else
+	  	{
+	  		$unchecked_category[] = array("category_data"=>$category,"sort"=>$checked,'cat_name'=>strtolower($category->cat_name));
+	  	}
+	  
+	  		
+	  }
+	  $sort_category = array_merge(aasort($checked_category,"cat_name"),aasort($unchecked_category,"cat_name"));
+	 
 	  foreach($sort_category as $category):
 	 
 		  	$checked = ( $category['sort']);
