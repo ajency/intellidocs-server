@@ -67,9 +67,7 @@
         </div>
         <div class="plupload_filelist_footer">
           	<div class="plupload_file_name">
-            	<div class="plupload_buttons">
-                <a href="#" class="plupload_button pp_add_folder pp_add_folder_2" id="html5_pp_add_folder" style="position: relative; z-index: 0; "> Next</a>
-            	</div>
+            	 
         	</div>
        </div>
       </div>
