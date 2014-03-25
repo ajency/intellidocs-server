@@ -1,3 +1,10 @@
+<?php 
+
+
+
+ $walker = new tcb_Walker_Category_Radiolist;
+
+?>
 <div class="wrap">
 <div  ></div>
 <div id="icon-edit" class="icon32 icon32-posts-document_files"><br></div>
@@ -35,11 +42,48 @@
 	         <td   valign="top"> 
 	       		<label for="parent"><?php _ex('Parent', 'Taxonomy Parent'); ?></label>
 	         </td>
-	         <td>
-	       	<?php wp_dropdown_categories(array('hide_empty' => 0, 'hide_if_empty' => false, 'taxonomy' => 'document_folders', 'name' => 'parent', 'orderby' => 'name', 'hierarchical' => true, 'show_option_none' => __('None'))); ?>
-					<?php if ( 'category' == $taxonomy ) : // @todo: Generic text for hierarchical taxonomies ?>
-						<p><?php _e('Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.'); ?></p>
-					<?php endif; ?>
+	         <td> 
+	         <div >
+    <div class="ppFolderStructure-document-folder"> 
+        <div class="ppFolderStructureUl">
+        <div class="plupload_header">
+        	<div class="plupload_header_content">
+            	<div class="plupload_header_title">Select folders</div>
+            	<div class="plupload_header_text">These are the folders to which the files will be added.</div>
+         	</div>
+        </div>
+    	<div class="ppFolderStructureUlwrapper-document-folder">
+        <ul class="folder-root">
+		<?php 
+		$nested_args= array(
+			'descendants_and_self' => 0,
+			'selected_cats' => false ,
+			'popular_cats' => false,
+			'walker' => $walker,
+			'taxonomy' => 'document_folders',
+			'checked_ontop' => false,); 
+	 	wp_terms_checklist(0, $nested_args);?>
+    	</ul>
+        </div>
+        <div class="plupload_filelist_footer">
+          	<div class="plupload_file_name">
+            	<div class="plupload_buttons">
+                <a href="#" class="plupload_button pp_add_folder pp_add_folder_2" id="html5_pp_add_folder" style="position: relative; z-index: 0; "> Next</a>
+            	</div>
+        	</div>
+       </div>
+      </div>
+    </div> 
+    
+  
+<style>
+	 	a {
+    color: #000000;
+    cursor: pointer;
+    text-decoration: none;
+}
+	 	</style>
+	 	</div>
 	         </td>
          
         </tr>
@@ -69,3 +113,44 @@
     </table>  
 	</form>
 	<div id="processing-img" style="display:none"><img src="<?php echo WP_PLUGIN_URL. '/aj-file-manager-system/img/loading.gif';?>"></div> 
+	<script type="text/javascript">
+jQuery(document).ready(function(){
+ 
+	jQuery(function() {
+	    // Find list items representing folders and
+	    // style them accordingly.  Also, turn them
+	    // into links that can expand/collapse the
+	    // tree leaf.
+  
+	   jQuery('li > ul').each(function(i) {
+ 
+	        // Find this list's parent list item.
+	        var parent_li = jQuery(this).parent('li');
+
+	        // Style the list item as folder.
+	        parent_li.addClass('folder');
+
+	        // Temporarily remove the list from the
+	        // parent list item, wrap the remaining
+	        // text in an anchor, then reattach it.
+	        var sub_ul =jQuery(this).remove(); 
+	        termcheckbox = parent_li.find('label :first-child'); 
+			parent_li.find('label :first-child').remove()
+			labelcontent = parent_li.find('label').html();
+			parent_li.html(labelcontent) 
+	        parent_li.wrapInner('<a/>')
+			termlabel = (parent_li.html())
+			parent_li.html(termcheckbox)
+			parent_li.append(termlabel)	
+			parent_li.find('a').click(function() {
+	            // Make the anchor toggle the leaf display.
+	            sub_ul.toggle();
+	        }); 		
+	        parent_li.append(sub_ul);
+	    });
+
+	    // Hide all lists except the outermost.
+	   jQuery('ul ul').hide();
+	});
+	});
+</script>

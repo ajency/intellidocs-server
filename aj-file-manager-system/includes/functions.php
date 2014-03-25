@@ -638,6 +638,7 @@ add_action('wp_ajax_get_group_select_box','get_group_select_box');
 function get_available_users()
 {
 	global $wpdb;
+	$event =  $_REQUEST['event'];
 	$group_id = isset($_REQUEST['group_id']) ? intval($_REQUEST['group_id']) : 0;
 	$str ="";
 	if ($group_id !=0)
@@ -653,24 +654,31 @@ function get_available_users()
 		$sort_users = array();
 		$checked_users = array();
 		$unchecked_users = array();
+		$disabled = "disabled";
 		foreach($userdata as $userdatavalues) {
 			
 			if($selected_users):
 			$checked = (in_array($userdatavalues['id'],$selected_users))?'checked="checked"':'notchecked';
 			endif;
-			 
-			
+			  
 			if($checked=='checked="checked"')
 			{
 				$checked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues["display_name"]));
 			}
 			else
-			{
-				$unchecked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues["display_name"])); 
+			{  
+				if($event =="add group members"){
+					 
+					$unchecked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues["display_name"])); 
+				}
+				
 			} 
 			 
 			
 		} 
+ if($event =="add group members"){
+					$disabled = "";
+				}
 		$sort_users = array_merge(aasort($checked_users,"display_name"),aasort($unchecked_users,"display_name"));
 		foreach($sort_users as $userdatavalues) {
 		 
@@ -679,7 +687,7 @@ function get_available_users()
 				endif; 
 				$str .='<li>';
 				$str .='<label class="selectit">';
-				$str .= '<input type="checkbox"  name="available_user" id="available_user" class="available_user" value="'.$userdatavalues['users_data']['id'].'" '.$checked.'> '.$userdatavalues['users_data']['display_name'];
+				$str .= '<input type="checkbox"  name="available_user" id="available_user" class="available_user" value="'.$userdatavalues['users_data']['id'].'" '.$checked.' '.$disabled.'> '.$userdatavalues['users_data']['display_name'];
 				$str .='</label>';
 				$str .='</li>';
 			 
@@ -733,6 +741,10 @@ function get_all_folders()
 	global $wpdb;
 	$str="";
 	$group_id = $_POST['group_id']; 
+
+	$event = $_POST['event']; 
+
+		$disabled = "disabled";
 	 
 	 $parent_args = array(
  	'type'                     => 'post',
@@ -774,11 +786,17 @@ function get_all_folders()
 	  	}
 	  	else
 	  	{
-	  		$unchecked_category[] = array("category_data"=>$category,"sort"=>$checked,'cat_name'=>strtolower($category->cat_name));
+	  		if($event=="add group folders"){
+	  		$unchecked_category[] = array("category_data"=>$category,"sort"=>$checked,'cat_name'=>strtolower($category->cat_name));	
+	  		}
+	  		
 	  	}
 	  
 	  		
 	  }
+	  if($event=="add group folders"){
+	  	$disabled = "";
+	  };
 	  $sort_category = array_merge(aasort($checked_category,"cat_name"),aasort($unchecked_category,"cat_name"));
 	 
 	  foreach($sort_category as $category):
@@ -787,7 +805,7 @@ function get_all_folders()
 		 
 		  $str .='<li>';
 		  $str .='<label class="selectit">';
-		  $str .='<input value="'.$category["category_data"]->cat_ID.'" type="checkbox" name="folder_list" id="folder_list"  class="folder_list" '.$checked.'/> '.$category["category_data"]->cat_name;
+		  $str .='<input value="'.$category["category_data"]->cat_ID.'" type="checkbox" name="folder_list" id="folder_list"  class="folder_list" '.$checked.' '.$disabled .'/> '.$category["category_data"]->cat_name;
 		  $str .='</label>';
 		  $str .='</li>';
 	  endforeach ;

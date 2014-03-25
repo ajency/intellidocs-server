@@ -111,3 +111,20 @@ img.dmt-ajax-loading-file{display: inline-block;display: none;position: absolute
 div.dmt_file_upload_done{ display:inline-block;margin-left: 5px; width:16px;height:16px; position:absolute; background:url('../img/done.gif') no-repeat;}
 
 textarea.dmt_meta_excerpt{resize:vertical;}
+
+.folder-root input{
+	width: 10px !important;
+}
+
+.document-folder-children{
+
+	padding-left:10px;
+}
+.ppFolderStructureUlwrapper-document-folder{
+
+height: 300px;
+overflow-y: scroll;
+}
+.ppFolderStructure-document-folder{
+	width:40%;
+}

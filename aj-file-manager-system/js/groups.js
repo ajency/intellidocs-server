@@ -1,4 +1,49 @@
 jQuery(document).ready(function(){
+	//
+
+
+  
+	   jQuery('.ppFolderStructureUlwrapper-document-folder li > ul').each(function(i) {
+ 
+	        // Find this list's parent list item.
+	        var parent_li = jQuery(this).parent('li');
+
+	        // Style the list item as folder.
+	        parent_li.addClass('folder');
+
+	        // Temporarily remove the list from the
+	        // parent list item, wrap the remaining
+	        // text in an anchor, then reattach it.
+	        var sub_ul =jQuery(this).remove(); 
+	        termcheckbox = parent_li.find('label :first-child'); 
+			parent_li.find('label :first-child').remove()
+			labelcontent = parent_li.find('label').html();
+			parent_li.html(labelcontent) 
+	        parent_li.wrapInner('<a/>')
+			termlabel = (parent_li.html())
+			parent_li.html(termcheckbox)
+			parent_li.append(termlabel)	
+			parent_li.find('a').click(function() {
+	            // Make the anchor toggle the leaf display.
+	            sub_ul.toggle();
+	        }); 		
+	        parent_li.append(sub_ul);
+	    });
+	//
+	   jQuery('.ppFolderStructureUlwrapper-document-folder ul ul').hide();
+
+	   if('.ppFolderStructureUlwrapper-document-folder'.length!=0){
+
+jQuery('#document-folder-parent-'+jQuery("#dmt_folder_term_id").val()).parent("li").remove();
+	    jQuery('#document-folder-parent-'+jQuery("#dmt_folder_parent_id").val()).attr("checked","checked");
+	   
+	    jQuery('#document-folder-parent-'+jQuery("#dmt_folder_parent_id").val()).parents('ul').each(function()
+	    {
+	    	jQuery(this).css("display","block");
+	    })
+	}
+
+	   
 	jQuery('#message').hide();
 	jQuery('#available_users_add').hide();
 	jQuery('#add-group-folder-button').hide();
@@ -6,19 +51,27 @@ jQuery(document).ready(function(){
 	jQuery('#row-folder-visibility').hide();
 	jQuery('#update-group-name').hide();
 	jQuery('#groups').bind('change', function() { 
+		jQuery('.add-group-folder-button').show();
+
+		jQuery('.save-group-folder-button').hide();
+
+		jQuery('.add-user-group-button').show();
+
+		jQuery('.save-user-group-button').hide();
 		jQuery('#row-group-members').hide();
 		jQuery('#row-folder-visibility').hide();
 		if(jQuery(this).val()!="")
 			{  
 				jQuery('#row-default').html("<br><br>"+jQuery('#processing-img').html()+" Processing");
 				jQuery('#update-group-name').show();
-				fetch_available_users();
-				fetch_group_folders();
+				fetch_available_users('group change');
+				fetch_group_folders('group change');
 				jQuery('#group_name_update').val(jQuery('#groups option:selected').text());
 				 
 			} 
 		
     });
+
 	jQuery('#add-group-button').live('click',function(){
 	 var group_name = jQuery('#group_name').val();
 		 if (group_name == "")
@@ -93,8 +146,11 @@ jQuery(document).ready(function(){
 		}
 	});
 	
-	
-	jQuery('.add-group-folder-button').live('click',function(){
+		jQuery('.add-group-folder-button').live('click',function(){
+		fetch_group_folders('add group folders');
+		
+	});
+	jQuery('.save-group-folder-button').live('click',function(){
 	 
 		var _ids = [];
 		button_content = jQuery('.available_group_folder').html();
@@ -115,10 +171,18 @@ jQuery(document).ready(function(){
 						 jQuery('#message').show();
 						 jQuery('.available_group_folder').html(button_content);
 						 jQuery('#groups').trigger("change")
+						  jQuery('.add-group-folder-button').show();
+
+						 jQuery('.save-group-folder-button').hide();
 					});
 		  
 	});
-		jQuery('.add-user-group-button').live('click',function(){
+
+	jQuery('.add-user-group-button').live('click',function(){
+		fetch_available_users('add group members');
+		
+	});
+		jQuery('.save-user-group-button').live('click',function(){
 	 
 		var _ids = []; 
 	 	button_content = jQuery('.available_users_add').html();
@@ -140,16 +204,22 @@ jQuery(document).ready(function(){
 						 jQuery('.available_users_add').html(button_content);
 
 						 jQuery('#groups').trigger("change")
+						 jQuery('.add-user-group-button').show();
+
+						 jQuery('.save-user-group-button').hide();
+
 					});
 		  
 	});
 	
-	 function fetch_available_users()
+	 function fetch_available_users(event)
 	 {  
 		jQuery.post(ajaxurl,{
 						action : 'get_available_users' , 
+						event : event , 
 						group_id : jQuery('#groups').val() ,
-						call_by :'ajax'
+						call_by :'ajax',
+
 					  },
 						function(response){   
 							if(response !="")
@@ -158,14 +228,21 @@ jQuery(document).ready(function(){
 								jQuery('#available_users_add').show();
 								jQuery('#row-group-members').show();
 								jQuery('#row-default').html("")
+
+								if(event=="add group members"){
+									jQuery('.add-user-group-button').hide();
+
+									jQuery('.save-user-group-button').show();
+								}
 							}
 						  jQuery('#available_users').html(response);
 					});
 	 }
 	 
-	  function fetch_group_folders()
+	  function fetch_group_folders(event)
 	 {  
 		jQuery.post(ajaxurl,{
+			event:event,
 						action : 'get_all_folders' , 
 						group_id : jQuery('#groups').val() ,
 						call_by :'ajax'
@@ -177,6 +254,13 @@ jQuery(document).ready(function(){
 								jQuery('#add-group-folder-button').show();
 								jQuery('#row-folder-visibility').show();
 								jQuery('#row-default').html("")
+
+								if(event=="add group folders"){
+
+									  jQuery('.add-group-folder-button').hide();
+
+						 jQuery('.save-group-folder-button').show();
+								}
 							} 
 							
 						  jQuery('#group_folder').html(response);
@@ -234,10 +318,9 @@ jQuery(document).ready(function(){
 	jQuery('#add-document-folder').live('click',function(){
 	 
 		 var tag_name = jQuery('#tag-name').val();
-		 var parent = jQuery('#parent').val();
-		 var tag_description = jQuery('#tag-description').val();
-		 
-		  
+		 var parent = jQuery('input[name=parent]:checked' ).val();
+		 var tag_description = jQuery('#tag-description').val(); 
+ 
 			 if (tag_name == "")
 			 {
 				 alert("Please Document Folder Name!")

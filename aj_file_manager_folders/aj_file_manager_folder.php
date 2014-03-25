@@ -376,7 +376,7 @@ function intellidocs_folder_display(){
 			jQuery('ul.jqueryFileTree li.directory').live('mouseout ',function(){jQuery(this).removeClass('show-options')});
 			
 			jQuery('ul.jqueryFileTree li.file span.edit-file').live('click',function(){window.open(jQuery(this).attr('rel'),'_blank');window.focus()});
-			jQuery('ul.jqueryFileTree li.directory span.edit-folder').live('click',function(){window.open(jQuery(this).attr('rel'),'_blank');window.focus()});			
+			jQuery('ul.jqueryFileTree li.directory span.edit-folder').live('click',function(){window.open(jQuery(this).attr('rel'),'_self');window.focus()});			
 		});
 		</script>
 	</div>

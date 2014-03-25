@@ -49,7 +49,8 @@
          <td width="50%" valign="top"  >
 		 <strong><h3>Group Members:</h3></strong><br> 
 		  <div id="available_users_add" style="display: inline" class="available_users_add">
-			<input id="add-user-group-button" type="button" value="Add Group Members" class="button button-primary add-user-group-button">
+			<input id="add-user-group-button" type="button" value="Add / Remove Group Members" class="button button-primary add-user-group-button">
+			<input style="display: none" id="save-user-group-button" type="button" value="Save Group Members" class="button button-primary save-user-group-button">
 		 </div>
 		 <br>
 		 <br>
@@ -57,7 +58,8 @@
 			 
 		 </div><br>
 		 <div id="available_users_add" style="display: inline" class="available_users_add">
-			<input id="add-user-group-button" type="button" value="Add Group Members" class="button button-primary add-user-group-button">
+			<input id="add-user-group-button" type="button" value="Add / Remove Group Members" class="button button-primary add-user-group-button">
+			<input style="display: none" id="save-user-group-button" type="button" value="Save Group Members" class="button button-primary save-user-group-button">
 		 </div>
 		</td> 
             	  
@@ -67,14 +69,16 @@
          <td colspan="2"  valign="top">
 		 <strong><h3>Folder Visibility:</h3></strong><br> 
 		  <div id="available_group_folder" class="available_group_folder" style="display: inline">
-			<input id="add-group-folder-button" type="button" value="Add Group Folders" class="button button-primary add-group-folder-button">
+			<input id="add-group-folder-button" type="button" value="Add / Remove Group Folders" class="button button-primary add-group-folder-button">
+			<input id="save-group-folder-button" style="display: none" type="button" value="Save Group Folders" class="button button-primary save-group-folder-button">
 		 </div>
 		 <br>
 		 <br>
 		 <div id="group_folder" class="dmtDocumentStructureWrapper">
 		</div><br>
 		  <div id="available_group_folder" class="available_group_folder"  style="display: inline">
-			<input id="add-group-folder-button" type="button" value="Add Group Folders" class="button button-primary add-group-folder-button">
+			<input id="add-group-folder-button"  type="button" value="Add / Remove Group Folders" class="button button-primary add-group-folder-button">
+			<input id="save-group-folder-button" style="display: none" type="button" value="Save Group Folders" class="button button-primary save-group-folder-button">
 		 </div>
 		</td> 
             	  

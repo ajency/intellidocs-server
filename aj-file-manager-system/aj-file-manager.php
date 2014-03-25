@@ -171,6 +171,7 @@ License: GPL3
             </td>
             <input type="hidden" name="dmt_folder_term_id" id="dmt_folder_term_id" value="<?php echo $tag->term_id ?>" />
             <input type="hidden" name="dmt_folder_status" id="dmt_folder_status" value="<?php echo $status?>" />
+            <input type="hidden" name="dmt_folder_parent_id" id="dmt_folder_parent_id" value="<?php echo $tag->parent ?>" />
 		</tr>
         <tr class="form-field">
 			<th scope="row" valign="top"><label for="description"><?php _ex('Folder Options', 'Taxonomy Description'); ?></label></th>
@@ -257,6 +258,9 @@ License: GPL3
 					array( 'folder_id'  => $folder_id,'meta_key' => 'document_folders_item_id' )
 			);
 		}
+		wp_redirect( site_url('wp-admin/edit.php?post_type=document_files&page=intellidocs-document-files') );
+		exit();
+ 
 	}
 	add_action( 'edited_document_folders', 'dmt_save_document_folder_meta' );
 	
@@ -896,6 +900,8 @@ License: GPL3
 			
 		}
 		
+	wp_enqueue_style ( 'pp_plupload_css',plugins_url('/css/jquery.plupload.queue.css', __FILE__) );	
+	wp_enqueue_style ( 'pp_plupload_css',plugins_url('/css/custom.css', __FILE__) );	
 	}
 	add_action( 'admin_enqueue_scripts', 'dmt_admin_hide_css_enqueue' );
 	
@@ -1190,7 +1196,153 @@ function dmt_set_auth_cookie_duration($duration,$user_id,$remember)
 }
 add_filter('auth_cookie_expiration', 'dmt_set_auth_cookie_duration',10,3);
 
+
+/** Radio Button Walker */
+class tcb_Walker_Category_Radiolist extends Walker {
+  var $tree_type = 'category';
+  var $db_fields = array( 'parent'=>'parent', 'id'=>'term_id' );
+
+  function start_lvl( &$output, $depth, $args ){
+
+    $indent  = str_repeat( "\t", $depth );
+    $output .= "$indent<ul class='document-folder-children children'>\n";
+  }
+
+  function end_lvl( &$output, $depth, $args ){
+    $indent  = str_repeat( "\t", $depth );
+    $output .= "$indent</ul>\n";
+  }
+	function start_el( &$output, $category, $depth, $args, $id = 0 ) {
+
+		extract($args);
+		if ( empty($taxonomy) )
+			$taxonomy = 'category';
+
+		if ( $taxonomy == 'category' )
+			$name = 'post_category';
+		else
+			$name = 'tax_input['.$taxonomy.']';
+
+		$class = in_array( $category->term_id, $popular_cats ) ? ' class="popular-category"' : '';
+		$output .= "\n<li id='{$taxonomy}-{$category->term_id}'$class>" . '<label class="selectit"><input value="' . $category->term_id . '" type="radio" name="parent" id="document-folder-parent-'.$category->term_id.'"' . checked( in_array( $category->term_id, $selected_cats ), true, false ) . disabled( empty( $args['disabled'] ), false, false ) . ' /> ' . esc_html( apply_filters('the_category', $category->name )) . '</label>';
+	}
+
+
+  function end_el( &$output, $category, $depth, $args ){
+    $output .= "</li>\n";
+  }
+}
+
+
+
+function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
+ 	$defaults = array(
+		'descendants_and_self' => 0,
+		'selected_cats' => false,
+		'popular_cats' => false,
+		'walker' => null,
+		'taxonomy' => 'category',
+		'checked_ontop' => true
+	);
+	$args = apply_filters( 'wp_terms_checklist_args', $args, $post_id );
+
+	extract( wp_parse_args($args, $defaults), EXTR_SKIP );
+
+	if ( empty($walker) || !is_a($walker, 'Walker') )
+		$walker = new Walker_Category_Checklist;
+
+	$descendants_and_self = (int) $descendants_and_self;
+
+	$args = array('taxonomy' => $taxonomy);
+
+	$tax = get_taxonomy($taxonomy);
+	$args['disabled'] = !current_user_can($tax->cap->assign_terms);
+
+	if ( is_array( $selected_cats ) )
+		$args['selected_cats'] = $selected_cats;
+	elseif ( $post_id )
+		$args['selected_cats'] = wp_get_object_terms($post_id, $taxonomy, array_merge($args, array('fields' => 'ids')));
+	else
+		$args['selected_cats'] = array();
+
+	if ( is_array( $popular_cats ) )
+		$args['popular_cats'] = $popular_cats;
+	else
+		$args['popular_cats'] = get_terms( $taxonomy, array( 'fields' => 'ids', 'orderby' => 'count', 'order' => 'DESC', 'number' => 10, 'hierarchical' => false ) );
+
+	if ( $descendants_and_self ) {
+		$categories = (array) get_terms($taxonomy, array( 'child_of' => $descendants_and_self, 'hierarchical' => 0, 'hide_empty' => 0 ) );
+		$self = get_term( $descendants_and_self, $taxonomy );
+		array_unshift( $categories, $self );
+	} else {
+		$categories = (array) get_terms($taxonomy, array('get' => 'all'));
+	}
+
+	if ( $checked_ontop ) {
+		// Post process $categories rather than adding an exclude to the get_terms() query to keep the query the same across all posts (for any query cache)
+		$checked_categories = array();
+		$keys = array_keys( $categories );
+
+		foreach( $keys as $k ) {
+			if ( in_array( $categories[$k]->term_id, $args['selected_cats'] ) ) {
+				$checked_categories[] = $categories[$k];
+				unset( $categories[$k] );
+			}
+		}
+
+		// Put checked cats on top
+		return call_user_func_array(array(&$walker, 'walk'), array($checked_categories, 0, $args));
+	}
+	// Then the rest of them
+	return call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
+}
+
+function remove_dropdown_cats($output){
+
+if($_REQUEST["taxonomy"]!="document_folders")
+	return;
+
+$output = "";
+$output .= '<div >';
+$output .= '<div class="ppFolderStructure-document-folder"> ';
+$output .= '<div class="ppFolderStructureUl">';
+$output .= '<div class="plupload_header">';
+$output .= '<div class="plupload_header_content">';
+$output .= '<div class="plupload_header_title">Select folders</div>';
+$output .= '<div class="plupload_header_text">These are the folders to which the files will be added.</div>';
+$output .= '</div>';
+$output .= '</div>';
+$output .= '<div class="ppFolderStructureUlwrapper-document-folder">';
+$output .= '<ul class="folder-root">';
+	  $walker = new tcb_Walker_Category_Radiolist;
+		$nested_args= array(
+			'descendants_and_self' => 0,
+			'selected_cats' => false ,
+			'popular_cats' => false,
+			'walker' => $walker,
+			'taxonomy' => 'document_folders',
+			'checked_ontop' => false,); 
+$output .= wp_terms_checklist_return_html(0, $nested_args); 
+$output .= '</ul>';
+$output .= '</div>';
+$output .= '<div class="plupload_filelist_footer">';
+$output .= '<div class="plupload_file_name">';
+$output .= '<div class="plupload_buttons">';
+$output .= '<a href="#" class="plupload_button pp_add_folder pp_add_folder_2" id="html5_pp_add_folder" style="position: relative; z-index: 0; "> Next</a>';
+$output .= '</div>';
+$output .= '</div>';
+$output .= '</div>';
+$output .= '</div>';
+$output .= '</div> ';
+    
+  
  
+$output .= '</div>';
+return $output;
+}
+ 
+ add_filter( 'wp_dropdown_cats', 'remove_dropdown_cats',1,10  );
+
 Category_Checklist::init();
 include dirname( __FILE__ ) . '/includes/admin_front_end.php';
 include dirname( __FILE__ ) . '/includes/user_roles.php';
