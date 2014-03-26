@@ -590,6 +590,10 @@ function dmt_show_menu_page_add_document_folders()
 //function added by Surekha//
 function dmt_show_menu_page_add_division()
 {
+	$user_role = dmt_get_current_user_role();
+	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator"))  {
+		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
+	}
 include_once 'manage-division.php';
 }
 function dmt_add_manage_group_page()
