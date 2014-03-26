@@ -48,9 +48,11 @@ jQuery('#document-folder-parent-'+jQuery("#dmt_folder_term_id").val()).parent("l
 	jQuery('#available_users_add').hide();
 	jQuery('#add-group-folder-button').hide();
 	jQuery('#row-group-members').hide();
+	jQuery('#row-division-members').hide();
 	jQuery('#row-folder-visibility').hide();
 	jQuery('#update-group-name').hide();
 	jQuery('#groups').bind('change', function() { 
+	
 		jQuery('.add-group-folder-button').show();
 
 		jQuery('.save-group-folder-button').hide();
@@ -180,6 +182,12 @@ jQuery('#document-folder-parent-'+jQuery("#dmt_folder_term_id").val()).parent("l
 
 	jQuery('.add-user-group-button').live('click',function(){
 		fetch_available_users('add group members');
+	
+		
+	});
+	jQuery('#add-user-division-button').live('click',function(){
+		
+		fetch_dmt_users('add group members');
 		
 	});
 		jQuery('.save-user-group-button').live('click',function(){
@@ -192,18 +200,39 @@ jQuery('#document-folder-parent-'+jQuery("#dmt_folder_term_id").val()).parent("l
 			 {
 				 _ids.push(jQuery(this).val());
 			}
-		 }); 
+		 });
+		 var action;
+		 var groupid;
+var group = document.getElementById('groups');
+var division = document.getElementById('division');
+	if(group!=null)
+{
+action = 'add_users_to_group';
+groupid  = jQuery('#groups').val();
+}
+if(division!=null)
+{
+action = 'add_division_to_memebers';
+groupid  = jQuery('#division').val();
+}	
+		
 		 jQuery.post(ajaxurl,{
-						action : 'add_users_to_group',
-						group_id :  jQuery('#groups').val(),
+						action : action,
+						group_id :  groupid,
 						user_ids : _ids
 					  },
 						function(response){  
 						 jQuery('#message').html(response);
 						 jQuery('#message').show();
 						 jQuery('.available_users_add').html(button_content);
-
-						 jQuery('#groups').trigger("change")
+	if(group!=null)
+{
+						 jQuery('#groups').trigger("change");
+						 }
+						 if(division!=null)
+{
+ jQuery('#division').trigger("change");
+}
 						 jQuery('.add-user-group-button').show();
 
 						 jQuery('.save-user-group-button').hide();
@@ -358,7 +387,61 @@ jQuery('#document-folder-parent-'+jQuery("#dmt_folder_term_id").val()).parent("l
 							
 						});  
 		});	
-		 
+//scripts added by surekha////
+		jQuery('#division').bind('change', function() { 
+	
+		//jQuery('.add-group-folder-button').show();
+
+		//jQuery('.save-group-folder-button').hide();
+
+		//jQuery('.add-user-division-button').show();
+
+		jQuery('.save-user-group-button').hide();
+		jQuery('#row-division-members').hide();
+		//jQuery('#row-folder-visibility').hide();
+	
+		if(jQuery(this).val()!="")
+			{  
+				jQuery('#row-default_div').html("<br><br>"+jQuery('#processing-img').html()+" Processing");
+			
+				fetch_dmt_users('group change');
+				//fetch_group_folders('group change');
+				//jQuery('#group_name_update').val(jQuery('#groups option:selected').text());
+				 
+			} 
+		
+    });
+	
+ function fetch_dmt_users(event)
+	 {  
+	
+		jQuery.post(ajaxurl,{
+						action : 'get_dmt_users' , 
+						event : event , 
+						group_id : jQuery('#division').val() ,
+						call_by :'ajax',
+
+					  },
+						function(response){   
+							if(response !="")
+							{
+							
+								jQuery('#available_division_add').show();
+								jQuery('#row-division-members').show();
+								jQuery('#row-default_div').html("")
+
+								if(event=="add group members"){
+									jQuery('.add-user-group-button').hide();
+
+									jQuery('.save-user-group-button').show();
+								}
+							}
+						  jQuery('#available_division').html(response);
+					});
+	 }
+//scripts added by surekha////	 
 });
 
 
+
+	

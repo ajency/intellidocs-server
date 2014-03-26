@@ -1,4 +1,4 @@
-<?
+<?php
 function file_download_option($actions, $post)
  {
  	
@@ -587,7 +587,11 @@ function dmt_show_menu_page_add_document_folders()
 
 	include_once 'add-document-folders.php';
 }
-
+//function added by Surekha//
+function dmt_show_menu_page_add_division()
+{
+include_once 'manage-division.php';
+}
 function dmt_add_manage_group_page()
 {    
 	$user_role = dmt_get_current_user_role();
@@ -595,6 +599,8 @@ function dmt_add_manage_group_page()
 	{
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
 		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
+		add_submenu_page('edit.php?post_type=document_files', 'Manage Division', 'Manage Division', 'edit_posts', 'add-division', 'dmt_show_menu_page_add_division' );
+
 	}
 	
 }
@@ -632,9 +638,9 @@ function get_group_select_box($group_id=0)
 	 }
 }
 
-
 add_action('wp_ajax_get_group_select_box','get_group_select_box');
- 
+
+
 function get_available_users()
 {
 	global $wpdb;
@@ -864,6 +870,7 @@ function add_users_to_group()
 
 	die();	
 }
+
 function get_group_actions($group_id)
 { 
 
@@ -875,6 +882,7 @@ function get_group_actions($group_id)
 	die();	
 }
 add_action('wp_ajax_add_users_to_group','add_users_to_group'); 
+
 
 function delete_group()
 { 
@@ -946,6 +954,136 @@ function dmt_add_folder()
 	die();
 }
 add_action('wp_ajax_dmt_add_folder','dmt_add_folder');
+
+//code added by surekha////
+
+add_action('wp_ajax_get_selectbox_division','get_selectbox_division');
+add_action('wp_ajax_get_dmt_users','get_dmt_users');
+add_action('wp_ajax_add_division_to_memebers','add_division_to_memebers'); 
+function get_selectbox_division()
+{
+
+  
+$taxonomies = get_terms( 'document_folders',array(
+ 	'orderby'    => 'name',
+ 	'hide_empty' => 0,
+	 'parent' =>0, 
+	 'hierarchical'  => true
+ ) );
+
+global $wpdb;
+	
+	 
+	//$groupdata = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}dmt_group ORDER BY group_name ", ARRAY_A);
+	
+	$str  = '';
+	
+	$str .= '<option value="">select option</option>';
+	
+foreach ( $taxonomies as $term ) {
+     $str.="<option value='".$term->term_id."'>" . $term->name . "</option>";
+        
+     }		
+	
+	echo $str;
+	if (isset($_POST['call_by']))
+	{
+	 die();
+	 }
+
+}
+function get_dmt_users()
+{
+	
+	global $wpdb;
+	$event =  $_REQUEST['event'];
+	$group_id = isset($_REQUEST['group_id']) ? intval($_REQUEST['group_id']) : 0;
+	$str ="";
+ 
+$selected_users = array();
+		$result_users =$wpdb->get_results("SELECT ID,user_id FROM {$wpdb->prefix}dmt_user_cat_access_data where category_id = $group_id ", ARRAY_A);
+		foreach ($result_users as $result_usersval) 
+		{
+			$selected_users[] = intval($result_usersval["user_id"]);  
+		}
+		
+$userdata = get_users('orderby=nicename&role=dmt_site_admin');
+$str .='<ul class="dmtDocumentFolderStructure">';
+	$sort_users = array();
+		$checked_users = array();
+		$unchecked_users = array();
+		$disabled = "disabled";
+	foreach($userdata as $userdatavalues) {
+			
+			if($selected_users):
+			$checked = (in_array($userdatavalues->ID,$selected_users))?'checked="checked"':'notchecked';
+			endif;
+			  
+			if($checked=='checked="checked"')
+			{
+				$checked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues->user_nicename));
+			}
+			else
+			{  
+				if($event =="add group members"){
+					 
+					$unchecked_users[] = array("users_data"=>$userdatavalues,"sort"=>$checked,'display_name'=>strtolower($userdatavalues->user_nicename)); 
+				}
+				
+			} 
+			 
+			
+		}
+		 if($event =="add group members"){
+					$disabled = "";
+				}
+		$sort_users = array_merge(aasort($checked_users,"user_nicename"),aasort($unchecked_users,"user_nicename"));
+		foreach($sort_users as $userdatavalues) {
+		 
+			if($selected_users):  
+					  $checked = (in_array($userdatavalues['users_data']->ID,$selected_users))?'checked="checked"':'';  
+				endif; 
+			
+				$str .='<li>';
+				$str .='<label class="selectit">';
+				$str .= '<input type="checkbox"  name="available_user" id="available_user" class="available_user" value="'.$userdatavalues['users_data']->ID.'" '.$checked.' '.$disabled.'> '.$userdatavalues['users_data']->user_nicename;
+				$str .='</label>';
+				$str .='</li>';
+			 
+		}
+		
+		$str .='</ul>'; 
+	echo $str;
+	if (isset($_POST['call_by']))
+	{
+	 die();
+	 }
+}
+function add_division_to_memebers()
+{
+global $wpdb;
+	$table_name = $wpdb->prefix . "dmt_user_cat_access_data";
+	$group_id = $_POST['group_id']; 
+	
+	$user_ids = $_POST['user_ids'];
+	
+	$result = $wpdb->get_results("delete from {$wpdb->prefix}dmt_user_cat_access_data where category_id = ".$group_id);	
+	if($user_ids)
+	{
+	
+		foreach($user_ids as $user_id)
+		{
+		
+			//$result = $wpdb->get_results("insert into {$wpdb->prefix}dmt_user_cat_access_data (category_id,user_id)values (".$group_id.",".$user_id.")");	
+		  $wpdb->insert( $table_name, array( 'user_id' => $user_id, 'category_id' => $group_id ) );
+		  }
+	}
+	echo "<p>Division Memebers Updated Successfully</p>"; 
+
+	die();
+}
+//code added by surekha////
+
 
 
 /*function modify_post_title( $data , $postarr )
