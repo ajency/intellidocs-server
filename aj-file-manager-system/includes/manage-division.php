@@ -39,10 +39,7 @@
 	 <table border="0" width="100%"title="Manage Groups" class="wp-list-table"  >  
 	 <tr id="row-division-members">  
          <td width="50%" valign="top"  >
-		 <strong><h3>Division Members:</h3></strong><br> 
-		
-		 <br>
-		 <br>
+		 <strong><h3>Division Members:</h3></strong>
 		 <div id="available_division"   class="dmtDocumentStructureWrapper">
 			 
 		 </div><br>
