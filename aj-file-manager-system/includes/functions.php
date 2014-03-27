@@ -546,7 +546,7 @@ function dmt_menu_page_subscriber() {
 		{
 			return 'wp-admin/admin.php?page=intellidocs-document-files';
 		}
-		if(in_array('administrator',$user->roles) || in_array('dmt_site_admin',$user->roles))
+		if(in_array('administrator',$user->roles) || in_array('dmt_site_admin',$user->roles)|| in_array('intellidocs_admin',$user->roles))
 		{
 			return 'wp-admin/edit.php?post_type=document_files&page=add-document-folders';
 		}
