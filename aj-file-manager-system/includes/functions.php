@@ -591,7 +591,7 @@ function dmt_show_menu_page_add_document_folders()
 function dmt_show_menu_page_add_division()
 {
 	$user_role = dmt_get_current_user_role();
-	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator"))  {
+	if (  ( $user_role  !="administrator"))  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 include_once 'manage-division.php';
@@ -603,9 +603,12 @@ function dmt_add_manage_group_page()
 	{
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
 		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
-		add_submenu_page('edit.php?post_type=document_files', 'Manage Division', 'Manage Division', 'edit_posts', 'add-division', 'dmt_show_menu_page_add_division' );
-
+		 
 	}
+	if (  $user_role  =="administrator")
+	{
+	add_submenu_page('edit.php?post_type=document_files', 'Manage Division', 'Manage Division', 'edit_posts', 'add-division', 'dmt_show_menu_page_add_division' );
+}
 	
 }
 add_action( 'admin_menu', 'dmt_add_manage_group_page' );

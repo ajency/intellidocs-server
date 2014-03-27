@@ -466,8 +466,10 @@ function intellidocs_document_folder_structure($catid = null)
 	global $wpdb;
 	$html  = '';
 	$catid = (!empty($catid))?$catid:0;
+	
+	//if($catid == 0 && !current_user_can('publish_posts'))
 			
-	if($catid == 0 )
+	if($catid == 0 && !current_user_can('manage_options'))
 	{
 		global $current_user;
 		get_currentuserinfo();
