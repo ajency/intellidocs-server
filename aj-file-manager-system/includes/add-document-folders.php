@@ -57,11 +57,12 @@
 		<?php 
 		$nested_args= array(
 			'descendants_and_self' => 0,
-			'selected_cats' => false ,
-			'popular_cats' => false,
+			'selected_cats' => array(71) ,
+			'popular_cats' => array(71),
 			'walker' => $walker,
 			'taxonomy' => 'document_folders',
 			'checked_ontop' => false,); 
+			var_dump($nested_args);
 	 	wp_terms_checklist(0, $nested_args);?>
     	</ul>
         </div>
