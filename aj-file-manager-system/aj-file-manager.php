@@ -1242,7 +1242,7 @@ function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
 		'popular_cats' => false,
 		'walker' => null,
 		'taxonomy' => 'category',
-		'checked_ontop' => true
+		'checked_ontop' => true 
 	);
 	$args = apply_filters( 'wp_terms_checklist_args', $args, $post_id );
 
@@ -1275,7 +1275,79 @@ function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
 		$self = get_term( $descendants_and_self, $taxonomy );
 		array_unshift( $categories, $self );
 	} else {
-		$categories = (array) get_terms($taxonomy, array('get' => 'all'));
+	
+	if(!current_user_can('administrate'))
+	{
+		global $wpdb;
+		global $current_user;
+		get_currentuserinfo();
+		$userid  = $current_user->ID;
+		$user_access_table 	= $wpdb->prefix . "dmt_user_cat_access_data";
+		$user_group 		= $wpdb->prefix . "dmt_user_group";
+		$group_folder 		= $wpdb->prefix . "dmt_group_folder";
+		
+		//categories user has access to 
+		$access_cats = $wpdb->get_results( 
+		"
+		SELECT category_id
+		FROM $user_access_table
+		WHERE user_id = $userid 
+		UNION 
+		SELECT folder_id as category_id 
+		FROM $user_group,$group_folder  
+		WHERE $user_group.group_id = $group_folder.group_id and user_id  = $userid 
+		");	
+		$cats1 = array();
+		$push = array();
+		$q=0;
+		
+		$z=0;
+		foreach($access_cats as $access_cat)
+		{ 
+			if(dmt_check_folder_status_is_published($access_cat->category_id))
+			{
+				$cats1[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
+				//$html .=  intellidocs_folder_html($cat);
+				$push[$q] = $cats1[$z]->term_id;
+				$args2 = array(
+				'child_of' => $cats1[$z]->term_id,
+				'taxonomy' => $taxonomy,
+				'hide_empty' => 0,
+				'hierarchical' => true,
+				'depth'  => 1,
+				);
+			$cats = get_categories( $args2 );
+
+			if($cats)
+			{
+				$a=0;
+				for($i=0;$i<count($cats);$i++)
+				{
+					$q++;
+					$push[$q] = $cats[$a]->term_id;
+					$a++;
+				}
+			}
+					
+			$q++;
+			$z++;
+			}
+		}
+		$args1 = array(
+		'hide_empty'    => false, 
+		'include'       => $push
+		); 
+	}
+	else
+	{
+		$args1 = array(
+		'get'    => 'all', 
+		); 
+	}
+		$categories = (array) get_terms($taxonomy,  $args1);
+		
+
+		
 	}
 
 	if ( $checked_ontop ) {
@@ -1321,7 +1393,8 @@ $output .= '<ul class="folder-root">';
 			'popular_cats' => false,
 			'walker' => $walker,
 			'taxonomy' => 'document_folders',
-			'checked_ontop' => false,); 
+			'checked_ontop' => false,
+			'include_category' => array(71),); 
 $output .= wp_terms_checklist_return_html(0, $nested_args); 
 $output .= '</ul>';
 $output .= '</div>';
