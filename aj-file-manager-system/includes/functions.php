@@ -1085,7 +1085,7 @@ global $wpdb;
 		  $wpdb->insert( $table_name, array( 'user_id' => $user_id, 'category_id' => $group_id ) );
 		  }
 	}
-	echo "<p>Division Memebers Updated Successfully</p>"; 
+	echo "<p>Division Members Updated Successfully</p>"; 
 
 	die();
 }
