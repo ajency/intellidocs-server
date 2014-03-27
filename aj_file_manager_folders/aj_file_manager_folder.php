@@ -351,7 +351,7 @@ function intellidocs_folder_display(){
 	<div class="wrap">
 		<h2><i class="icon-list"></i>&nbsp;Intellidocs Folders</h2>
 		<span class="description">Folders visible to <?php echo $current_user->display_name; ?></span><br><br>
-		<?php if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"){ ?><span align="left" class="add-sub-folder" style="cursor: pointer;" title="Add Sub folder" rel="#" id="folder0" parent-folder="0"><i class="icon-plus"></i>Add folder&nbsp;</span><?php }?>
+		<?php if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"  || current_user_can('administrate')){ ?><span align="left" class="add-sub-folder" style="cursor: pointer;" title="Add Sub folder" rel="#" id="folder0" parent-folder="0"><i class="icon-plus"></i>Add folder&nbsp;</span><?php }?>
 		<hr>
 		<div id="intellidocsFolderStructure" class="demo"></div>	
 		<script>
@@ -407,7 +407,7 @@ function intellidocs_sort_folders($cats)
 	$user_role = dmt_get_current_user_role();
 	foreach($cats as $cat){
 
-		if(dmt_check_folder_status_is_published($cat->term_id) || ($user_role  == "dmt_site_admin" || $user_role  =="administrator"))
+		if(dmt_check_folder_status_is_published($cat->term_id) || ($user_role  == "dmt_site_admin" || $user_role  =="administrator" ||   current_user_can('administrate')))
 		{
 	
 			$document_folders_item_id = dmt_get_document_folder_meta($cat->term_id,'document_folders_item_id');
@@ -469,7 +469,7 @@ function intellidocs_document_folder_structure($catid = null)
 	
 	//if($catid == 0 && !current_user_can('publish_posts'))
 			
-	if($catid == 0 && !current_user_can('manage_options'))
+	if($catid == 0 && !current_user_can('manage_options') && !current_user_can('administrate'))
 	{
 		global $current_user;
 		get_currentuserinfo();
@@ -543,7 +543,7 @@ function intellidocs_folder_html($cat)
 		$html ='';
 		
 
-		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '&nbsp;&nbsp;<span class="add-sub-folder" title="Add Sub folder" rel="#" id="folder'.$cat->term_id.'" parent-folder="'.$cat->term_id.'"><i class="icon-plus"></i>Add Sub folder</span>&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>&nbsp;&nbsp; <i class="icon-trash"></i><a href="javascriot:void(0)" rel="'.admin_url().wp_nonce_url( "edit-tags.php?action=delete&amp;taxonomy=document_folders&tag_ID=".$cat->term_id, 'delete-tag_' . $cat->term_id ).'"  folder-name ="'.$cat->name.'" class="delete-folder" onclick="funconfirmaction(this.rel,\''.$cat->name.'\','.$cat->term_id.')">Delete</a>':'';
+		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin" || current_user_can('administrate'))? '&nbsp;&nbsp;<span class="add-sub-folder" title="Add Sub folder" rel="#" id="folder'.$cat->term_id.'" parent-folder="'.$cat->term_id.'"><i class="icon-plus"></i>Add Sub folder</span>&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>&nbsp;&nbsp; <i class="icon-trash"></i><a href="javascriot:void(0)" rel="'.admin_url().wp_nonce_url( "edit-tags.php?action=delete&amp;taxonomy=document_folders&tag_ID=".$cat->term_id, 'delete-tag_' . $cat->term_id ).'"  folder-name ="'.$cat->name.'" class="delete-folder" onclick="funconfirmaction(this.rel,\''.$cat->name.'\','.$cat->term_id.')">Delete</a>':'';
 		$folder_edit_html_additional_parameters 	   	= apply_filters('intellidocs_etc_action', admin_url(),$cat->term_id);
 		$folder_edit_html = $folder_edit_html.$folder_edit_html_additional_parameters;
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
@@ -552,7 +552,7 @@ function intellidocs_folder_html($cat)
 		  $args = array('post_type'=> 'document_files','dmtNoTaxChild' => true,'dmtTax' => 'document_folders','dmtTaxSlug' => $cat->slug); 
 		$file_count_html		= '&nbsp;<span class="file-count" title="File count"><i class="icon-file-alt"></i>'.intellidocs_get_folder_file_count($cat->term_id).'</span>';
 		
-		$files_view				= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin")? '<span class="edit-folder" title="Edit folder" rel="'.admin_url().esc_url ( add_query_arg( $args, 'edit.php' ) ).'">(view files)</span>':'';
+		$files_view				= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"  || current_user_can('administrate'))? '<span class="edit-folder" title="Edit folder" rel="'.admin_url().esc_url ( add_query_arg( $args, 'edit.php' ) ).'">(view files)</span>':'';
 		$folder_publish_html	= intellidocs_folder_published($cat->term_id);
 		
 		$folder_active_html		= intellidocs_folder_activated($cat->term_id);
@@ -603,7 +603,7 @@ function intellidocs_file_html($catid)
 			$ext			= intellidocs_get_file_extention($file->post_title);
 			$attchment_cls	= ($file_attchment)?'has-attachment':'';
 			
-			$edit_html		= (current_user_can('manage_options'))? '&nbsp;&nbsp;<span class="edit-file" title="Edit file" rel="'.admin_url().'post.php?post='.$file->ID.'&action=edit'.'"><i class="icon-pencil"></i>Edit</span>':'';
+			$edit_html		= (current_user_can('manage_options') ||   current_user_can('administrate'))? '&nbsp;&nbsp;<span class="edit-file" title="Edit file" rel="'.admin_url().'post.php?post='.$file->ID.'&action=edit'.'"><i class="icon-pencil"></i>Edit</span>':'';
 			
 			$item_id		= get_post_meta($file->ID,'dmt_file_item_number',true);
 			$item_id_html 	= ($item_id)? '&nbsp;<span class="file-id" title="Item ID"><i class="icon-tags"></i>'. $item_id:'';

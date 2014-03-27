@@ -507,7 +507,7 @@ License: GPL3
 
 	function dmt_ajax_create_sub_folder()
 	{
-		if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"){ 
+		if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin" ||   current_user_can('administrate')){ 
 	
 		$folder_name 		= $_POST['folder_name'];
 		$parent_folder 		= $_POST['parent_folder'];
@@ -1171,7 +1171,7 @@ function dmt_hide_user_roles_for_add_user()
 {
 	if(preg_match('/\/wp-admin\/user-new.php/',$_SERVER['REQUEST_URI']) || preg_match('/\/wp-admin\/user-edit.php/',$_SERVER['REQUEST_URI']))	
 	{
-		if(current_user_can('manage_options'))
+		if(current_user_can('manage_options') ||  current_user_can('administrate'))
 			return;
 		
 		else

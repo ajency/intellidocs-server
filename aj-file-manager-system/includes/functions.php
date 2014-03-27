@@ -353,7 +353,7 @@ function file_download_option($actions, $post)
 {
 	if(isset($_REQUEST["filename"]) && isset($_REQUEST["page"]) && isset($_REQUEST["folder"]))
 	{
-		if (dmt_check_users_folders($_REQUEST["folder"])|| current_user_can( 'manage_options' ))
+		if (dmt_check_users_folders($_REQUEST["folder"])|| current_user_can( 'manage_options' )|| current_user_can( 'administrate' ))
 			{
 				if($_REQUEST["page"]=="download-file")
 				{	
@@ -566,7 +566,7 @@ function dmt_menu_page_subscriber() {
  function dmt_show_menu_page_add_group()
 {
 	$user_role = dmt_get_current_user_role();
-	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator"))  {
+	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator" && !current_user_can('manage_groups')))  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 	
@@ -581,7 +581,7 @@ function dmt_menu_page_subscriber() {
 function dmt_show_menu_page_add_document_folders()
 {
 	$user_role = dmt_get_current_user_role();
-	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator"))  {
+	if (  ($user_role  != "dmt_site_admin" && $user_role  !="administrator" && !current_user_can('administrate')))  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 
@@ -591,7 +591,7 @@ function dmt_show_menu_page_add_document_folders()
 function dmt_show_menu_page_add_division()
 {
 	$user_role = dmt_get_current_user_role();
-	if (  ( $user_role  !="administrator"))  {
+	if ( !current_user_can('manage_divisions'))  {
 		wp_die( __( 'You do not have sufficient permissions to access this page.' ) );
 	}
 include_once 'manage-division.php';
@@ -599,13 +599,13 @@ include_once 'manage-division.php';
 function dmt_add_manage_group_page()
 {    
 	$user_role = dmt_get_current_user_role();
-	if ($user_role  == "dmt_site_admin" || $user_role  =="administrator")
+	if ($user_role  == "dmt_site_admin" || $user_role  =="administrator" || current_user_can('manage_groups'))
 	{
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
 		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
 		 
 	}
-	if (  $user_role  =="administrator")
+	if ( current_user_can('manage_divisions'))
 	{
 	add_submenu_page('edit.php?post_type=document_files', 'Manage Division', 'Manage Division', 'edit_posts', 'add-division', 'dmt_show_menu_page_add_division' );
 }
@@ -1105,3 +1105,59 @@ global $wpdb;
 	return $data;
 }
 add_filter( 'wp_insert_post_data' , 'modify_post_title' , '99', 2 );*/
+
+
+
+///create new role intellidocs_admin
+
+
+function create_new_role(){
+	global $wp_roles;
+	$dmtadmin = $wp_roles->get_role('dmt_site_admin');
+    //Adding a 'intellidocs_admin' with all dmt_site_admin caps
+	$result  =   $wp_roles->add_role('intellidocs_admin', 'Intellidocs Admin', $dmtadmin->capabilities);
+
+	if ( null !== $result ) {
+		$role = get_role( 'intellidocs_admin' );
+
+		if(!$role->has_cap( 'manage_divisions'))
+		{
+			$role->add_cap( 'manage_divisions' );
+		}
+		if(!$role->has_cap( 'manage_groups'))
+		{
+			$role->add_cap( 'manage_groups' );
+		}
+
+		if(!$role->has_cap( 'administrate'))
+		{
+			$role->add_cap( 'administrate' );
+		}
+	} 
+ 
+		
+}
+add_action('init','create_new_role');
+
+
+function intellidocs_user_actions( $actions, $user_object ) {
+	global $user_ID, $wp_roles;
+	
+
+	if ( is_user_logged_in() ) {
+		$user = new WP_User( $user_ID );
+		if ( !empty( $user->roles ) && is_array( $user->roles ) ) {
+			foreach ( $user->roles as $role )
+				$role =  $role;
+		}
+	}
+	
+
+	if(isset($user_object->wp_capabilities["intellidocs_admin"]) &&  $role !="intellidocs_admin"){
+
+		$actions = array();
+	}
+	return $actions;
+}
+
+add_filter( 'user_row_actions', 'intellidocs_user_actions', 10, 2 );
