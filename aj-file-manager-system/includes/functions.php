@@ -1161,3 +1161,24 @@ function intellidocs_user_actions( $actions, $user_object ) {
 }
 
 add_filter( 'user_row_actions', 'intellidocs_user_actions', 10, 2 );
+
+
+//add_filter( 'parse_query', 'order_posts_filter' );
+
+function order_posts_filter( $query ){
+    global $pagenow,$wpdb;
+ 
+  $query->query_vars["cat"] = "80"; 
+   /* $type = 'post';
+    if (isset($_GET['post_type'])) {
+        $type = $_GET['post_type'];
+    }
+    if ( 'orders' == $type && is_admin() && $pagenow=='edit.php' && isset($_GET['ADMIN_FILTER_FIELD_VALUE']) && $_GET['ADMIN_FILTER_FIELD_VALUE'] != '') {
+        $query->query_vars['post_date'] = $_GET['ADMIN_FILTER_FIELD_VALUE'];
+    }
+    if ( 'orders' == $type && is_admin() && $pagenow=='edit.php' && isset($_GET['ADMIN_FILTER_STATUS_VALUE']) && $_GET['ADMIN_FILTER_STATUS_VALUE'] != '') {
+        $query->query_vars['meta_key'] = 'order_status';
+        $query->query_vars['meta_value'] = $_GET['ADMIN_FILTER_STATUS_VALUE'];
+    }*/
+    return $query;
+}
