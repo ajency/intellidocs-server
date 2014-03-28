@@ -1221,10 +1221,7 @@ global $wpdb;
 				'depth'  => 1,
 				);
 			$cats = get_categories( $args2 );
-			
-			
-			if($access_cat->category_id==108){
-			
+			 
  
 			if($cats)
 			{
