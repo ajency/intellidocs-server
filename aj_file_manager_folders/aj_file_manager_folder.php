@@ -492,11 +492,11 @@ function intellidocs_document_folder_structure($catid = null)
 		$cats = array();
 		foreach($access_cats as $access_cat)
 		{ 
-			if(dmt_check_folder_status_is_published($access_cat->category_id))
-			{
+			//if(dmt_check_folder_status_is_published($access_cat->category_id))
+			//{
 				$cats[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
 				//$html .=  intellidocs_folder_html($cat);
-			}
+			//}
 		}
 		$cats = intellidocs_sort_folders($cats);
 		foreach($cats as $cat){

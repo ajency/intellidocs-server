@@ -72,7 +72,8 @@ function pp_add_files_screen_callback() {
 			'walker' => null,
 			'taxonomy' => 'document_folders',
 			'checked_ontop' => false,); 
-	 	wp_terms_checklist(0, $nested_args);?>
+		
+	 	echo wp_terms_checklist_return_html(0, $nested_args);?>
     	</ul>
         </div>
         <div class="plupload_filelist_footer">

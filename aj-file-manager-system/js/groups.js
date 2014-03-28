@@ -348,6 +348,12 @@ groupid  = jQuery('#division').val();
 	 
 		 var tag_name = jQuery('#tag-name').val();
 		 var parent = jQuery('input[name=parent]:checked' ).val();
+		
+		 if(parent == undefined)
+		 {
+			parent = 0;
+		 }
+		
 		 var tag_description = jQuery('#tag-description').val(); 
  
 			 if (tag_name == "")
@@ -384,7 +390,7 @@ groupid  = jQuery('#division').val();
 								 jQuery('.available_document-folder').html(button_content);
 								 
 								 }
-							
+						location.href = document.getElementById('tag-link').value;
 						});  
 		});	
 //scripts added by surekha////

@@ -33,6 +33,7 @@
 	         </td>
 	         <td>
 	         <input name="tag-name" id="tag-name" type="text" value="" size="40" aria-required="true" />
+			 <input name="tag-link" id="tag-link" type="hidden" value="<?php echo get_permalink(get_the_ID()); ?>" />
 					<p><?php _e('The name is how it appears on your site.'); ?></p>
 	         </td>
          
@@ -54,11 +55,12 @@
         </div>
     	<div class="ppFolderStructureUlwrapper-document-folder">
         <ul class="folder-root">
+		<li id="document_folders-"><label class="selectit"><input value="0" type="radio" name="parent" id="document-folder-parent-" checked="checked"> none</label></li>
 		<?php 
 		$nested_args= array(
 			'descendants_and_self' => 0,
-			'selected_cats' => array(71) ,
-			'popular_cats' => array(71),
+			'selected_cats' => array() ,
+			'popular_cats' => array(),
 			'walker' => $walker,
 			'taxonomy' => 'document_folders',
 			'checked_ontop' => false,); 

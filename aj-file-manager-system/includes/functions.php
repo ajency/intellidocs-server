@@ -929,11 +929,12 @@ add_action('wp_ajax_dmt_change_password','dmt_change_password_dashboard');
 function dmt_add_folder()
 {
  
-
+global $wpdb;
+global $user_ID;
 	$tag_name = $_POST['tag_name'];
 	
 	$parent = $_POST['parent'];
-	
+	$term_data =array();
 	$tag_description = $_POST['tag_description'];
 	$error_msg = '';
 	$term = term_exists($tag_name, 'document_folders',$parent);
@@ -947,13 +948,22 @@ function dmt_add_folder()
 				'slug' => '',
 				'parent'=> $parent
 		) );
-		
+		if($parent==0)
+	{
+	$table_name = $wpdb->prefix . "dmt_user_cat_access_data";
+	$wpdb->insert( $table_name, array( 'user_id' => $user_ID, 'category_id' => $term_data['term_id'] ) );
+	}
+	
 		$msg =  "<p>Document Folder Added Successfully.</p>";
 		$parent = wp_dropdown_categories(array('hide_empty' => 0, 'hide_if_empty' => false, 'taxonomy' => 'document_folders', 'name' => 'parent', 'orderby' => 'name', 'hierarchical' => true, 'echo' => 0, 'show_option_none' => __('None')));
 		$parent =strip_tags($parent, '<option>');
 	}
+	//if parent is zero then do insert of 
 	
-
+	//global $user_ID
+	
+	
+	
 	$response = json_encode( array( 'msg' =>  $msg ,'parent'=> $parent,'error_msg'=>$error_msg) );
 	header( "Content-Type: application/json" );
 	echo $response;
@@ -1165,7 +1175,7 @@ add_filter( 'user_row_actions', 'intellidocs_user_actions', 10, 2 );
 
 add_filter( 'parse_query', 'order_posts_filter' );
 
-
+//code added by Surekha : returns an array with parent as well as child folders///
 function get_all_user_folders(){
 global $wpdb;
 		global $current_user;
@@ -1191,22 +1201,31 @@ global $wpdb;
 		$q=0;
 		
 		$z=0;
+		 
 		foreach($access_cats as $access_cat)
 		{ 
-			if(dmt_check_folder_status_is_published($access_cat->category_id))
+			//if(dmt_check_folder_status_is_published($access_cat->category_id))
+			//{ 
+			if(isset($_REQUEST['tag_ID']) && $_REQUEST['tag_ID']==$access_cat->category_id)
 			{
+			continue;
+			}
 				$cats1[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
 				//$html .=  intellidocs_folder_html($cat);
 				$push[$q] = $cats1[$z]->term_id;
 				$args2 = array(
 				'child_of' => $cats1[$z]->term_id,
-				'taxonomy' => $taxonomy,
+				'taxonomy' =>  'document_folders',
 				'hide_empty' => 0,
 				'hierarchical' => true,
 				'depth'  => 1,
 				);
 			$cats = get_categories( $args2 );
-
+			
+			
+			if($access_cat->category_id==108){
+			
+var_dump(	$cats);}
 			if($cats)
 			{
 				$a=0;
@@ -1220,12 +1239,12 @@ global $wpdb;
 					
 			$q++;
 			$z++;
-			}
+			//}
 		}
 
 		return $push;
 }
-
+//code added by Surekha : returns an array with parent as well as child folders///
 function order_posts_filter( $query ){
 
 	if(isset($_GET["post_type"]) && $_GET["post_type"]=="document_files" && !isset($_GET["page"]) && !current_user_can('administrate')){
