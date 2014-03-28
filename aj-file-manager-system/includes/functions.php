@@ -1163,9 +1163,6 @@ function intellidocs_user_actions( $actions, $user_object ) {
 add_filter( 'user_row_actions', 'intellidocs_user_actions', 10, 2 );
 
 
-add_filter( 'parse_query', 'order_posts_filter' );
-
-
 function get_all_user_folders(){
 global $wpdb;
 		global $current_user;
@@ -1226,7 +1223,7 @@ global $wpdb;
 		return $push;
 }
 
-function order_posts_filter( $query ){
+function filter_documentfolder_files_for_user( $query ){
 
 	if(isset($_GET["post_type"]) && $_GET["post_type"]=="document_files" && !isset($_GET["page"]) && !current_user_can('administrate')){
  global $pagenow,$wpdb;
@@ -1247,3 +1244,7 @@ function order_posts_filter( $query ){
  
     return $query;
 }
+
+ 
+
+add_filter( 'parse_query', 'filter_documentfolder_files_for_user' );
