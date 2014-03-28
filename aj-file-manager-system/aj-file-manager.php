@@ -1278,61 +1278,7 @@ function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
 	
 	if(!current_user_can('administrate'))
 	{
-		global $wpdb;
-		global $current_user;
-		get_currentuserinfo();
-		$userid  = $current_user->ID;
-		$user_access_table 	= $wpdb->prefix . "dmt_user_cat_access_data";
-		$user_group 		= $wpdb->prefix . "dmt_user_group";
-		$group_folder 		= $wpdb->prefix . "dmt_group_folder";
-		
-		//categories user has access to 
-		$access_cats = $wpdb->get_results( 
-		"
-		SELECT category_id
-		FROM $user_access_table
-		WHERE user_id = $userid 
-		UNION 
-		SELECT folder_id as category_id 
-		FROM $user_group,$group_folder  
-		WHERE $user_group.group_id = $group_folder.group_id and user_id  = $userid 
-		");	
-		$cats1 = array();
-		$push = array();
-		$q=0;
-		
-		$z=0;
-		foreach($access_cats as $access_cat)
-		{ 
-			if(dmt_check_folder_status_is_published($access_cat->category_id))
-			{
-				$cats1[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
-				//$html .=  intellidocs_folder_html($cat);
-				$push[$q] = $cats1[$z]->term_id;
-				$args2 = array(
-				'child_of' => $cats1[$z]->term_id,
-				'taxonomy' => $taxonomy,
-				'hide_empty' => 0,
-				'hierarchical' => true,
-				'depth'  => 1,
-				);
-			$cats = get_categories( $args2 );
-
-			if($cats)
-			{
-				$a=0;
-				for($i=0;$i<count($cats);$i++)
-				{
-					$q++;
-					$push[$q] = $cats[$a]->term_id;
-					$a++;
-				}
-			}
-					
-			$q++;
-			$z++;
-			}
-		}
+		$push = get_all_user_folders();
 		$args1 = array(
 		'hide_empty'    => false, 
 		'include'       => $push

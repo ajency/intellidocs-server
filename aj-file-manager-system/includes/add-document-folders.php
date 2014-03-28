@@ -62,8 +62,8 @@
 			'walker' => $walker,
 			'taxonomy' => 'document_folders',
 			'checked_ontop' => false,); 
-			var_dump($nested_args);
-	 	wp_terms_checklist(0, $nested_args);?>
+			 
+	 	echo wp_terms_checklist_return_html(0, $nested_args);?>
     	</ul>
         </div>
         <div class="plupload_filelist_footer">
