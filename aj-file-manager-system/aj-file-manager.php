@@ -512,7 +512,8 @@ License: GPL3
 		$folder_name 		= $_POST['folder_name'];
 		$parent_folder 		= $_POST['parent_folder'];
 		$folder_desc 		= $_POST['folder_desc']; 
-		
+		global $wpdb;
+		global $user_ID;
 		$slug = sanitize_title($folder_name);
 		
 		$term_data = wp_insert_term( $folder_name, 'document_folders',  array(
@@ -521,6 +522,11 @@ License: GPL3
 				'parent'=> $parent_folder
 		) );
  			$success =  true;
+ 			if($parent_folder==0)
+			{
+				$table_name = $wpdb->prefix . "dmt_user_cat_access_data";
+				$wpdb->insert( $table_name, array( 'user_id' => $user_ID, 'category_id' => $term_data['term_id'] ) );
+			}
  		}
  		else
  		{
@@ -546,6 +552,8 @@ License: GPL3
 		$folders_dmt_folder_visibility_status  = $wpdb->prefix . "dmt_folder_visibility_status";
 		
 		$folders_dmt_document_folders_meta  = $wpdb->prefix . "dmt_document_folders_meta";
+
+		$table_name = $wpdb->prefix . "dmt_user_cat_access_data";
 		
 		$folder_id 		= $_POST['folder_id']; 
 		$recursive 		= $_POST['recursive']; 
@@ -564,6 +572,8 @@ License: GPL3
 				$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_folder_visibility_status WHERE `folder_id` = %d", $child));
 				
 				$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_document_folders_meta WHERE `folder_id` = %d", $child));
+
+				$wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE `category_id` = %d", $child));
 			}
 		}
 		wp_delete_term( $folder_id, 'document_folders' );
@@ -575,6 +585,9 @@ License: GPL3
 		$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_folder_visibility_status WHERE `folder_id` = %d", $folder_id));
 		
 		$wpdb->query($wpdb->prepare("DELETE FROM $folders_dmt_document_folders_meta WHERE `folder_id` = %d", $folder_id));
+
+		$wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE `category_id` = %d", $folder_id));
+		
 		$success =  true;
 		$response = json_encode( array( 'success' => $success,'folder_id' => $folder_id ,'terms'=>$termchildren,'recursive'=>$recursive) );
 		header( "Content-Type: application/json" );
@@ -1234,8 +1247,10 @@ class tcb_Walker_Category_Radiolist extends Walker {
 }
 
 
-
+//code modified by surekha: fetches the array from get_all_user_folders() and displays it.If the array returned is empty,no folders are displayed//////
 function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
+
+	$categories=array();
  	$defaults = array(
 		'descendants_and_self' => 0,
 		'selected_cats' => false,
@@ -1279,19 +1294,26 @@ function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
 	if(!current_user_can('administrate'))
 	{
 		$push = get_all_user_folders();
+		
+		if(count($push)!=0)
+		{
+				
 		$args1 = array(
 		'hide_empty'    => false, 
 		'include'       => $push
 		); 
+			$categories =  get_terms($taxonomy,  $args1);
+		}
+	
 	}
 	else
 	{
 		$args1 = array(
 		'get'    => 'all', 
 		); 
+		$categories =  get_terms($taxonomy,  $args1);
 	}
-		$categories = (array) get_terms($taxonomy,  $args1);
-		
+	
 
 		
 	}
@@ -1314,7 +1336,7 @@ function wp_terms_checklist_return_html($post_id = 0, $args = array()) {
 	// Then the rest of them
 	return call_user_func_array(array(&$walker, 'walk'), array($categories, 0, $args));
 }
-
+//code modified by surekha: fetches the array from get_all_user_folders() and displays it.If the array returned is empty,no folders are displayed//////
 function remove_dropdown_cats($output){
 
 if($_REQUEST["taxonomy"]!="document_folders")
@@ -1331,7 +1353,9 @@ $output .= '<div class="plupload_header_text">These are the folders to which the
 $output .= '</div>';
 $output .= '</div>';
 $output .= '<div class="ppFolderStructureUlwrapper-document-folder">';
-$output .= '<ul class="folder-root">';
+
+$output .= '<ul class="folder-root"><li id="document_folders-"><label class="selectit"><input value="0" type="radio" name="parent" id="document-folder-parent-" checked="checked"> none</label></li>
+		';
 	  $walker = new tcb_Walker_Category_Radiolist;
 		$nested_args= array(
 			'descendants_and_self' => 0,
@@ -1340,7 +1364,8 @@ $output .= '<ul class="folder-root">';
 			'walker' => $walker,
 			'taxonomy' => 'document_folders',
 			'checked_ontop' => false,
-			'include_category' => array(71),); 
+			'include_category' => array(),); 
+			
 $output .= wp_terms_checklist_return_html(0, $nested_args); 
 $output .= '</ul>';
 $output .= '</div>';
