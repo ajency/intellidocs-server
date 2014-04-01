@@ -80,7 +80,9 @@ function dmt_extend_profile_fields( $user ) {
 		<td>
 			<div class="dmtDocumentFolderStructureWrapper">
 			<ul class="dmtDocumentFolderStructure">
-	<?php foreach($categories as $category):?>
+	<?php
+if(!is_null($categories)){
+	 foreach($categories as $category):?>
 				<?php if($selected_folders[0]['document_folders']): ?>
 					<?php $checked = (in_array($category->term_id,$selected_folders[0]['document_folders']))?'checked="checked"':''; ?>
 				<?php endif;?>
@@ -89,7 +91,12 @@ function dmt_extend_profile_fields( $user ) {
 						<input value="<?php echo $category->term_id;?>" type="checkbox" name="tax_input[document_folders][]" id="in-document_folders-<?php echo $category->term_id;?>" <?php echo $checked; ?> /> <?php echo $category->name;?>
 					</label>
 				</li>
-	<?php endforeach;?>
+	<?php endforeach;
+	}
+	else
+		{
+			?> You Do Not have Folder Access<?php
+			}?>
 			</ul>
 			</div>
 			<span class="description">Set the folders the current user has access to.</span>
