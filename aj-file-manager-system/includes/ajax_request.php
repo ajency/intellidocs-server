@@ -5,7 +5,7 @@ global $random;
 
 $random = 100;
 $path = $_SERVER['DOCUMENT_ROOT'];
-$mypath = '/intellidocs';
+$mypath = '';
 $path = $path.$mypath;
 //include_once $path . '/wp-config.php';
 include_once $path . '/wp-load.php';
