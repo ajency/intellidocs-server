@@ -6,6 +6,11 @@ add_action( 'show_user_profile', 'dmt_extend_profile_fields' );
 add_action( 'edit_user_profile', 'dmt_extend_profile_fields' );
 
 function dmt_extend_profile_fields( $user ) { 
+
+	if(get_current_user_id()==$user->ID)
+	{
+	return false;
+	}
 	
  $selected_folders = get_user_meta($user->ID, 'dmt_folder_access');
  $nested_args= array(
@@ -28,6 +33,31 @@ function dmt_extend_profile_fields( $user ) {
 	'taxonomy'                 => 'document_folders',
 	'pad_counts'               => false
  	);
+	
+	
+	if(!current_user_can('administrate'))
+	{
+		$push = get_all_user_folders($show = false);
+		
+		if(count($push)!=0)
+		{
+				
+		$args1 = array(
+		'hide_empty'    => false, 
+		'include'       => $push
+		); 
+			$categories =  get_terms('document_folders',  $args1);
+		}
+	
+	}
+	else
+	{
+		$args1 = array(
+		'get'    => 'all', 
+		); 
+		$categories =  get_terms('document_folders',  $args1);
+	}
+	
 ?>
 <?php 
 /**
@@ -36,7 +66,7 @@ function dmt_extend_profile_fields( $user ) {
  * if nested folder structure is needed
  */
 //wp_terms_checklist(0, $nested_args); ?>
-<?php $categories = get_categories( $parent_args ); ?>
+<?php //$categories = get_categories( $parent_args ); ?>
 	<h3>Folder Visibility</h3>
 	
 	<table class="form-table">
@@ -49,11 +79,11 @@ function dmt_extend_profile_fields( $user ) {
 			<ul class="dmtDocumentFolderStructure">
 	<?php foreach($categories as $category):?>
 				<?php if($selected_folders[0]['document_folders']): ?>
-					<?php $checked = (in_array($category->cat_ID,$selected_folders[0]['document_folders']))?'checked="checked"':''; ?>
+					<?php $checked = (in_array($category->term_id,$selected_folders[0]['document_folders']))?'checked="checked"':''; ?>
 				<?php endif;?>
-				<li id="document_folders-<?php echo $category->cat_ID;?>">
+				<li id="document_folders-<?php echo $category->term_id;?>">
 					<label class="selectit">
-						<input value="<?php echo $category->cat_ID;?>" type="checkbox" name="tax_input[document_folders][]" id="in-document_folders-<?php echo $category->cat_ID;?>" <?php echo $checked; ?> /> <?php echo $category->cat_name;?>
+						<input value="<?php echo $category->term_id;?>" type="checkbox" name="tax_input[document_folders][]" id="in-document_folders-<?php echo $category->term_id;?>" <?php echo $checked; ?> /> <?php echo $category->name;?>
 					</label>
 				</li>
 	<?php endforeach;?>
@@ -75,7 +105,7 @@ add_action( 'edit_user_profile_update', 'dmt_extend_profile_fields_save' );
 
 function dmt_extend_profile_fields_save($user_id) {
 
-	if ( !current_user_can( 'edit_user') )
+	if ( (!current_user_can( 'edit_user')) || (get_current_user_id()==$user->ID) )
 		return false;
 	
 	update_usermeta( $user_id, 'dmt_folder_access', $_POST['tax_input'] );

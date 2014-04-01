@@ -1176,7 +1176,7 @@ add_filter( 'user_row_actions', 'intellidocs_user_actions', 10, 2 );
 
 //code added by Surekha : returns an array with parent as well as child folders///
  
-function get_all_user_folders(){
+function get_all_user_folders($show=true){
 global $wpdb;
 		global $current_user;
 		get_currentuserinfo();
@@ -1213,6 +1213,8 @@ global $wpdb;
 				$cats1[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
 				//$html .=  intellidocs_folder_html($cat);
 				$push[$q] = $cats1[$z]->term_id;
+				if($show==true)
+				{
 				$args2 = array(
 				'child_of' => $cats1[$z]->term_id,
 				'taxonomy' =>  'document_folders',
@@ -1233,7 +1235,7 @@ global $wpdb;
 					$a++;
 				}
 			}
-					
+				}	
 			$q++;
 			$z++;
 			//}
