@@ -53,7 +53,10 @@ function dmt_extend_profile_fields( $user ) {
 	else
 	{
 		$args1 = array(
-		'get'    => 'all', 
+		'orderby'    => 'name',
+		'hide_empty' => 0,
+		'parent' =>0, 
+		'hierarchical'  => true
 		); 
 		$categories =  get_terms('document_folders',  $args1);
 	}
