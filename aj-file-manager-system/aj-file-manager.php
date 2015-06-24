@@ -103,6 +103,9 @@ License: GPL3
 		wp_enqueue_script('dmt-folder-edit');
 		wp_register_script('dmt-folder-groups',WP_PLUGIN_URL.'/aj-file-manager-system/js/groups.js');
 		wp_enqueue_script('dmt-folder-groups');
+		wp_register_script('bootstrap-js',WP_PLUGIN_URL.'/aj-file-manager-system/js/bootstrap.min.js');
+		wp_enqueue_script('bootstrap-js');
+
 		if(!dmt_current_user_is_site_admin())
 		{
 			wp_register_script('dmt-folder-tree',WP_PLUGIN_URL.'/aj-file-manager-system/js/jquery.treeview.js');
@@ -895,6 +898,7 @@ License: GPL3
 		}
 		wp_register_style( 'dmt-plugin-style',  plugins_url('/css/dmt_plugin.css', __FILE__ ) );
 		wp_enqueue_style( 'dmt-plugin-style' );
+
 		if(!dmt_current_user_is_site_admin())
 		{
  

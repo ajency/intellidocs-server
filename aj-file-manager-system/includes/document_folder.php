@@ -234,6 +234,7 @@ function aj_manage_document_folders_scripts_sub()
 
 	if($current_screen->id == 'edit-document_folders')
 	{
+		
 		wp_register_script('dmt-manage-folder-cookie-js',plugins_url('/js/jquery.cookie.js',__FILE__));
 		wp_enqueue_script('dmt-manage-folder-cookie-js');
 

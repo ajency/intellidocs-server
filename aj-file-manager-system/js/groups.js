@@ -445,6 +445,60 @@ groupid  = jQuery('#division').val();
 						  jQuery('#available_division').html(response);
 					});
 	 }
+
+	jQuery('.move').live('click' ,function(e){ 
+		window.current_folder = jQuery(e.target).attr('data-termid'); 
+		jQuery.post(ajaxurl,{
+						action : 'get_categories' , 
+						call_by :'ajax',
+
+					  },
+						function(response){  
+							if(response !="")
+							{
+								jQuery('.show_cat').html(response);
+								// jQuery('.show_cat').removeClass('hidden')
+
+								jQuery('#myModal').modal()
+							}
+						  
+					});
+
+	 })
+	window.CATEGORIES = [];
+	jQuery('.folders_check').live('click' ,function(e){ 
+		if(jQuery(e.currentTarget).is(':checked'))
+			window.CATEGORIES.push(parseInt(jQuery(e.target).attr('data-catid')))
+		else{
+			index = window.CATEGORIES.indexOf(parseInt(jQuery(e.target).attr('data-catid')))
+			window.CATEGORIES.splice(index, 1);
+		}
+
+	 })
+
+	jQuery('.save').live('click' ,function(e){ 
+		folder_name = window.current_folder; 
+		parent_folder = window.CATEGORIES.join(',');
+		var folder_data = 
+			{
+				action 			: 'save_move_folders',
+				folder_name 	: folder_name,
+				parent_folder 	: parent_folder,
+				call_by :'ajax',
+			}
+		jQuery.post(ajaxurl,folder_data,
+						function(response){  
+							window.CATEGORIES = [];
+							if(response !="")
+							{
+								jQuery('#myModal').modal('hide');
+							}
+						  
+					});
+
+	 })
+
+
 //scripts added by surekha////	 
 });
 

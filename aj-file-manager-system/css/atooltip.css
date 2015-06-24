@@ -48,3 +48,14 @@
 		margin:2px;
 		padding:4px;
 	}
+
+
+.tree_struct_css {
+ list-style-type: none;
+}
+.tree_struct_css li {
+ padding-left: 5px;
+}
+.tree_struct_css li ul {
+ padding-left: 20px;
+}
