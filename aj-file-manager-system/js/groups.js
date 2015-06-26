@@ -578,3 +578,5 @@ window.onload = function() {
 jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
 jQuery('#division').trigger("change");
 }
+
+

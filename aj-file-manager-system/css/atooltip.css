@@ -59,3 +59,20 @@
 .tree_struct_css li ul {
  padding-left: 20px;
 }
+.selectall,
+.tree_struct_css .folders_del_check,
+.tree_struct_css .folders_check,
+.inside .doc_folders
+{
+	margin: -4px 4px 0 0 !important;
+}
+.selectDiv{
+	clear:both;
+	text-align: right;
+}
+.tree_struct_css .folders_del_check:focus,
+.inside .doc_folders:focus,
+.tree_struct_css .folders_check:focus{
+	border: 0;
+	outline: initial;
+}

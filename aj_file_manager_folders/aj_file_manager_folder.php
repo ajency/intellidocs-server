@@ -732,7 +732,7 @@ function intellidocs_fetch_tree(){
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Document Folders</h4>
-        <div><input type="checkbox" class="selectall" name="selectall" id="selectall" value="1" />Select All</div>
+        <div class="selectDiv"><input type="checkbox" class="selectall" name="selectall" id="selectall" value="1" />Select All</div>
       </div>
       <div class="modal-body">
        <div class="show_child"></div>
