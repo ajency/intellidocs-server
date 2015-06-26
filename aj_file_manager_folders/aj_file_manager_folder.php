@@ -549,7 +549,8 @@ function intellidocs_folder_html($cat)
 		$folder_edit_html 	   	= (current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin" || current_user_can('administrate'))? '&nbsp;&nbsp;<span class="add-sub-folder" title="Add Sub folder" rel="#" id="folder'.$cat->term_id.'" parent-folder="'.$cat->term_id.'"><i class="icon-plus"></i>Add Sub folder</span>&nbsp;&nbsp;<span class="edit-folder" title="Edit folder" rel="'.admin_url().'edit-tags.php?action=edit&taxonomy=document_folders&tag_ID='.$cat->term_id.'&post_type=document_files'.'"><i class="icon-pencil"></i>Edit</span>&nbsp;&nbsp; <i class="icon-trash"></i><a href="javascriot:void(0)" rel="'.admin_url().wp_nonce_url( "edit-tags.php?action=delete&amp;taxonomy=document_folders&tag_ID=".$cat->term_id, 'delete-tag_' . $cat->term_id ).'"  folder-name ="'.$cat->name.'" class="delete-folder" onclick="funconfirmaction(this.rel,\''.$cat->name.'\','.$cat->term_id.')">Delete</a>':'';
 		$folder_edit_html_additional_parameters 	   	= apply_filters('intellidocs_etc_action', admin_url(),$cat->term_id);
 		$move_html = '&nbsp;<i class="icon-folder-close-alt"></i><span class="move" data-termid="'.$cat->term_id.'" title="Move">Move</span>';
-		$folder_edit_html = $folder_edit_html.$folder_edit_html_additional_parameters.$move_html;
+		$delete_items_html = '&nbsp;<i class="icon-trash"></i><span class="delete_items" data-termid="'.$cat->term_id.'" title="Delete Items">Delete Items</span>';
+		$folder_edit_html = $folder_edit_html.$folder_edit_html_additional_parameters.$move_html.$delete_items_html;
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
 		
 		$sub_folder_count_html 	= '&nbsp;<span class="sub-folder-count" title="Sub folder count"><i class="icon-folder-close-alt"></i>'.intellidocs_get_subfolder_count($cat->term_id).'</span>';
@@ -722,6 +723,22 @@ function intellidocs_fetch_tree(){
      <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary save">Save</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><div id="myDeleteModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Document Folders</h4>
+      </div>
+      <div class="modal-body">
+       <div class="show_child"></div>
+      </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary delete">Delete</button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

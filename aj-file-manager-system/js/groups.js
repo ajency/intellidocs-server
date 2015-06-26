@@ -498,6 +498,56 @@ groupid  = jQuery('#division').val();
 
 	 })
 
+	jQuery('.delete_items').live('click' ,function(e){ 
+		window.parentFolder = jQuery(e.target).attr('data-termid'); 
+		var folder_data = 
+			{
+				action 			: 'get_child_categories',
+				parent_folder 	: parentFolder,
+				call_by :'ajax',
+			}
+		jQuery.post(ajaxurl,folder_data,
+						function(response){  
+							if(response !="")
+							{
+								jQuery('.show_child').html(response);
+								// jQuery('.show_cat').removeClass('hidden')
+
+								jQuery('#myDeleteModal').modal()
+							}
+						  
+					});
+
+	 })
+	window.DELETECATEGORIES = []
+	jQuery('.folders_del_check').live('click' ,function(e){ 
+		if(jQuery(e.currentTarget).is(':checked'))
+			window.DELETECATEGORIES.push(parseInt(jQuery(e.target).attr('data-catid')))
+		else{
+			index = window.DELETECATEGORIES.indexOf(parseInt(jQuery(e.target).attr('data-catid')))
+			window.DELETECATEGORIES.splice(index, 1);
+		}
+
+	 })
+	jQuery('.delete').live('click' ,function(e){ 
+		parent_folder = window.DELETECATEGORIES.join(',');
+		var folder_data = 
+			{
+				action 			: 'delete_child_categories',
+				parent_folder 	: parent_folder,
+				call_by :'ajax',
+			}
+		jQuery.post(ajaxurl,folder_data,
+						function(response){ 
+							window.DELETECATEGORIES = []; 
+							if(response !="")
+							{
+								jQuery('#myDeleteModal').modal('hide');
+							}
+						  
+					});
+
+	 })
 
 //scripts added by surekha////	 
 });
