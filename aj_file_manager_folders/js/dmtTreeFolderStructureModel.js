@@ -59,6 +59,8 @@ jQuery('#create-sub-folder').live('click', function(e) {
 		return false;
 		}
 	folder_name = jQuery("#folder-name").val()
+	window.selected_folder = jQuery("#folder-name").val();
+	localStorage.setItem('selected_folder',jQuery("#folder-name").val())		
 	parent_folder = jQuery("#parent-folder").val()
 	folder_desc =   jQuery("#folder-desc").val()
 	jQuery("#add-folder-div").after("<div style='display:inline' id='msg-folder-div"+parent_folder+"'>Creating Sub Folder.....</div>")
@@ -76,10 +78,13 @@ jQuery('#create-sub-folder').live('click', function(e) {
 
 		if(response.success == true)
 		{
-
+			console.log(response)
 			jQuery("#msg-folder-div"+parent_folder+"").remove()
 			alert(folder_name+" Folder Created Successfully!")
-			location.reload();	
+			location.href = SITEURL+'/wp-admin/edit.php?post_type=document_files&page=add-division'
+			// jQuery('#division').val(localStorage.getItem('selected_folder'));
+			
+			// location.reload();	
 		}
 		else
 		{

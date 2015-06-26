@@ -543,15 +543,38 @@ groupid  = jQuery('#division').val();
 							if(response !="")
 							{
 								jQuery('#myDeleteModal').modal('hide');
+								window.location.reload()
 							}
 						  
 					});
 
 	 })
 
+	jQuery('.selectall').live('click' ,function(e){ 
+		if(jQuery(e.currentTarget).is(':checked')){
+			jQuery('.folders_del_check').each(function(index,item){
+					window.DELETECATEGORIES.push(parseInt(jQuery(item).attr('data-catid')))
+					jQuery(item).prop('checked',true);
+
+			})
+		}
+		else{
+			jQuery('.folders_del_check').each(function(index,item){
+					index = window.DELETECATEGORIES.indexOf(parseInt(jQuery(item).attr('data-catid')))
+					window.DELETECATEGORIES.splice(index, 1);
+					jQuery(item).prop('checked',false);
+
+			})
+			
+		}
+
+	 })
+
 //scripts added by surekha////	 
 });
 
+window.onload = function() {
 
-
-	
+jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
+jQuery('#division').trigger("change");
+}
