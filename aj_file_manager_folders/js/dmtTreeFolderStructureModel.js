@@ -78,13 +78,12 @@ jQuery('#create-sub-folder').live('click', function(e) {
 
 		if(response.success == true)
 		{
-			console.log(response)
 			jQuery("#msg-folder-div"+parent_folder+"").remove()
 			alert(folder_name+" Folder Created Successfully!")
+			if(parseInt(parent_folder) == 0)
 			location.href = SITEURL+'/wp-admin/edit.php?post_type=document_files&page=add-division'
-			// jQuery('#division').val(localStorage.getItem('selected_folder'));
-			
-			// location.reload();	
+			else
+			location.reload();	
 		}
 		else
 		{

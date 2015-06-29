@@ -2,10 +2,15 @@
 
 
 $path = $_SERVER['DOCUMENT_ROOT'];
+
+include_once('../../../../wp-config.php');
+include_once(ABSPATH . 'wp-load.php');
+include_once(ABSPATH . 'wp-includes/wp-db.php');
+include_once(ABSPATH . 'wp-includes/pluggable.php');
 //include_once $path . '/wp-config.php';
-include_once $path . '/wp-load.php';
-include_once $path . '/wp-includes/wp-db.php';
-include_once $path . '/wp-includes/pluggable.php';
+// include_once $path . '/wp-load.php';
+// include_once $path . '/wp-includes/wp-db.php';
+// include_once $path . '/wp-includes/pluggable.php';
 
 
 class DMT_FetchFile

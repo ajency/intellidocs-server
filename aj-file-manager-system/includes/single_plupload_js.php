@@ -14,6 +14,7 @@ jQuery(document).ready(function() {
 		max_file_size : '10mb',
 		multipart_params:{
 			post_id:'<?php echo $post->ID;?>',
+			folders : window.FOLDERS
 			},
 		url : '<?php echo  plugins_url('aj-file-manager-system/includes/upload_single_file.php');?>',
 		flash_swf_url : '<?php echo  plugins_url('aj-file-manager-system/js/plupload.flash.swf');?>',
@@ -23,7 +24,10 @@ jQuery(document).ready(function() {
 		
 		if(jQuery.find('.dmt_single_uploaded_file').length > 0)
 		{
-			var folders_selected = plupload_get_folders_selected();
+			// var folders_selected = plupload_get_folders_selected();
+			var folders_selected = window.FOLDERS;
+			console.log(folders_selected)
+			
 			if(folders_selected.length > 0)
 			{
 				jQuery('.dmt-ajax-loading-file').show();
@@ -49,7 +53,6 @@ jQuery(document).ready(function() {
 	uploader.bind('FilesAdded', function(up, files) {
 
 		jQuery.each(files, function(i, file) {
-
 			jQuery('#filelist').find('div').each(function(){jQuery(this).remove();});
 			jQuery('#filelist').append(
 				'<div id="' + file.id + '" class="dmt_single_uploaded_file">' +

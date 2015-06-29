@@ -479,6 +479,10 @@ groupid  = jQuery('#division').val();
 	jQuery('.save').live('click' ,function(e){ 
 		folder_name = window.current_folder; 
 		parent_folder = window.CATEGORIES.join(',');
+		if(window.CATEGORIES.length == 0){
+			alert('Select atleast one folder');
+			return false;
+		}
 		var folder_data = 
 			{
 				action 			: 'save_move_folders',
@@ -531,6 +535,10 @@ groupid  = jQuery('#division').val();
 	 })
 	jQuery('.delete').live('click' ,function(e){ 
 		parent_folder = window.DELETECATEGORIES.join(',');
+		if(window.DELETECATEGORIES.length == 0){
+			alert('Select atleast one folder');
+			return false;
+		}
 		var folder_data = 
 			{
 				action 			: 'delete_child_categories',
@@ -569,6 +577,18 @@ groupid  = jQuery('#division').val();
 		}
 
 	 })
+	
+	jQuery('.doc_folders').live('click' ,function(e){ 
+		if(jQuery(e.currentTarget).is(':checked')){
+			window.FOLDERS.push(jQuery(e.currentTarget).val())
+		}
+		else{
+			index = window.FOLDERS.indexOf(jQuery(e.currentTarget).val())
+			window.FOLDERS.splice(index, 1);
+			
+		}
+
+	 })
 
 //scripts added by surekha////	 
 });
@@ -577,6 +597,7 @@ window.onload = function() {
 
 jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
 jQuery('#division').trigger("change");
+
 }
 
 

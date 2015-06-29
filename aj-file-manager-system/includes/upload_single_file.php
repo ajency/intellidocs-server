@@ -1,5 +1,11 @@
 <?php
 $path = $_SERVER['DOCUMENT_ROOT'];
+include_once('../../../../wp-config.php');
+include_once(ABSPATH . 'wp-load.php');
+include_once(ABSPATH . 'wp-includes/user.php');
+include_once(ABSPATH . 'wp-includes/wp-db.php');
+include_once(ABSPATH . 'wp-includes/pluggable.php');
+include_once(ABSPATH . 'wp-includes/functions.php');
 //include_once $path . '/wp-config.php';
 // include_once $path . '/wp-load.php';
 // include_once $path . '/wp-includes/user.php';
@@ -7,11 +13,11 @@ $path = $_SERVER['DOCUMENT_ROOT'];
 // include_once $path . '/wp-includes/pluggable.php';
 // include_once $path . '/wp-includes/functions.php';
 
-include 'http://localhost/intellidocs/wp-load.php';
-include 'http://localhost/intellidocs/wp-includes/user.php';
-include 'http://localhost/intellidocs/wp-includes/wp-db.php';
-include 'http://localhost/intellidocs/wp-includes/pluggable.php';
-include 'http://localhost/intellidocs/wp-includes/functions.php';
+// include 'http://localhost/intellidocs/wp-load.php';
+// include 'http://localhost/intellidocs/wp-includes/user.php';
+// include 'http://localhost/intellidocs/wp-includes/wp-db.php';
+// include 'http://localhost/intellidocs/wp-includes/pluggable.php';
+// include 'http://localhost/intellidocs/wp-includes/functions.php';
 
 // HTTP headers for no cache etc
 header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
