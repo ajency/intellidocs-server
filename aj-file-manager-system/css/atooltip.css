@@ -64,7 +64,7 @@
 .tree_struct_css .folders_check,
 .inside .doc_folders
 {
-	margin: -4px 4px 0 0 !important;
+	margin: -4px 4px 0 0;
 }
 .selectDiv{
 	clear:both;
@@ -103,4 +103,13 @@
 #dmt-file-new-category .panel-group .panel-heading a.collapsed:after {
   content: '\e252';
   font-family: 'Glyphicons Halflings';
+}
+
+input[type=checkbox],
+input[type=radio]{
+	margin: -4px 4px 0 0;
+}
+input[type=checkbox]:focus,
+input[type=radio]:focus{
+	outline: 0;
 }
