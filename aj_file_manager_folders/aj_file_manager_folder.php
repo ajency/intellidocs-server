@@ -471,8 +471,8 @@ function intellidocs_document_folder_structure($catid = null)
 	$catid = (!empty($catid))?$catid:0;
 	
 	//if($catid == 0 && !current_user_can('publish_posts'))
-			
-	if($catid == 0 && !current_user_can('manage_options') && !current_user_can('administrate') && current_user_can('manage divisions'))
+	
+	if($catid == 0 && !current_user_can('manage_options') && !current_user_can('administrate'))
 	{
 		global $current_user;
 		get_currentuserinfo();
@@ -492,6 +492,7 @@ function intellidocs_document_folder_structure($catid = null)
 		FROM $user_group,$group_folder  
 		WHERE $user_group.group_id = $group_folder.group_id and user_id  = $userid 
 		");	
+		
 		$cats = array();
 		foreach($access_cats as $access_cat)
 		{ 

@@ -595,8 +595,14 @@ groupid  = jQuery('#division').val();
 
 window.onload = function() {
 
-jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
+if(localStorage.getItem('selected_folder')!="")
+{
+	jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
 jQuery('#division').trigger("change");
+localStorage.setItem('selected_folder',"");
+			
+}
+
 
 }
 
