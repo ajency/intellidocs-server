@@ -80,7 +80,14 @@
 #dmt-file-new-category .panel-default>.panel-heading{
 	background: #fff;
 }
-
+#dmt-file-new-category .panel-body{
+	background: #f5f5f5;
+}
+#dmt-file-new-category .panel-group .panel-heading a:focus{
+	border: 0;
+	outline: 0;
+	box-shadow: initial;
+}
 /*accordion icons*/
 #dmt-file-new-category .panel-group .panel-heading a:after {
   content: '\e253';
