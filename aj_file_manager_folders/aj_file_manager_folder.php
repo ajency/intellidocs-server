@@ -472,7 +472,7 @@ function intellidocs_document_folder_structure($catid = null)
 	
 	//if($catid == 0 && !current_user_can('publish_posts'))
 			
-	if($catid == 0 && !current_user_can('manage_options') && !current_user_can('administrate'))
+	if($catid == 0 && !current_user_can('manage_options') && !current_user_can('administrate') && current_user_can('manage divisions'))
 	{
 		global $current_user;
 		get_currentuserinfo();
