@@ -76,3 +76,21 @@
 	border: 0;
 	outline: initial;
 }
+
+#dmt-file-new-category .panel-default>.panel-heading{
+	background: #fff;
+}
+
+/*accordion icons*/
+#dmt-file-new-category .panel-group .panel-heading a:after {
+  content: '\e253';
+  position: absolute;
+  right: 20px;
+  font-family: 'Glyphicons Halflings';
+  color: #a0a5aa;
+  font-size: 14px;
+}
+#dmt-file-new-category .panel-group .panel-heading a.collapsed:after {
+  content: '\e252';
+  font-family: 'Glyphicons Halflings';
+}
