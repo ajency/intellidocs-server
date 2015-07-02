@@ -104,7 +104,6 @@
   content: '\e252';
   font-family: 'Glyphicons Halflings';
 }
-
 input[type=checkbox],
 input[type=radio]{
 	margin: -4px 4px 0 0;
@@ -112,4 +111,8 @@ input[type=radio]{
 input[type=checkbox]:focus,
 input[type=radio]:focus{
 	outline: 0;
+}
+#dmt-file-new-category .inside{
+	max-height: 440px;
+	overflow-x: auto;
 }
