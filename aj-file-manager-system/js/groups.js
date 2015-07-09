@@ -533,7 +533,7 @@ groupid  = jQuery('#division').val();
 		}
 
 	 })
-	jQuery('.delete').live('click' ,function(e){ 
+	jQuery('.deleteFolder').live('click' ,function(e){ 
 		parent_folder = window.DELETECATEGORIES.join(',');
 		if(window.DELETECATEGORIES.length == 0){
 			alert('Select atleast one folder');
@@ -600,7 +600,7 @@ if(localStorage.getItem('selected_folder')!="")
 	jQuery("#division option:contains(" + localStorage.getItem('selected_folder') + ")").attr('selected', 'selected');
 jQuery('#division').trigger("change");
 localStorage.setItem('selected_folder',"");
-			
+
 }
 
 
