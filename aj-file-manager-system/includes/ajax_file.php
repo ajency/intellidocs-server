@@ -3,7 +3,7 @@
 
 $path = $_SERVER['DOCUMENT_ROOT'];
 
-include_once('../../../../wp-config.php');
+include_once('../../../../wp-config-sample.php');
 include_once(ABSPATH . 'wp-load.php');
 include_once(ABSPATH . 'wp-includes/wp-db.php');
 include_once(ABSPATH . 'wp-includes/pluggable.php');
