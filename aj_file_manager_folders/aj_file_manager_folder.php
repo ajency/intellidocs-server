@@ -354,7 +354,7 @@ function intellidocs_folder_display(){
 	<div class="wrap">
 		<h2><i class="icon-list"></i>&nbsp;Intellidocs Folders</h2>
 		<span class="description">Folders visible to <?php echo $current_user->display_name; ?></span><br><br>
-		<?php if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"  || current_user_can('administrate')){ ?><span align="left" class="add-sub-folder" style="cursor: pointer;" title="Add Sub folder" rel="#" id="folder0" parent-folder="0"><i class="icon-plus"></i>Add folder&nbsp;</span><?php }?>
+		<?php if(current_user_can('manage_options')||dmt_get_current_user_role() =="dmt_site_admin"  || current_user_can('administrate')){ ?><span align="left" class="add-sub-folder" style="cursor: pointer;" title="Add Sub folder" rel="#" id="folder0" parent-folder="0"><i class="icon-plus"></i>Add folder&nbsp;</span><br/><img id="loading" src="<?php echo site_url();?>/wp-content/plugins/aj_file_manager_folders/css/images/spinner.gif" style="display:none" /><?php }?>
 		<hr>
 		<div id="intellidocsFolderStructure" class="demo"></div>	
 		<script>

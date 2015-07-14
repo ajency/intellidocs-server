@@ -447,6 +447,7 @@ groupid  = jQuery('#division').val();
 	 }
 
 	jQuery('.move').live('click' ,function(e){ 
+		jQuery('#loading').show()
 		window.current_folder = jQuery(e.target).attr('data-termid'); 
 		jQuery.post(ajaxurl,{
 						action : 'get_categories' , 
@@ -456,6 +457,7 @@ groupid  = jQuery('#division').val();
 						function(response){  
 							if(response !="")
 							{
+								jQuery('#loading').hide()
 								jQuery('.show_cat').html(response);
 								// jQuery('.show_cat').removeClass('hidden')
 
@@ -503,6 +505,7 @@ groupid  = jQuery('#division').val();
 	 })
 
 	jQuery('.delete_items').live('click' ,function(e){ 
+		jQuery('#loading').show()
 		window.parentFolder = jQuery(e.target).attr('data-termid'); 
 		var folder_data = 
 			{
@@ -514,6 +517,7 @@ groupid  = jQuery('#division').val();
 						function(response){  
 							if(response !="")
 							{
+								jQuery('#loading').hide()
 								jQuery('.show_child').html(response);
 								// jQuery('.show_cat').removeClass('hidden')
 
