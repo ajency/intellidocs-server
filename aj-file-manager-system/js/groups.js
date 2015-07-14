@@ -594,6 +594,15 @@ groupid  = jQuery('#division').val();
 
 	 })
 
+	jQuery("div.accordion").accordion({
+    // autoHeight: false,
+    collapsible: true,
+    active: false,
+    heightStyle: "content"
+
+
+});
+
 //scripts added by surekha////	 
 });
 
@@ -608,14 +617,7 @@ localStorage.setItem('selected_folder',"");
 }
 			
 			
-jQuery("div.accordion").accordion({
-    // autoHeight: false,
-    collapsible: true,
-    active: false,
-    heightStyle: "content"
 
-
-});
 
 
 }
