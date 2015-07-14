@@ -116,3 +116,32 @@ input[type=radio]:focus{
 	max-height: 440px;
 	overflow-x: auto;
 }
+
+input[type=checkbox].doc_folders{
+	margin: 6px 4px 0 0;
+	vertical-align: top;
+}
+.ui-accordion{
+	display: inline-block;
+	width: 80%;
+}
+.ui-accordion .ui-accordion-header, .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+	padding: 5px;
+	border-radius: 0;
+	border: none;
+	/*background: transparent;*/
+}
+.ui-accordion .ui-accordion-content{
+	padding: 5px !important;
+	border: none;
+}
+.ui-accordion .ui-accordion-icons{
+	padding-left: 10px !important;
+}
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon{
+	left: auto !important;
+	right: 5px;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
+	background: #C3C3C3 !important;
+}

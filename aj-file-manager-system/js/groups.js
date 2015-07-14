@@ -609,9 +609,10 @@ localStorage.setItem('selected_folder',"");
 			
 			
 jQuery("div.accordion").accordion({
-    autoHeight: false,
+    // autoHeight: false,
     collapsible: true,
     active: false,
+    heightStyle: "content"
 
 
 });
