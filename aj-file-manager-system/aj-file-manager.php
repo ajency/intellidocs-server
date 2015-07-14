@@ -105,6 +105,10 @@ License: GPL3
 		wp_enqueue_script('dmt-folder-groups');
 		wp_register_script('bootstrap-js',WP_PLUGIN_URL.'/aj-file-manager-system/js/bootstrap.min.js');
 		wp_enqueue_script('bootstrap-js');
+		wp_register_script('jquery-ui-js',WP_PLUGIN_URL.'/aj-file-manager-system/js/jquery-ui.js');
+		wp_enqueue_script('jquery-ui-js');
+		wp_register_style('jquery-ui-css',WP_PLUGIN_URL.'/aj-file-manager-system/css/jquery-ui.css');
+		wp_enqueue_style('jquery-ui-css');
 
 		if(!dmt_current_user_is_site_admin())
 		{
