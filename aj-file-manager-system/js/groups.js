@@ -606,6 +606,15 @@ jQuery('#division').trigger("change");
 localStorage.setItem('selected_folder',"");
 
 }
+			
+			
+jQuery("div.accordion").accordion({
+    autoHeight: false,
+    collapsible: true,
+    active: false,
+
+
+});
 
 
 }
