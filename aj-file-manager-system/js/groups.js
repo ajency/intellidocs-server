@@ -498,6 +498,7 @@ groupid  = jQuery('#division').val();
 							if(response !="")
 							{
 								jQuery('#myModal').modal('hide');
+								window.location.reload()
 							}
 						  
 					});
@@ -505,6 +506,8 @@ groupid  = jQuery('#division').val();
 	 })
 
 	jQuery('.delete_items').live('click' ,function(e){ 
+		jQuery('.selectall').removeAttr('checked')
+		window.DELETECATEGORIES = [];
 		jQuery('#loading').show()
 		window.parentFolder = jQuery(e.target).attr('data-termid'); 
 		var folder_data = 
@@ -538,6 +541,7 @@ groupid  = jQuery('#division').val();
 
 	 })
 	jQuery('.deleteFolder').live('click' ,function(e){ 
+
 		parent_folder = window.DELETECATEGORIES.join(',');
 		if(window.DELETECATEGORIES.length == 0){
 			alert('Select atleast one folder');

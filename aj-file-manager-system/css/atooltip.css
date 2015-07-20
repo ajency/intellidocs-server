@@ -157,3 +157,10 @@ input[type=checkbox].doc_folders{
 .ui-state-active.hide_arrow, .ui-widget-content .ui-state-active.hide_arrow, .ui-widget-header .ui-state-active.hide_arrow{
 	background: transparent !important;
 }
+
+span.move {
+  cursor: pointer;
+}
+span.delete_items {
+  cursor: pointer;
+}
