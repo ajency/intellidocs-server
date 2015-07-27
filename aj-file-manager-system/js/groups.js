@@ -498,7 +498,7 @@ groupid  = jQuery('#division').val();
 							if(response !="")
 							{
 								jQuery('#myModal').modal('hide');
-								window.location.reload()
+								// window.location.reload()
 							}
 						  
 					});
@@ -606,6 +606,75 @@ groupid  = jQuery('#division').val();
 
 
 });
+window.FILES = [];
+jQuery('.files_type').live('click' ,function(e){ 
+
+	if(jQuery(e.currentTarget).is(':checked')){
+			window.FILES.push(parseInt(jQuery(e.currentTarget).val()))
+		}
+	else{
+		index = window.FILES.indexOf(parseInt(jQuery(e.currentTarget).val()))
+		window.FILES.splice(index, 1);
+		
+	}
+})
+
+jQuery('#move').live('click' ,function(e){ 
+
+	if(window.FILES.length == 0)
+	{
+		alert('Select atleast one file');
+		return
+	}
+	
+	jQuery('#loading').show()
+	jQuery.post(ajaxurl,{
+					action : 'get_categories' , 
+					call_by :'ajax'
+
+				  },
+					function(response){  
+						if(response !="")
+						{
+							jQuery('#loading').hide()
+							jQuery('.show_cat').html(response);
+							// jQuery('.show_cat').removeClass('hidden')
+
+							jQuery('#myMoveModal').modal()
+						}
+					  
+				});
+})
+
+jQuery('.move_files').live('click' ,function(e){ 
+
+	if(window.CATEGORIES.length == 0)
+	{
+		alert('Select atleast one folder');
+		return
+	}
+
+	files = window.FILES.join(',');
+	parent_folder = window.CATEGORIES.join(',');
+	jQuery.post(ajaxurl,{
+					action : 'move_files_folders' , 
+					call_by :'ajax',
+					files 	: files,
+					parent_folder 	: parent_folder
+
+				  },
+					function(response){  
+						if(response !="")
+						{
+							
+
+							jQuery('#myMoveModal').modal('hide')
+							window.location.reload()
+						}
+					  
+				});
+
+	});
 
 //scripts added by surekha////	 
 });

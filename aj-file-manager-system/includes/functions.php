@@ -606,12 +606,15 @@ include_once 'manage-division.php';
 }
 function dmt_add_manage_group_page()
 {    
+
+	
 	$user_role = dmt_get_current_user_role();
 	if ($user_role  == "dmt_site_admin" || $user_role  =="administrator" || current_user_can('manage_groups'))
 	{
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
 		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
-		 
+		add_submenu_page('edit.php?post_type=document_files', 'Move Files', 'Move Files', 'edit_posts', 'move-files', 'dmt_show_menu_page_move_multiple_files' );
+
 	}
 	if ( current_user_can('manage_divisions'))
 	{
@@ -1281,3 +1284,95 @@ function filter_documentfolder_files_for_user( $query ){
  
 
 add_filter( 'parse_query', 'filter_documentfolder_files_for_user' );
+
+
+function dmt_show_menu_page_move_multiple_files(){
+
+	global $wpdb;
+	global $user_ID;
+	global $current_user;
+	get_currentuserinfo();
+	$userid  = $current_user->ID;
+	$user_access_table 	= $wpdb->prefix . "dmt_user_cat_access_data";
+	$user_group 		= $wpdb->prefix . "dmt_user_group";
+	$group_folder 		= $wpdb->prefix . "dmt_group_folder";
+	
+	//categories user has access to 
+	$access_cats = $wpdb->get_results( 
+	"
+	SELECT category_id
+	FROM $user_access_table
+	WHERE user_id = $userid 
+	UNION 
+	SELECT folder_id as category_id 
+	FROM $user_group,$group_folder  
+	WHERE $user_group.group_id = $group_folder.group_id and user_id  = $userid 
+	");	
+	$cats = array();
+	foreach($access_cats as $access_cat){
+		array_push($cats, $access_cat->category_id);
+
+	}
+	
+	$args = array(
+	        
+		        array(
+		            'taxonomy'          => 'document_folders',
+		            'field'             => 'term_id',
+		            'terms'             => 34,
+		            'include_children'  => true
+		        ),
+		   
+	        'post_type' => 'document_files',
+	        'post_status'	=> 'publish'        
+	    );
+	$catPosts = get_posts( $args );
+	$custom_posts = array();
+	?>
+
+	<div style="margin-bottom:20px; max-width:350px;"><h3>Files</h3>
+	<?php
+	foreach ($catPosts as $key => $value) {
+
+		?>
+
+		<div style="margin-bottom:5px;">
+			<div class="form-control">
+				<input type="checkbox" class="files_type" id="file<?php echo $value->ID ;?>" name="file<?php echo $value->ID ;?>" value="<?php echo $value->ID ;?>" />
+				<label for="file<?php echo $value->ID ;?>"><?php echo $value->post_title;?></label>
+			</div>
+		</div>
+		<?php
+		// $custom_posts[] = array(
+
+		// 	'id' => $value->ID,
+		// 	'title' =>$value->post_title
+
+		// 	);
+	}
+	?>
+	</div>
+
+	<input type="button" class="btn btn-info btn-sm" name="move" id="move" value="Move" / >
+	<div id="myMoveModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Document Folders</h4>
+      </div>
+      <div class="modal-body">
+       <div class="show_cat"></div>
+      </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary move_files">Move</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+	<?php
+	// print_r($custom_posts);
+	    
+
+}
