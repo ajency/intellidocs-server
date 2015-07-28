@@ -1328,12 +1328,12 @@ function dmt_show_menu_page_move_multiple_files(){
 	//     );
 
 	$args = array(
-		'post_status'	=> 'publish'  
+		'post_type' => 'document_files'
 		
 	);
 	$catPosts = new WP_Query( $args );
 	
-	
+	print_r($catPosts);
 	
 	$custom_posts = array();
 	?>
