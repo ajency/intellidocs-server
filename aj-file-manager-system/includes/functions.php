@@ -1333,7 +1333,6 @@ function dmt_show_menu_page_move_multiple_files(){
 			array(
 				'taxonomy' => 'document_folders',
 				'field'    => 'term_id',
-				'terms'    => $cats,
 				'include_children'  => true
 			),
 		),
