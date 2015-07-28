@@ -1316,12 +1316,12 @@ function dmt_show_menu_page_move_multiple_files(){
 	
 	$args = array(
 	        
-		        array(
+		     'tax_query' =>  array( array(
 		            'taxonomy'          => 'document_folders',
 		            'field'             => 'term_id',
 		            'terms'             => $cats,
 		            'include_children'  => true
-		        ),
+		        )),
 		   
 	        'post_type' => 'document_files',
 	        'post_status'	=> 'publish'        
