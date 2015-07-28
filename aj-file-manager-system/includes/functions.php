@@ -1313,10 +1313,10 @@ function dmt_show_menu_page_move_multiple_files(){
 		array_push($cats, $access_cat->category_id);
 
 	}
-	
+	print_r($cats);
 	$args = array(
 	        
-		     'tax_query' =>  array( array(
+		     'tax_query' =>  array(array(
 		            'taxonomy'          => 'document_folders',
 		            'field'             => 'term_id',
 		            'terms'             => $cats,
