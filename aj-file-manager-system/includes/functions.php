@@ -1397,6 +1397,7 @@ function dmt_show_menu_page_move_multiple_files(){
 	</div>
 
 	<input type="button" class="btn btn-info btn-sm" name="move" id="move" value="Move" / >
+	<img id="loading" src="<?php echo site_url();?>/wp-content/plugins/aj_file_manager_folders/css/images/spinner.gif" style="display:none" />
 	<div id="myMoveModal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
