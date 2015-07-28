@@ -1328,7 +1328,7 @@ function dmt_show_menu_page_move_multiple_files(){
 	//     );
 
 	$args = array(
-		'posts_per_page' => 5,
+		'numberposts' => -1,
 		'post_type' => 'document_files',
 		'tax_query' => array(
 			array(
