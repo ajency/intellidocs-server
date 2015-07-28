@@ -1340,8 +1340,16 @@ function dmt_show_menu_page_move_multiple_files(){
 	);
 	$catPosts = new WP_Query( $args );
 	
-	
-	
+	$uposts = get_posts(array(
+		'post_type' => 'document_files',
+		'numberposts' => -1,
+		'tax_query' => array(array(
+		    'taxonomy' => 'document_folders',
+		    'field' => 'term_id',
+		    'terms' => $cats
+		  ) )
+		));
+	print_r($uposts);
 	$custom_posts = array();
 	?>
 
