@@ -1359,7 +1359,8 @@ function dmt_show_menu_page_move_multiple_files(){
 		'tax_query' => array(array(
 		    'taxonomy' => 'document_folders',
 		    'field' => 'term_id',
-		    'terms' => $_REQUEST['tag_ID']
+		    'terms' => $_REQUEST['tag_ID'],
+		    'include_children'  => false
 		  ) )
 		));
 	}
