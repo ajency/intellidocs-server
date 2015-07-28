@@ -1328,12 +1328,19 @@ function dmt_show_menu_page_move_multiple_files(){
 	//     );
 
 	$args = array(
-		'post_type' => 'document_files'
-		
+		'posts_per_page' => 5,
+		'post_type' => 'document_files',
+		'tax_query' => array(
+			array(
+				'taxonomy' => 'document_folders',
+				'field'    => 'term_id',
+				'terms'    => $cats
+			),
+		),
 	);
 	$catPosts = new WP_Query( $args );
 	
-	print_r($catPosts);
+	
 	
 	$custom_posts = array();
 	?>
