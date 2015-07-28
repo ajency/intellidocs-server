@@ -1313,20 +1313,17 @@ function dmt_show_menu_page_move_multiple_files(){
 		array_push($cats, $access_cat->category_id);
 
 	}
-	print_r($cats);
+	
 	$args = array(
 	        
-		     'tax_query' =>  array(array(
+		        array(
 		            'taxonomy'          => 'document_folders',
 		            'field'             => 'term_id',
 		            'terms'             => $cats,
 		            'include_children'  => true
-		        )),
-		   
-	        'post_type' => 'document_files',
-	        'post_status'	=> 'publish'        
+		        )       
 	    );
-	$catPosts = get_posts( $args );
+	$catPosts = get_posts(array('tax_query' => $args ));
 	$custom_posts = array();
 	?>
 
