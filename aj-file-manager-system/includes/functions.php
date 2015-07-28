@@ -1327,18 +1327,18 @@ function dmt_show_menu_page_move_multiple_files(){
 	//         'post_status'	=> 'publish'        
 	//     );
 
-	$args = array(
-		'numberposts' => -1,
-		'post_type' => 'document_files',
-		'tax_query' => array(
-			array(
-				'taxonomy' => 'document_folders',
-				'field'    => 'term_id',
-				'terms'    => $cats
-			),
-		),
-	);
-	$catPosts = new WP_Query( $args );
+	// $args = array(
+	// 	'numberposts' => -1,
+	// 	'post_type' => 'document_files',
+	// 	'tax_query' => array(
+	// 		array(
+	// 			'taxonomy' => 'document_folders',
+	// 			'field'    => 'term_id',
+	// 			'terms'    => $cats
+	// 		),
+	// 	),
+	// );
+	// $catPosts = new WP_Query( $args );
 	
 	$uposts = get_posts(array(
 		'post_type' => 'document_files',
@@ -1349,28 +1349,26 @@ function dmt_show_menu_page_move_multiple_files(){
 		    'terms' => $cats
 		  ) )
 		));
-	print_r($uposts);
+	// print_r($uposts);
 	$custom_posts = array();
 	?>
 
 	<div style="margin-bottom:20px; max-width:350px;"><h3>Files</h3>
 	<?php
-	if($catPosts->have_posts()){
-		while($catPosts->have_posts()){
-			$catPosts->the_post();
-
+	foreach ($uposts as $key => $value) {
+		
 		?>
 
 		<div style="margin-bottom:5px;">
 			<div class="form-control">
-				<input type="checkbox" class="files_type" id="file<?php echo $catPosts->post->ID ;?>" name="file<?php echo $catPosts->post->ID ;?>" value="<?php echo $catPosts->post->ID ;?>" />
-				<label for="file<?php echo $catPosts->post->ID ;?>"><?php echo $catPosts->post->post_title;?></label>
+				<input type="checkbox" class="files_type" id="file<?php echo $value->ID ;?>" name="file<?php echo $value->ID ;?>" value="<?php echo $value->ID ;?>" />
+				<label for="file<?php echo $value->ID ;?>"><?php echo $value->post_title;?></label>
 			</div>
 		</div>
 		<?php
 		
 		}	
-	}
+	
 	?>
 	</div>
 
