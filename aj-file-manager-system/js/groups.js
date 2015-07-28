@@ -671,7 +671,7 @@ jQuery('.move_files').live('click' ,function(e){
 							
 
 							jQuery('#myMoveModal').modal('hide')
-							window.location.reload()
+							// window.location.reload()
 						}
 					  
 				});
