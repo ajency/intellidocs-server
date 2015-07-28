@@ -452,6 +452,7 @@ groupid  = jQuery('#division').val();
 		jQuery.post(ajaxurl,{
 						action : 'get_categories' , 
 						call_by :'ajax',
+						folder: jQuery(e.target).attr('data-termid'),
 
 					  },
 						function(response){  
@@ -660,7 +661,8 @@ jQuery('.move_files').live('click' ,function(e){
 					action : 'move_files_folders' , 
 					call_by :'ajax',
 					files 	: files,
-					parent_folder 	: parent_folder
+					parent_folder 	: parent_folder,
+					folder : jQuery('#cat').val()
 
 				  },
 					function(response){  
@@ -669,7 +671,7 @@ jQuery('.move_files').live('click' ,function(e){
 							
 
 							jQuery('#myMoveModal').modal('hide')
-							window.location.reload()
+							// window.location.reload()
 						}
 					  
 				});
