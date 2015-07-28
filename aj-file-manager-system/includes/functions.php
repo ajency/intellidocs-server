@@ -1314,16 +1314,31 @@ function dmt_show_menu_page_move_multiple_files(){
 
 	}
 	
-	$args = array(
+	// $args = array(
 	        
-		        array(
-		            'taxonomy'          => 'document_folders',
-		            'field'             => 'term_id',
-		            'terms'             => $cats,
-		            'include_children'  => true
-		        )       
-	    );
-	$catPosts = get_posts(array('tax_query' => $args ));
+	// 	        array(
+	// 	            'taxonomy'          => 'document_folders',
+	// 	            'field'             => 'term_id',
+	// 	            'terms'             => $cats,
+	// 	            'include_children'  => true
+	// 	        ),
+		   
+	//         'post_type' => 'document_files',
+	//         'post_status'	=> 'publish'        
+	//     );
+
+	$args = array(
+	'post_type' => 'post',
+	'tax_query' => array(
+		array(
+			'taxonomy' => 'document_folders',
+			'field'    => 'term_id',
+			'terms'    => $cats,
+			'include_children'  => true
+		),
+	),
+);
+	$catPosts = new WP_Query( $args );
 	$custom_posts = array();
 	?>
 
