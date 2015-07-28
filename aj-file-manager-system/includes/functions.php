@@ -1353,7 +1353,7 @@ function dmt_show_menu_page_move_multiple_files(){
 	$custom_posts = array();
 	?>
 
-	<div style="margin-bottom:20px; max-width:350px;"><h3>Files</h3>
+	<div style="margin-bottom:20px; max-width:1200px;"><h3>Files</h3>
 	<?php
 	foreach ($uposts as $key => $value) {
 		
