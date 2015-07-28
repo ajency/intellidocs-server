@@ -1349,6 +1349,20 @@ function dmt_show_menu_page_move_multiple_files(){
 		    'terms' => $cats
 		  ) )
 		));
+
+	if(isset($_REQUEST['tag_ID']) && $_REQUEST['tag_ID']!="")
+	{
+
+		$uposts = get_posts(array(
+		'post_type' => 'document_files',
+		'numberposts' => -1,
+		'tax_query' => array(array(
+		    'taxonomy' => 'document_folders',
+		    'field' => 'term_id',
+		    'terms' => $_REQUEST['tag_ID']
+		  ) )
+		));
+	}
 	// print_r($uposts);
 	$custom_posts = array();
 	?>
@@ -1367,7 +1381,17 @@ function dmt_show_menu_page_move_multiple_files(){
 		</div>
 		<?php
 		
-		}	
+		}
+
+	if(count($uposts) ==0)
+	{
+		?>
+
+		<div style="margin-bottom:5px;">
+			No files found in this folder.
+		</div>
+		<?php
+	}	
 	
 	?>
 	</div>

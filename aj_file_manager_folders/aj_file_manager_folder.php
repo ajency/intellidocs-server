@@ -551,7 +551,8 @@ function intellidocs_folder_html($cat)
 		$folder_edit_html_additional_parameters 	   	= apply_filters('intellidocs_etc_action', admin_url(),$cat->term_id);
 		$move_html = '&nbsp;<i class="icon-folder-close-alt"></i><span class="move" data-termid="'.$cat->term_id.'" title="Move">Move</span>';
 		$delete_items_html = '&nbsp;<i class="icon-trash"></i><span class="delete_items" data-termid="'.$cat->term_id.'" title="Delete Items">Delete Items</span>';
-		$folder_edit_html = $folder_edit_html.$folder_edit_html_additional_parameters.$move_html.$delete_items_html;
+		$move_items_html = '&nbsp;<span class="edit-folder" title="Move Files" rel="'.admin_url().'edit.php?post_type=document_files&page=move-files&tag_ID='.$cat->term_id.'"><i class="icon-folder-close-alt"></i>Move Files</span>';
+		$folder_edit_html = $folder_edit_html.$folder_edit_html_additional_parameters.$move_html.$delete_items_html.$move_items_html;
 		$folder_item_id			= intellidocs_get_folder_item_id($cat->term_id);
 		
 		$sub_folder_count_html 	= '&nbsp;<span class="sub-folder-count" title="Sub folder count"><i class="icon-folder-close-alt"></i>'.intellidocs_get_subfolder_count($cat->term_id).'</span>';
