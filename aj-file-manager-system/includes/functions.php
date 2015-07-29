@@ -1430,7 +1430,7 @@ function dmt_show_menu_page_move_multiple_folders(){
 	?>
 
 
-</br/><input type="button" name="movefolder" id="movefolder" value="Move" / >
+</br/><input type="button" class="btn btn-info btn-sm" name="movefolder" id="movefolder" value="Move" / >
 <img id="loading" src="<?php echo site_url();?>/wp-content/plugins/aj_file_manager_folders/css/images/spinner.gif" style="display:none" />
 <div id="myMoveModal" class="modal fade">
   <div class="modal-dialog">
@@ -1448,7 +1448,7 @@ function dmt_show_menu_page_move_multiple_folders(){
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
-</div></br/>
+</div></br/></br/>
 <?php
 get_new_categories();
 

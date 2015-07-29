@@ -738,7 +738,7 @@ jQuery('.move_folders').on('click',function(e){
 							if(response !="")
 							{
 								jQuery('#myMoveModal').modal('hide');
-								// window.location.reload()
+								window.location.reload()
 							}
 						  
 					});
