@@ -614,6 +614,7 @@ function dmt_add_manage_group_page()
 		add_submenu_page('edit.php?post_type=document_files', 'Manage Groups', 'Manage Groups', 'edit_posts', 'manage-groups', 'dmt_show_menu_page_add_group' );  
 		add_submenu_page('edit.php?post_type=document_files', 'Add Document Folders', 'Add Document Folders', 'edit_posts', 'add-document-folders', 'dmt_show_menu_page_add_document_folders' );
 		add_submenu_page(null, 'Hidden!', 'Hidden!', 'edit_posts', 'move-files', 'dmt_show_menu_page_move_multiple_files' );
+		add_submenu_page('edit.php?post_type=document_files', 'Move Folders', 'Move Folders', 'edit_posts', 'move-folders', 'dmt_show_menu_page_move_multiple_folders' );
 
 	}
 	if ( current_user_can('manage_divisions'))
@@ -1419,5 +1420,36 @@ function dmt_show_menu_page_move_multiple_files(){
 	<?php
 	// print_r($custom_posts);
 	    
+
+}
+
+
+function dmt_show_menu_page_move_multiple_folders(){
+
+	
+	?>
+
+
+</br/><input type="button" name="movefolder" id="movefolder" value="Move" / >
+<img id="loading" src="<?php echo site_url();?>/wp-content/plugins/aj_file_manager_folders/css/images/spinner.gif" style="display:none" />
+<div id="myMoveModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Document Folders</h4>
+      </div>
+      <div class="modal-body">
+       <div class="show_cat"></div>
+      </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary move_folders">Move</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div></br/>
+<?php
+get_new_categories();
 
 }
