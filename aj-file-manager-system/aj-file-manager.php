@@ -897,6 +897,9 @@ License: GPL3
 		{
 			wp_register_style( 'dmt-hide-style',  plugins_url('/css/admin.css', __FILE__ ) );
 			wp_enqueue_style( 'dmt-hide-style' );
+
+			wp_register_style( 'dmt-manage-folder-bootstrap',  plugins_url('/css/bootstrap.min.css', __FILE__ ) );
+			wp_enqueue_style( 'dmt-manage-folder-bootstrap' );
 			
 		
 		}
