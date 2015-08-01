@@ -7,3 +7,117 @@ p#footer-upgrade{
 	display:none;
 }
 
+.tree_struct_css {
+ list-style-type: none;
+}
+.tree_struct_css li {
+ padding-left: 5px;
+}
+.tree_struct_css li ul {
+ padding-left: 20px;
+}
+.selectall,
+.tree_struct_css .folders_del_check,
+.tree_struct_css .folders_check,
+.inside .doc_folders
+{
+	margin: -4px 4px 0 0;
+}
+.selectDiv{
+	clear:both;
+	text-align: right;
+}
+.tree_struct_css .folders_del_check:focus,
+.inside .doc_folders:focus,
+.tree_struct_css .folders_check:focus{
+	border: 0;
+	outline: initial;
+}
+
+#dmt-file-new-category .panel-default>.panel-heading{
+	background: #fff;
+}
+#dmt-file-new-category .panel-body{
+	background: #f5f5f5;
+}
+#dmt-file-new-category .panel-group .panel-heading a:focus{
+	border: 0;
+	outline: 0;
+	box-shadow: initial;
+}
+#dmt-file-new-category .inp-check:not(:first-child){
+	line-height: 24px;
+}
+/*accordion icons*/
+#dmt-file-new-category .panel-group .panel-heading a:after {
+  content: '\e253';
+  position: absolute;
+  right: 20px;
+  font-family: 'Glyphicons Halflings';
+  color: #a0a5aa;
+  font-size: 14px;
+}
+#dmt-file-new-category .panel-group .panel-heading a.collapsed:after {
+  content: '\e252';
+  font-family: 'Glyphicons Halflings';
+}
+input[type=checkbox],
+input[type=radio]{
+	margin: -4px 4px 0 0;
+}
+input[type=checkbox]:focus,
+input[type=radio]:focus{
+	outline: 0;
+}
+#dmt-file-new-category .inside{
+	max-height: 440px;
+	overflow-x: auto;
+}
+
+input[type=checkbox].doc_folders{
+	margin: 6px 4px 0 0;
+	vertical-align: top;
+}
+.ui-accordion{
+	display: inline-block;
+	width: 80%;
+}
+.ui-accordion .ui-accordion-header, .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+	padding: 5px;
+	border-radius: 0;
+	border: none;
+	/*background: transparent;*/
+}
+.ui-accordion .ui-accordion-content{
+	padding: 5px !important;
+	border: none;
+}
+.ui-accordion .ui-accordion-icons{
+	padding-left: 10px !important;
+}
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon{
+	left: auto !important;
+	right: 5px;
+}
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active{
+	background: #C3C3C3 !important;
+}
+
+.ui-state-default.hide_arrow, .ui-widget-content .ui-state-default.hide_arrow, .ui-widget-header .ui-state-default.hide_arrow{
+	background: transparent;
+	cursor: default !important;
+}
+.ui-state-default.hide_arrow .ui-icon, .ui-widget-content.hide_arrow .ui-icon, .ui-widget-header .ui-state-default.hide_arrow .ui-icon{
+	display: none;
+}
+
+.ui-state-active.hide_arrow, .ui-widget-content .ui-state-active.hide_arrow, .ui-widget-header .ui-state-active.hide_arrow{
+	background: transparent !important;
+}
+
+span.move {
+  cursor: pointer;
+}
+span.delete_items {
+  cursor: pointer;
+}
