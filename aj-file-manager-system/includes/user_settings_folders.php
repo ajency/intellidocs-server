@@ -61,11 +61,42 @@ function dmt_extend_profile_fields( $user ) {
 		$categories =  get_terms('document_folders',  $args1);
 	}
 
-//
-// print_r($selected_folders);
-// foreach($categories as $category){
-// 	echo $category->term_id.'<br />';
-// }
+
+
+
+//Get existing folders for the user
+	global $wpdb;
+	$userid  = $user->ID;
+	$user_access_table 	= $wpdb->prefix . "dmt_user_cat_access_data";
+	$user_group 		= $wpdb->prefix . "dmt_user_group";
+	$group_folder 		= $wpdb->prefix . "dmt_group_folder";
+
+	$access_cats = $wpdb->get_results(
+	"
+	SELECT category_id
+	FROM $user_access_table
+	WHERE user_id = $userid
+	UNION
+	SELECT folder_id as category_id
+	FROM $user_group,$group_folder
+	WHERE $user_group.group_id = $group_folder.group_id and user_id  = $userid
+	");
+
+	$cats = array();
+	foreach($access_cats as $access_cat)
+	{
+		$cats[] = get_term_by( 'id', $access_cat->category_id , 'document_folders');
+
+	}
+	$cats = intellidocs_sort_folders($cats);
+
+	$user_folders = array();
+	foreach($cats as $cat){
+	$user_folders[] = $cat->term_id;
+	}
+
+
+
 
 ?>
 <?php
@@ -90,7 +121,10 @@ function dmt_extend_profile_fields( $user ) {
 if(!is_null($categories)){
 	 foreach($categories as $category):?>
 				<?php if($selected_folders[0]['document_folders']): ?>
-					<?php $checked = (in_array($category->term_id,$selected_folders[0]['document_folders']))?'checked="checked"':'';
+					<?php
+					 //$checked = (in_array($category->term_id,$selected_folders[0]['document_folders']))?'checked="checked"':'';
+					 //Check against existing folder list.
+					 $checked = (in_array($category->term_id,$user_folders))?'checked="checked"':'';
 				 ?>
 				<?php endif;?>
 				<li id="document_folders-<?php echo $category->term_id;?>">
